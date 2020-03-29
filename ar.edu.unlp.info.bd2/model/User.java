@@ -4,6 +4,7 @@ package ar.edu.unlp.info.bd2.model;
 public class User{
 
      @Id
+     @GeneratedValue
      private String id;
      private String username; /*nombre de usuario del usuario*/
      private String email; /*email del usuario*/
@@ -13,6 +14,17 @@ public class User{
      @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
      @JoinColumn(name="user_id")
      private Order orders = new ArrayList<>();
+
+     public User() { //jpa only
+     }
+
+     public User(String email, String password, String username, String name, Date dateOfBirth) {
+          this.email = email;
+          this.password = password;
+          this.username = username;
+          this.name = name;
+          this.dateOfBirth = dateOfBirth;
+     }
 
      public String getId() {
           return id;
@@ -70,14 +82,4 @@ public class User{
           this.orders = orders;
      }
 
-     public User() {
-     }
-
-     public User(String email, String password, String username, String name, Date dateOfBirth) {
-          this.email = email;
-          this.password = password;
-          this.username = username;
-          this.name = name;
-          this.dateOfBirth = dateOfBirth;
-     }
 }
