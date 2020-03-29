@@ -20,10 +20,7 @@ public class Order{
     @ManyToOne;// una orden solo pertenece a un usuario y un usuario puede tener varias ordenes
     private User client; /*cliente que realizó el pedido*/
     
-    Order(){ //required jpa
-    }
-    
-    public createOrder(Date date, String address, Float coordX, Float coordY, User user) {
+    public Order(Date date, String address, Float coordX, Float coordY, User user) {
     	this.dateOfOrder = date;
     	this.address = address;
     	this.coordX = coordX;
@@ -31,4 +28,43 @@ public class Order{
     	this.client = user;
     }
 
+    public Date getDateOfOrder() {
+        return dateOfOrder;
+    }
+
+    public void setDateOfOrder(Date dateOfOrder) {
+        this.dateOfOrder = dateOfOrder;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Float getCoordX() {
+        return coordX;
+    }
+
+    public void setCoordX(Float coordX) {
+        this.coordX = coordX;
+    }
+
+    public Float getCoordY() {
+        return coordY;
+    }
+
+    public void setCoordY(Float coordY) {
+        this.coordY = coordY;
+    }
+
+    public User getClient() {
+        return client;
+    }
+
+    public void setClient(User client) {
+        this.client = client;
+    }
 }
