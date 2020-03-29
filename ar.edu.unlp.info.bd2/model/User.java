@@ -1,3 +1,5 @@
+package ar.edu.unlp.info.bd2.model;
+
 @Entity(name="User")
 public class User{
 
