@@ -1,3 +1,5 @@
+package ar.edu.unlp.info.bd2.model;
+
 public class User{
 
      private String email; /*email del usuario*/
