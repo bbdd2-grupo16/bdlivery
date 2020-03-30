@@ -1,13 +1,16 @@
 package ar.edu.unlp.info.bd2.model;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.ManyToOne;
+
+import javax.persistence.*;
+
+import java.util.Date;
 
 @Entity
+@Table(name = "ORDER")
+
 public class Order{
-	@Id
-	@GeneratedValue;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
     private Date dateOfOrder; /*timestamp de la fecha en que fue realizado el pedido*/
@@ -18,7 +21,7 @@ public class Order{
     
     private Float coordY; /*coordenada Y de la dirección*/
     
-    @ManyToOne;// una orden solo pertenece a un usuario y un usuario puede tener varias ordenes
+    @ManyToOne // una orden solo pertenece a un usuario y un usuario puede tener varias ordenes
     private User client; /*cliente que realizó el pedido*/
     
     public Order(Date date, String address, Float coordX, Float coordY, User user) {

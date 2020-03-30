@@ -1,11 +1,17 @@
 package ar.edu.unlp.info.bd2.model;
 
-@Entity(name="User")
+import javax.persistence.*;
+
+import java.util.ArrayList;
+import java.util.Date;
+
+@Entity
+@Table(name = "USER_")
 public class User{
 
      @Id
-     @GeneratedValue
-     private String id;
+     @GeneratedValue(strategy = GenerationType.IDENTITY)
+     private Long id;
      private String username; /*nombre de usuario del usuario*/
      private String email; /*email del usuario*/
      private String password; /*password clave del usuario*/

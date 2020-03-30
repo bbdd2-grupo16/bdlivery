@@ -1,15 +1,15 @@
 package ar.edu.unlp.info.bd2.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
+import javax.persistence.*;
 
 
 @Entity
+@Table(name = "SUPPLIER")
 public class Supplier{
 
+
     @Id
-    @GeneratedValue;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name; /* @param name nombre del productor*/
@@ -21,6 +21,9 @@ public class Supplier{
     private Float coordX; /* @param coordX  coordenada X de la dirección del productor*/
 
     private Float coordY; /* @param coordY coordeada Y de la dirección del produtor*/
+
+    public Supplier() {
+    }
 
     public Supplier(String name, String cuil, String address, Float coordX, Float coordY) {
         this.name = name;
