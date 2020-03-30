@@ -73,7 +73,8 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Optional<User> getUserById(Long id){
-        return repository.findUserById(id);
+        return Optional.ofNullable(new User());
+//        return repository.findUserById(id);
     }
 
     /**
@@ -83,7 +84,8 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Optional<User> getUserByEmail(String email){
-        return repository.findUserByEmail(email);
+        return Optional.ofNullable(new User());
+//        return repository.findUserByEmail(email);
     }
 
     /**
@@ -93,7 +95,9 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Optional<User> getUserByUsername(String username){
-        return repository.findUserByUsername(username);
+        return Optional.ofNullable(new User());
+
+//        return repository.findUserByUsername(username);
     }
 
     /**
@@ -103,7 +107,8 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Optional<Product> getProductById(Long id){
-        return repository.findProductById(id);
+        return Optional.ofNullable(new Product());
+//        return repository.findProductById(id);
     }
 
     /**
@@ -113,7 +118,9 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Optional<Order> getOrderById(Long id){
-        return repository.findOrderById(id);
+        return Optional.ofNullable(new Order());
+
+//        return repository.findOrderById(id);
     }
 
     /**
@@ -126,7 +133,9 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el nuevo pedido
      */
     @Override
-    public Order createOrder(Date dateOfOrder, String address, Float coordX, Float coordY, User client);
+    public Order createOrder(Date dateOfOrder, String address, Float coordX, Float coordY, User client){
+        return new Order();
+    }
 
     /**
      * agrega un producto al pedido
@@ -137,7 +146,9 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @throws DBliveryException en caso de no existir el pedido
      */
     @Override
-    public Order addProduct(Long order, Long quantity, Product product)throws DBliveryException;
+    public Order addProduct(Long order, Long quantity, Product product)throws DBliveryException{
+        return new Order();
+    }
 
     /**
      * Registra el envío del pedido, registrando al repartidor y cambiando su estado a Send.
@@ -147,7 +158,9 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @throws DBliveryException en caso de no existir el pedido, que el pedido no se encuentre en estado Pending o sí no contiene productos.
      */
     @Override
-    public Order deliverOrder(Long order, User deliveryUser) throws DBliveryException;
+    public Order deliverOrder(Long order, User deliveryUser) throws DBliveryException{
+        return new Order();
+    }
 
     /**
      * Cancela un pedido
@@ -156,8 +169,9 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @throws DBliveryException en caso de no existir el pedido o si el pedido no esta en estado pending
      */
     @Override
-    public Order cancelOrder(Long order) throws DBliveryException;
-
+    public Order cancelOrder(Long order) throws DBliveryException{
+        return new Order();
+    }
     /**
      * Registra la entrega de un pedido.
      * @param order pedido a finalizar
@@ -165,7 +179,9 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @throws DBliveryException en caso que no exista el pedido o si el mismo no esta en estado Send
      */
     @Override
-    public Order finishOrder(Long order) throws DBliveryException;
+    public Order finishOrder(Long order) throws DBliveryException{
+        return new Order();
+    }
 
     /**
      * verifica si un pedido se puede cancelar, para lo cual debe estar en estado pending
@@ -174,7 +190,9 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @throws DBliveryException si no existe el pedido.
      */
     @Override
-    public boolean canCancel(Long order) throws DBliveryException;
+    public boolean canCancel(Long order) throws DBliveryException{
+        return true;
+    }
 
     /**
      * verifica si se puede finalizar un pedido
@@ -183,7 +201,9 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @throws DBliveryException en caso de no existir el pedido
      */
     @Override
-    public boolean canFinish(Long id) throws DBliveryException;
+    public boolean canFinish(Long id) throws DBliveryException{
+        return true;
+    }
 
     /**
      * verifica si un pedido puede ser enviado para lo cual debe tener productos y estar en estado pending
@@ -193,7 +213,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public boolean canDeliver(Long order) throws DBliveryException{
-        return new Boolean();
+        return true;
     }
 
     /**
@@ -203,7 +223,8 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public OrderStatus getActualStatus(Long order){
-        return repository.findOrderStatusByOrder(order);
+        return new OrderStatus();
+//        return repository.findOrderStatusByOrder(order);
     }
 
     /**
@@ -213,6 +234,6 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List<Product> getProductByName(String name){
-        return Optional.ofNullable(repository.findProductByName(name));
+        return repository.findProductByName(name);
     }
 }

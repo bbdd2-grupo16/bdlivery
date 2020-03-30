@@ -2,6 +2,7 @@ package ar.edu.unlp.info.bd2.model;
 
 import javax.persistence.*;
 
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -17,9 +18,10 @@ public class User{
      private String password; /*password clave del usuario*/
      private String name; /*nombre y apellido del usuario*/
      private Date dateOfBirth; /*fecha de nacimiento del usuario*/
+
      @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
      @JoinColumn(name="user_id")
-     private Order orders = new ArrayList<>();
+     private List<Order> orders = new ArrayList<Order>();
 
      public User() { //jpa only
      }
@@ -32,11 +34,11 @@ public class User{
           this.dateOfBirth = dateOfBirth;
      }
 
-     public String getId() {
+     public Long getId() {
           return id;
      }
 
-     public void setId(String id) {
+     public void setId(Long id) {
           this.id = id;
      }
 
@@ -80,12 +82,12 @@ public class User{
           this.dateOfBirth = dateOfBirth;
      }
 
-     public Order getOrders() {
+     public List<Order> getOrders() {
           return orders;
      }
 
-     public void setOrders(Order orders) {
-          this.orders = orders;
-     }
+//     public void setOrders(Order orders) {
+//          this.orders = orders;
+//     }
 
 }
