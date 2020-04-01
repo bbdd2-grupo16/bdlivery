@@ -5,8 +5,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "ORDER")
-
+@Table(name = "ORDER_")
 public class Order{
 
     @Id
@@ -33,6 +32,10 @@ public class Order{
     	this.coordX = coordX;
     	this.coordY = coordY;
     	this.client = user;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Date getDateOfOrder() {

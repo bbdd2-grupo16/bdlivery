@@ -13,12 +13,20 @@ public class DBliveryRepository{
     @Autowired
     private SessionFactory sessionFactory;
 
-    public Object save (Object obj) throws Exception{
-        this. sessionFactory.getCurrentSession().save(obj);
-        return obj;
+    public Object save(Object object) throws Exception{
+        System.out.println(this.sessionFactory.getCurrentSession());
+        System.out.println(object);
+        try {
+            this.sessionFactory.getCurrentSession().save(object);
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return object;
     }
+
     public List<Product> findProductByName(String name) {
-        String hql = "from Product " + "where name = :product_name ";
+        String hql = "FROM Product where name = :product_name";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("product_name", name);
 
