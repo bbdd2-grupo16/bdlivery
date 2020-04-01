@@ -14,7 +14,7 @@ public class DBliveryRepository{
     private SessionFactory sessionFactory;
 
     public Object save (Object obj) throws Exception{
-        this. sessionFactory.getCurrentSession().save(obj);
+        this.sessionFactory.getCurrentSession().save(obj);
         return obj;
     }
     public List<Product> findProductByName(String name) {
@@ -24,5 +24,10 @@ public class DBliveryRepository{
 
         return (List<Product>) query.getResultList();
 
+    }
+
+    public User persistUser(User user) {
+        this.save(user);
+        return user;
     }
 }

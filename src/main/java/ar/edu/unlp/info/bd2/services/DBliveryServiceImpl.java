@@ -50,7 +50,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public User createUser(String email, String password, String username, String name, Date dateOfBirth){
-        return new User();
+        return new User(email, password, username, name, dateOfBirth);
     }
 
     /**
