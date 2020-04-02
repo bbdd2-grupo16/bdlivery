@@ -22,7 +22,12 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Product createProduct(String name, Float price, Float weight, Supplier supplier){
-        return new Product();
+        try {
+            return (Product) repository.save(new Product(name, price, weight, supplier));
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
     /**
@@ -36,7 +41,14 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Supplier createSupplier(String name, String cuil, String address, Float coordX, Float coordY){
-        return new Supplier();
+        try {
+            Supplier supplier = new Supplier(name, cuil, address, coordX, coordY);
+            System.out.println(supplier.getName());
+            return (Supplier) repository.save(supplier);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
     /**

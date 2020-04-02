@@ -2,11 +2,9 @@ package ar.edu.unlp.info.bd2.model;
 
 import javax.persistence.*;
 
-
 @Entity
-@Table(name = "SUPPLIER")
+@Table(name="SUPPLIER")
 public class Supplier{
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
