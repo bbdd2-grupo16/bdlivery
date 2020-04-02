@@ -2,7 +2,7 @@
 
 newUser='bd2_grupo16'
 newDbPassword='grupo16'
-newDb='bd2_grupo'
+newDb='bd2_grupo16'
 host=localhost
 #host='%'
 

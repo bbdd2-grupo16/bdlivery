@@ -39,8 +39,4 @@ public class DBliveryRepository{
 
     }
 
-    public User persistUser(User user) {
-        this.sessionFactory.getCurrentSession().save(user);
-        return user;
-    }
 }
