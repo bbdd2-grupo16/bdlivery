@@ -40,7 +40,7 @@ public class DBliveryRepository{
     }
 
     public User persistUser(User user) {
-        this.save(user);
+        this.sessionFactory.getCurrentSession().save(user);
         return user;
     }
 }
