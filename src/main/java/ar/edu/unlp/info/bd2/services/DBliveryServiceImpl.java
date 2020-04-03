@@ -144,9 +144,8 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Optional<Order> getOrderById(Long id){
-        return Optional.ofNullable(new Order());
-
-//        return repository.findOrderById(id);
+        Optional<Order> order= repository.findOrderById(id);
+        return order;
     }
 
     /**
@@ -161,7 +160,12 @@ public class DBliveryServiceImpl implements DBliveryService{
     
     @Override
     public Order createOrder(Date dateOfOrder, String address, Float coordX, Float coordY, User client){
-        return new Order();
+        try {
+            return (Order) repository.save(new Order(dateOfOrder, address, coordX, coordY, client));
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
     /**
