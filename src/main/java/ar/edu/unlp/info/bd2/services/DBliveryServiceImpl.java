@@ -63,7 +63,14 @@ public class DBliveryServiceImpl implements DBliveryService{
     
     @Override
     public User createUser(String email, String password, String username, String name, Date dateOfBirth){
-        return new User();
+        try {
+            User user = new User(email, password, username, name, dateOfBirth);
+            System.out.println(user.getName());
+            return (User) repository.save(user);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
     /**
@@ -93,8 +100,8 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Optional<User> getUserById(Long id){
-        return Optional.ofNullable(new User());
-//        return repository.findUserById(id);
+        Optional<User> user= repository.findUserById(id);
+        return  user;
     }
 
     /**
@@ -104,8 +111,8 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Optional<User> getUserByEmail(String email){
-        return Optional.ofNullable(new User());
-//        return repository.findUserByEmail(email);
+        Optional<User> user= repository.findUserByEmail(email);
+        return  user;
     }
 
     /**
@@ -115,9 +122,8 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Optional<User> getUserByUsername(String username){
-        return Optional.ofNullable(new User());
-
-//        return repository.findUserByUsername(username);
+        Optional<User> user= repository.findUserByUsername(username);
+        return  user;
     }
 
     /**

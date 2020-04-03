@@ -79,8 +79,8 @@ public class DBliveryServiceTestCase {
     	User u1 = this.service.createUser("hugo.gamarra@testmail.com", "123456", "hgamarra", "Hugo Gamarra", dob);
     	Order o1 = this.service.createOrder(orderDate,"Av. Corrientes 1405 2° B", Float.valueOf(-54.45F), Float.valueOf(-62.22F),u1);
         Order o2 = this.service.addProduct(o1.getId(), 1L, p1);
-//        assertNotNull(o1.getId());
-//        assertNotNull(o2.getId());
+		assertNotNull(o1.getId());
+        assertNotNull(o2.getId());
 //        assertEquals(1,o2.getStatus().size());
 //        assertEquals(u1,o2.getClient());
 //        assertEquals(1,o2.getProducts().size());

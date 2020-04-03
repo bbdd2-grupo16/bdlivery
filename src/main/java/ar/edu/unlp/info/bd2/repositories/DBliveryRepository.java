@@ -7,6 +7,7 @@ import ar.edu.unlp.info.bd2.model.*;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Optional;
 
 public class DBliveryRepository{
 
@@ -40,4 +41,22 @@ public class DBliveryRepository{
 
         return !products.isEmpty() ? products.get(query.getFirstResult()) : null;
     }
+
+    public Optional<User> findUserById(Long id){
+        Optional<User> user = this.sessionFactory.getCurrentSession().createQuery("FROM User where id = :user_id")
+                .setParameter("user_id", id).uniqueResultOptional();
+        return user;
+    }
+
+    public Optional<User> findUserByUsername(String username){
+        Optional<User> user = this.sessionFactory.getCurrentSession().createQuery("FROM User where username = :username")
+                .setParameter("username", username).uniqueResultOptional();
+        return user;
+    }
+
+    public Optional<User> findUserByEmail(String email){
+        String hql = "FROM User where email = :email";
+        return (Optional<User>) this.sessionFactory.getCurrentSession().createQuery(hql).setParameter("email", email).uniqueResultOptional();
+    }
+
 }
