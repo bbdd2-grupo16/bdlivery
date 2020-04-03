@@ -1,6 +1,8 @@
 package ar.edu.unlp.info.bd2.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "PRODUCT")
@@ -17,6 +19,8 @@ public class Product{
     @ManyToOne // Un producto tiene un unico productor
     private Supplier supplier; /*el productor del producto*/
 
+//    private List<Float> prices;
+
     public Product() {
 
     }
@@ -26,6 +30,7 @@ public class Product{
         this.price = price;
         this.weight = weight;
         this.supplier = supplier;
+//        this.prices = new ArrayList<Float>();
     }
 
     public Long getId() {

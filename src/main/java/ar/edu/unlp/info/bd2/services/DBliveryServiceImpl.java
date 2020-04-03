@@ -20,6 +20,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param supplier el productor del producto
      * @return el producto creado
      */
+    
     @Override
     public Product createProduct(String name, Float price, Float weight, Supplier supplier){
         try {
@@ -39,12 +40,11 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param coordY coordeada Y de la dirección del produtor
      * @return el productor creado
      */
+    
     @Override
     public Supplier createSupplier(String name, String cuil, String address, Float coordX, Float coordY){
         try {
-            Supplier supplier = new Supplier(name, cuil, address, coordX, coordY);
-            System.out.println(supplier.getName());
-            return (Supplier) repository.save(supplier);
+            return (Supplier) repository.save(new Supplier(name, cuil, address, coordX, coordY));
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -60,6 +60,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param dateOfBirth fecha de nacimiento del usuario
      * @return el usuario creado
      */
+    
     @Override
     public User createUser(String email, String password, String username, String name, Date dateOfBirth){
         return new User();
@@ -73,8 +74,15 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el producto modificado
      * @throws DBliveryException en caso de que no exista el producto para el id dado
      */
+    
     @Override
     public Product updateProductPrice(Long id, Float price, Date startDate) throws DBliveryException{
+//        Product product = repository.getProductById(id);
+//        if (!product) {
+//            throw new DBliveryException("El producto no existe");
+//        } else {
+////            Actualizar precio producto
+//        }
         return new Product();
     }
 
@@ -144,6 +152,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param client cliente que realizó el pedido
      * @return el nuevo pedido
      */
+    
     @Override
     public Order createOrder(Date dateOfOrder, String address, Float coordX, Float coordY, User client){
         return new Order();
@@ -157,6 +166,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el pedido con el nuevo producto
      * @throws DBliveryException en caso de no existir el pedido
      */
+    
     @Override
     public Order addProduct(Long order, Long quantity, Product product)throws DBliveryException{
         return new Order();
@@ -169,6 +179,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el pedido modificado
      * @throws DBliveryException en caso de no existir el pedido, que el pedido no se encuentre en estado Pending o sí no contiene productos.
      */
+    
     @Override
     public Order deliverOrder(Long order, User deliveryUser) throws DBliveryException{
         return new Order();
@@ -180,6 +191,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el pedido modificado
      * @throws DBliveryException en caso de no existir el pedido o si el pedido no esta en estado pending
      */
+    
     @Override
     public Order cancelOrder(Long order) throws DBliveryException{
         return new Order();
@@ -190,6 +202,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el pedido modificado
      * @throws DBliveryException en caso que no exista el pedido o si el mismo no esta en estado Send
      */
+    
     @Override
     public Order finishOrder(Long order) throws DBliveryException{
         return new Order();
@@ -234,8 +247,8 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el estado del pedido actual
      */
     @Override
-    public OrderStatus getActualStatus(Long order){
-        return new OrderStatus();
+    public Status getActualStatus(Long order){
+        return new Status();
 //        return repository.findOrderStatusByOrder(order);
     }
 
@@ -246,6 +259,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List<Product> getProductByName(String name){
-        return repository.findProductByName(name);
+        List<Product> products = repository.findProductByName(name);
+        return products;
     }
 }

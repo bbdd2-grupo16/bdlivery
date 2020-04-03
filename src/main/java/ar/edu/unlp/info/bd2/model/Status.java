@@ -3,15 +3,15 @@ package ar.edu.unlp.info.bd2.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name="ORDER_STATUS_")
-public class OrderStatus{
+@Table(name="STATUS")
+public class Status{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long order;
 
-    public OrderStatus() {
+    public Status() {
     }
 
     public Long getId() {

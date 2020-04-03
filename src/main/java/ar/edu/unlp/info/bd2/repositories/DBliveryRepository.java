@@ -14,8 +14,6 @@ public class DBliveryRepository{
     private SessionFactory sessionFactory;
 
     public Object save(Object object) throws Exception{
-        System.out.println(this.sessionFactory.getCurrentSession());
-        System.out.println(object);
         try {
             this.sessionFactory.getCurrentSession().save(object);
 
@@ -26,11 +24,20 @@ public class DBliveryRepository{
     }
 
     public List<Product> findProductByName(String name) {
-        String hql = "FROM Product where name = :product_name";
+        String hql = "from Product where name like concat('%', :product_name, '%')";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("product_name", name);
 
         return (List<Product>) query.getResultList();
 
+    }
+
+    public Product findProductById(Long id){
+        String hql = "from Product " + "where id = :product_id ";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        query.setParameter("product_id", id);
+        List<Product> products = query.getResultList();
+
+        return !products.isEmpty() ? products.get(query.getFirstResult()) : null;
     }
 }
