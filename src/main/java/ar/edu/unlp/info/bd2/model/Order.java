@@ -27,7 +27,8 @@ public class Order{
 
     private String state;
 
-    @ElementCollection(targetClass=ProductOrder.class)
+    @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
+    @JoinColumn(name="order_id")
     private List<ProductOrder> products;
 
 

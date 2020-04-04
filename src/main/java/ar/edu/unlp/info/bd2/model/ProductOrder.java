@@ -3,7 +3,7 @@ package ar.edu.unlp.info.bd2.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "ProductOrder")
+@Table(name = "PRODUCT_ORDER")
 public class ProductOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -11,10 +11,10 @@ public class ProductOrder {
 
     private Long quantity;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Product.class)
     private Product product;
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = ProductOrder.class)
+    @ManyToOne
     private Long order;
 
     public ProductOrder(Long quantity, Product product, Long order) {
