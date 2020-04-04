@@ -179,6 +179,8 @@ public class DBliveryServiceImpl implements DBliveryService{
     
     @Override
     public Order addProduct(Long order, Long quantity, Product product)throws DBliveryException{
+        ProductOrder new_product = new ProductOrder(quantity, product, order);
+
         return new Order();
     }
 
@@ -257,8 +259,9 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el estado del pedido actual
      */
     @Override
-    public Status getActualStatus(Long order){
-        return new Status();
+    public String getActualStatus(Long order){
+        Order o = repository.findOrderById(order);
+        return o.getState();
 //        return repository.findOrderStatusByOrder(order);
     }
 

@@ -3,6 +3,8 @@ package ar.edu.unlp.info.bd2.model;
 import javax.persistence.*;
 
 import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "ORDER")
@@ -23,6 +25,12 @@ public class Order{
     @ManyToOne // una orden solo pertenece a un usuario y un usuario puede tener varias ordenes
     private User client; /*cliente que realizó el pedido*/
 
+    private String state;
+
+    @ElementCollection(targetClass=ProductOrder.class)
+    private List<ProductOrder> products;
+
+
     public Order() {
     }
 
@@ -32,49 +40,39 @@ public class Order{
     	this.coordX = coordX;
     	this.coordY = coordY;
     	this.client = user;
+        this.state = "Pending";
+        this.products = new ArrayList<>();
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public Date getDateOfOrder() {
-        return dateOfOrder;
-    }
+    public void setId(Long id) { this.id = id; }
 
-    public void setDateOfOrder(Date dateOfOrder) {
-        this.dateOfOrder = dateOfOrder;
-    }
+    public Date getDateOfOrder() { return dateOfOrder; }
 
-    public String getAddress() {
-        return address;
-    }
+    public void setDateOfOrder(Date dateOfOrder) { this.dateOfOrder = dateOfOrder; }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+    public String getAddress() { return address; }
 
-    public Float getCoordX() {
-        return coordX;
-    }
+    public void setAddress(String address) { this.address = address; }
 
-    public void setCoordX(Float coordX) {
-        this.coordX = coordX;
-    }
+    public Float getCoordX() { return coordX; }
 
-    public Float getCoordY() {
-        return coordY;
-    }
+    public void setCoordX(Float coordX) { this.coordX = coordX; }
 
-    public void setCoordY(Float coordY) {
-        this.coordY = coordY;
-    }
+    public Float getCoordY() { return coordY; }
 
-    public User getClient() {
-        return client;
-    }
+    public void setCoordY(Float coordY) { this.coordY = coordY; }
 
-    public void setClient(User client) {
-        this.client = client;
-    }
+    public User getClient() { return client; }
+
+    public void setClient(User client) { this.client = client; }
+
+    public String getState() { return state; }
+
+    public void setState(String state) { this.state = state; }
+
+    public List<ProductOrder> getProducts() { return products; }
+
+    public void setProducts(List<ProductOrder> products) { this.products = products; }
 }
