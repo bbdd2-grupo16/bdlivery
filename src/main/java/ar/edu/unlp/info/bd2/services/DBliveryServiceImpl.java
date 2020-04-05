@@ -109,8 +109,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Optional<User> getUserById(Long id){
-        Optional<User> user= repository.findUserById(id);
-        return  user;
+        return Optional.ofNullable(repository.findUserById(id));
     }
 
     /**
@@ -120,8 +119,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Optional<User> getUserByEmail(String email){
-        Optional<User> user= repository.findUserByEmail(email);
-        return  user;
+        return Optional.ofNullable(repository.findUserByEmail(email));
     }
 
     /**
@@ -131,8 +129,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Optional<User> getUserByUsername(String username){
-        Optional<User> user= repository.findUserByUsername(username);
-        return  user;
+        return Optional.ofNullable(repository.findUserByUsername(username));
     }
 
     /**

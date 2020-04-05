@@ -21,7 +21,7 @@ public class User{
 
      @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
      @JoinColumn(name="user_id")
-     private List<Order> orders = new ArrayList<Order>();
+     private List<Order> orders;
 
      public User() { //jpa only
      }
@@ -32,6 +32,7 @@ public class User{
           this.username = username;
           this.name = name;
           this.dateOfBirth = dateOfBirth;
+          this.orders = new ArrayList<Order>();
      }
 
      public Long getId() {

@@ -42,21 +42,31 @@ public class DBliveryRepository{
         return !products.isEmpty() ? products.get(query.getFirstResult()) : null;
     }
 
-    public Optional<User> findUserById(Long id){
-        Optional<User> user = this.sessionFactory.getCurrentSession().createQuery("FROM User where id = :user_id")
-                .setParameter("user_id", id).uniqueResultOptional();
-        return user;
+    public User findUserById(Long id){
+        String hql = "FROM User where id = :user_id";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        query.setParameter("user_id", id);
+        List<User> users = query.getResultList();
+
+        return !users.isEmpty() ? users.get(query.getFirstResult()) : null;
     }
 
-    public Optional<User> findUserByUsername(String username){
-        Optional<User> user = this.sessionFactory.getCurrentSession().createQuery("FROM User where username = :username")
-                .setParameter("username", username).uniqueResultOptional();
-        return user;
+    public User findUserByUsername(String username){
+        String hql = "FROM User where username = :username";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        query.setParameter("username", username);
+        List<User> users = query.getResultList();
+
+        return !users.isEmpty() ? users.get(query.getFirstResult()) : null;
     }
 
-    public Optional<User> findUserByEmail(String email){
+    public User findUserByEmail(String email){
         String hql = "FROM User where email = :email";
-        return (Optional<User>) this.sessionFactory.getCurrentSession().createQuery(hql).setParameter("email", email).uniqueResultOptional();
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        query.setParameter("email", email);
+        List<User> users = query.getResultList();
+
+        return !users.isEmpty() ? users.get(query.getFirstResult()) : null;
     }
 
     public Order findOrderById(Long id){
