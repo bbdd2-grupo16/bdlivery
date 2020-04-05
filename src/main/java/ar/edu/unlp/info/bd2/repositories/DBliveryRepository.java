@@ -60,12 +60,16 @@ public class DBliveryRepository{
     }
 
     public Order findOrderById(Long id){
-        String hql = "FROM ORDER WHERE id = :id";
+        String hql = "from Order where id = :id";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql).setParameter("id", id);
         List<Order> orders = query.getResultList();
 
         return !orders.isEmpty() ? orders.get(query.getFirstResult()) : null;
 
+    }
+
+    public void updateOrder(Order o){
+        this.sessionFactory.getCurrentSession().saveOrUpdate(o);
     }
 
 }

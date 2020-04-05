@@ -181,12 +181,8 @@ public class DBliveryServiceImpl implements DBliveryService{
         if (repository.findOrderById(order) != null){
             Order orderConcrete = repository.findOrderById(order);
             orderConcrete.addProduct(quantity, product);
-            try {
-                return (Order) repository.save(orderConcrete);
-            }catch (Exception e){
-                System.out.println(e.getMessage());
-            }
-            return null;
+            repository.updateOrder(orderConcrete);
+            return orderConcrete;
         }else { throw new DBliveryException("The order don't exist"); }
     }
 
@@ -200,7 +196,14 @@ public class DBliveryServiceImpl implements DBliveryService{
 
     @Override
     public Order deliverOrder(Long order, User deliveryUser) throws DBliveryException{
-        return new Order();
+        if (repository.findOrderById(order) != null){
+            Order orderConcrete = repository.findOrderById(order);
+            if (orderConcrete.canDeliver()){
+                orderConcrete.deliverOrder(deliveryUser);
+                repository.updateOrder(orderConcrete);
+                return orderConcrete;
+            }else { throw new DBliveryException("The order can't be delivered");}
+        }else {throw new DBliveryException("The order don't exist");}
     }
 
     /**
@@ -212,7 +215,14 @@ public class DBliveryServiceImpl implements DBliveryService{
 
     @Override
     public Order cancelOrder(Long order) throws DBliveryException{
-        return new Order();
+        if (repository.findOrderById(order) != null){
+            Order orderConcrete = repository.findOrderById(order);
+            if (orderConcrete.canCancel()){
+                orderConcrete.cancelOrder();
+                repository.updateOrder(orderConcrete);
+                return orderConcrete;
+            }else { throw new DBliveryException("The order can't be canceled");}
+        }else {throw new DBliveryException("The order don't exist");}
     }
     /**
      * Registra la entrega de un pedido.
@@ -223,7 +233,14 @@ public class DBliveryServiceImpl implements DBliveryService{
 
     @Override
     public Order finishOrder(Long order) throws DBliveryException{
-        return new Order();
+        if (repository.findOrderById(order) != null){
+            Order orderConcrete = repository.findOrderById(order);
+            if (orderConcrete.canFinish()){
+                orderConcrete.finishOrder();
+                repository.updateOrder(orderConcrete);
+                return orderConcrete;
+            }else { throw new DBliveryException("The order can't be finished");}
+        }else {throw new DBliveryException("The order don't exist");}
     }
 
     /**
@@ -234,7 +251,11 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public boolean canCancel(Long order) throws DBliveryException{
-        return true;
+
+        if (repository.findOrderById(order) != null){
+            Order orderConcrete = repository.findOrderById(order);
+            return orderConcrete.canCancel();
+        }else {throw new DBliveryException("The order don't exist");}
     }
 
     /**
@@ -245,7 +266,10 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public boolean canFinish(Long id) throws DBliveryException{
-        return true;
+        if (repository.findOrderById(id) != null){
+            Order orderConcrete = repository.findOrderById(id);
+            return orderConcrete.canFinish();
+        }else {throw new DBliveryException("The order don't exist");}
     }
 
     /**
@@ -256,7 +280,10 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public boolean canDeliver(Long order) throws DBliveryException{
-        return true;
+        if (repository.findOrderById(order) != null){
+            Order orderConcrete = repository.findOrderById(order);
+            return orderConcrete.canDeliver();
+        }else {throw new DBliveryException("The order don't exist");}
     }
 
     /**
@@ -266,8 +293,8 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public String getActualStatus(Long order){
-        return "nada";
-//        return repository.findOrderStatusByOrder(order);
+        Order orderConcrete = repository.findOrderById(order);
+        return orderConcrete.getState();
     }
 
     /**
