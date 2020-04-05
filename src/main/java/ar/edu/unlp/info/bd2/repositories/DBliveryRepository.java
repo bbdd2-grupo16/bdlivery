@@ -60,7 +60,7 @@ public class DBliveryRepository{
     }
 
     public Order findOrderById(Long id){
-        String hql = "FROM ORDER WHERE id = :id";
+        String hql = "FROM Order WHERE id = :id";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql).setParameter("id", id);
         List<Order> orders = query.getResultList();
 

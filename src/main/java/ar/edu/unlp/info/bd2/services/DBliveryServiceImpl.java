@@ -83,14 +83,23 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     
     @Override
-    public Product updateProductPrice(Long id, Float price, Date startDate) throws DBliveryException{
-//        Product product = repository.getProductById(id);
-//        if (!product) {
-//            throw new DBliveryException("El producto no existe");
-//        } else {
-////            Actualizar precio producto
-//        }
-        return new Product();
+    public Product updateProductPrice(Long id, Float price, Date startDate) throws DBliveryException {
+        Product product = repository.findProductById(id);
+        if (product == null) {
+            throw new DBliveryException("El producto no existe");
+        } else {
+        //  Actualizar precio producto
+            product.setPrice(price);
+            product.addPrice(new Price(price, startDate));
+            try{
+                return (Product) repository.save(product);
+            }catch (DBliveryException e){
+                System.out.println(e.getMessage());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     /**
@@ -133,8 +142,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Optional<Product> getProductById(Long id){
-        return Optional.ofNullable(new Product());
-//        return repository.findProductById(id);
+        return Optional.ofNullable(repository.findProductById(id));
     }
 
     /**
@@ -179,15 +187,14 @@ public class DBliveryServiceImpl implements DBliveryService{
     @Override
     public Order addProduct(Long order, Long quantity, Product product)throws DBliveryException{
         if (repository.findOrderById(order) != null){
-            Order orderConcrete = repository.findOrderById(order);
-            orderConcrete.addProduct(quantity, product);
+            Order orderConcrete = repository.findOrderById(order).addProduct(quantity, product);
             try {
                 return (Order) repository.save(orderConcrete);
             }catch (Exception e){
                 System.out.println(e.getMessage());
             }
-            return null;
-        }else { throw new DBliveryException("The order don't exist"); }
+        }else { throw new DBliveryException("La orden no existe"); }
+        return null;
     }
 
     /**
@@ -200,7 +207,15 @@ public class DBliveryServiceImpl implements DBliveryService{
 
     @Override
     public Order deliverOrder(Long order, User deliveryUser) throws DBliveryException{
-        return new Order();
+        Order orderConcrete = repository.findOrderById(order);
+        if (orderConcrete != null){
+            if (this.canDeliver(orderConcrete.getId())) {
+                orderConcrete.setDeliveryUser(deliveryUser);
+                orderConcrete.setState("Send");
+                return orderConcrete;
+            }
+        }
+        throw new DBliveryException("La orden no existe");
     }
 
     /**
@@ -212,7 +227,14 @@ public class DBliveryServiceImpl implements DBliveryService{
 
     @Override
     public Order cancelOrder(Long order) throws DBliveryException{
-        return new Order();
+        Order orderConcrete = repository.findOrderById(order);
+        if (orderConcrete != null){
+            if (this.canCancel(orderConcrete.getId())) {
+                orderConcrete.setState("Canceled");
+                return orderConcrete;
+            }
+        }
+        throw new DBliveryException("La orden no existe");
     }
     /**
      * Registra la entrega de un pedido.
@@ -223,7 +245,14 @@ public class DBliveryServiceImpl implements DBliveryService{
 
     @Override
     public Order finishOrder(Long order) throws DBliveryException{
-        return new Order();
+        Order orderConcrete = repository.findOrderById(order);
+        if (orderConcrete != null){
+            if (this.canFinish(orderConcrete.getId())) {
+                orderConcrete.setState("Delivered");
+                return orderConcrete;
+            }
+        }
+        throw new DBliveryException("La orden no existe");
     }
 
     /**
@@ -234,7 +263,14 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public boolean canCancel(Long order) throws DBliveryException{
-        return true;
+        Order orderConcrete = repository.findOrderById(order);
+        if (orderConcrete != null){
+            if(orderConcrete.getState() == "Pending"){
+                return true;
+            }else {return false;}
+        }else{
+            throw new DBliveryException("La orden no existe");
+        }
     }
 
     /**
@@ -245,7 +281,14 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public boolean canFinish(Long id) throws DBliveryException{
-        return true;
+        Order orderConcrete = repository.findOrderById(id);
+        if (orderConcrete != null){
+            if(orderConcrete.getState() == "Send"){
+                return true;
+            }else {return false;}
+        }else{
+            throw new DBliveryException("La orden no existe");
+        }
     }
 
     /**
@@ -256,7 +299,14 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public boolean canDeliver(Long order) throws DBliveryException{
-        return true;
+        Order orderConcrete = repository.findOrderById(order);
+        if (orderConcrete != null){
+            if((orderConcrete.getState() == "Pending") && (orderConcrete.getProducts().size() != 0)){
+                return true;
+            }else {return false;}
+        }else{
+            throw new DBliveryException("La orden no existe");
+        }
     }
 
     /**
@@ -277,7 +327,6 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List<Product> getProductByName(String name){
-        List<Product> products = repository.findProductByName(name);
-        return products;
+        return (List<Product>) repository.findProductByName(name);
     }
 }

@@ -30,10 +30,12 @@ public class Order{
 
     private String state;
 
+//    @OneToMany
+//    private List<String> status;
+
     @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
     @JoinColumn(name="order_id")
     private List<ProductOrder> products;
-
 
     public Order() {
     }
@@ -45,7 +47,9 @@ public class Order{
     	this.coordY = coordY;
     	this.client = user;
         this.state = "Pending";
-        this.products = new ArrayList<>();
+        this.products = new ArrayList<ProductOrder>();
+//        this.status = new ArrayList<String>();
+//        this.status.add("Pending");
     }
 
     public Long getId() { return id; }
@@ -80,43 +84,21 @@ public class Order{
 
     public void setProducts(List<ProductOrder> products) { this.products = products; }
 
-    public Order addProduct (Long quantity, Product product) {
-        ProductOrder new_product = new ProductOrder(quantity,product,this.id);
+    public Order addProduct(Long quantity, Product product) {
+        ProductOrder new_product = new ProductOrder(quantity, product,this);
         this.products.add(new_product);
         return this;
     }
 
-    public Boolean canCancel() {
-        if(this.state == "Pending"){
-            return true;
-        }else {return false;}
+    public void setDeliveryUser(User delivery) {
+        this.delivery = delivery;
     }
 
-    public Boolean canFinish() {
-        if(this.state == "Send"){
-            return true;
-        }else {return false;}
+    public User getDeliveryUser() {
+        return delivery;
     }
 
-    public Boolean canDeliver() {
-        if((this.state == "Pending") && (this.products.size() != 0)){
-            return true;
-        }else {return false;}
-    }
-
-    public Order deliverOrder(User deliveryUser) {
-        this.delivery= deliveryUser;
-        this.state= "Send";
-        return this;
-    }
-
-    public Order cancelOrder() {
-        this.state="Canceled";
-        return this;
-    }
-
-    public Order finishOrder() {
-        this.state = "Delivered";
-        return this;
-    }
+//    public List<String> getStatus() {
+//        return status;
+//    }
 }
