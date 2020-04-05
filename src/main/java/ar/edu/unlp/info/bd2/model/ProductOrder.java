@@ -15,12 +15,16 @@ public class ProductOrder {
     private Product product;
 
     @ManyToOne
-    private Long order;
+    private Order order;
+
+    public ProductOrder() {
+
+    }
 
     public ProductOrder(Long quantity, Product product, Long order) {
         this.quantity = quantity;
-        this.product = product;
-        this.order = order;
+//        this.product = product;
+//        this.order = order;
     }
 
     public Long getId() { return id; }
@@ -35,7 +39,7 @@ public class ProductOrder {
 
     public void setProduct(Product product) { this.product = product; }
 
-    public Long getOrder() { return order; }
+    public Order getOrder() { return order; }
 
-    public void setOrder(Long order) { this.order = order; }
+    public void setOrder(Order order) { this.order = order; }
 }

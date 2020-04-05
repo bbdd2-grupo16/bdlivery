@@ -84,12 +84,12 @@ public class DBliveryServiceImpl implements DBliveryService{
     
     @Override
     public Product updateProductPrice(Long id, Float price, Date startDate) throws DBliveryException{
-//        Product product = repository.getProductById(id);
-//        if (!product) {
-//            throw new DBliveryException("El producto no existe");
-//        } else {
-////            Actualizar precio producto
-//        }
+        Product product = repository.findProductById(id);
+        if (product != null) {
+//            Actualizar precio producto
+        } else {
+            throw new DBliveryException("El producto no existe");
+        }
         return new Product();
     }
 
@@ -260,9 +260,10 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public String getActualStatus(Long order){
-        Order o = repository.findOrderById(order);
-        return o.getState();
+//        Order o = repository.findOrderById(order);
+//        return o.getState();
 //        return repository.findOrderStatusByOrder(order);
+        return "Hola";
     }
 
     /**
