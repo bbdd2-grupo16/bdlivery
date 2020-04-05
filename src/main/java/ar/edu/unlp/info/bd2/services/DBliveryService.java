@@ -161,7 +161,7 @@ public interface DBliveryService {
 	 * @param order pedido del cual se debe retornar el estado actual
 	 * @return el estado del pedido actual
 	 */
-	Status getActualStatus(Long order);
+	String getActualStatus(Long order);
 	
 	/**
 	 * Obtiene el listado de productos que su nombre contega el string dado

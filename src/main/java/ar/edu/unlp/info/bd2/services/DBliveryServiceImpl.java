@@ -144,7 +144,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Optional<Order> getOrderById(Long id){
-        Optional<Order> order= repository.findOrderById(id);
+        Optional<Order> order = repository.findOrderById(id);
         return order;
     }
 
@@ -157,7 +157,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param client cliente que realizó el pedido
      * @return el nuevo pedido
      */
-    
+
     @Override
     public Order createOrder(Date dateOfOrder, String address, Float coordX, Float coordY, User client){
         try {
@@ -176,7 +176,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el pedido con el nuevo producto
      * @throws DBliveryException en caso de no existir el pedido
      */
-    
+
     @Override
     public Order addProduct(Long order, Long quantity, Product product)throws DBliveryException{
         if (repository.findOrderById(order) != null){
@@ -194,7 +194,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el pedido modificado
      * @throws DBliveryException en caso de no existir el pedido, que el pedido no se encuentre en estado Pending o sí no contiene productos.
      */
-    
+
     @Override
     public Order deliverOrder(Long order, User deliveryUser) throws DBliveryException{
         return new Order();
@@ -206,7 +206,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el pedido modificado
      * @throws DBliveryException en caso de no existir el pedido o si el pedido no esta en estado pending
      */
-    
+
     @Override
     public Order cancelOrder(Long order) throws DBliveryException{
         return new Order();
@@ -217,7 +217,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el pedido modificado
      * @throws DBliveryException en caso que no exista el pedido o si el mismo no esta en estado Send
      */
-    
+
     @Override
     public Order finishOrder(Long order) throws DBliveryException{
         return new Order();
@@ -263,7 +263,6 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public String getActualStatus(Long order){
-
         return "nada";
 //        return repository.findOrderStatusByOrder(order);
     }

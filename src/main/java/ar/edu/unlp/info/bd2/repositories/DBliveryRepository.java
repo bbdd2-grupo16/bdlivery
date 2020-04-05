@@ -59,9 +59,13 @@ public class DBliveryRepository{
         return (Optional<User>) this.sessionFactory.getCurrentSession().createQuery(hql).setParameter("email", email).uniqueResultOptional();
     }
 
-    public Optional<Order> findOrderById(Long id){
+    public Order findOrderById(Long id){
         String hql = "FROM ORDER WHERE id = :id";
-        return (Optional<Order>) this.sessionFactory.getCurrentSession().createQuery(hql).setParameter("id", id).uniqueResultOptional();
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql).setParameter("id", id);
+        List<Order> orders = query.getResultList();
+
+        return !orders.isEmpty() ? orders.get(query.getFirstResult()) : null;
+
     }
 
 }
