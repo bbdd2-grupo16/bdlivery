@@ -144,8 +144,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Optional<Order> getOrderById(Long id){
-        Optional<Order> order = repository.findOrderById(id);
-        return order;
+        return Optional.ofNullable(repository.findOrderById(id));
     }
 
     /**
