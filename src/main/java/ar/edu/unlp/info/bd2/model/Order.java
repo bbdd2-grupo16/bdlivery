@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Entity
-@Table(name = "ORDER")
+@Table(name = "ORDER_")
 public class Order{
 
     @Id

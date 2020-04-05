@@ -181,8 +181,12 @@ public class DBliveryServiceImpl implements DBliveryService{
         if (repository.findOrderById(order) != null){
             Order orderConcrete = repository.findOrderById(order);
             orderConcrete.addProduct(quantity, product);
-            repository.save(orderConcrete);
-            return orderConcrete;
+            try {
+                return (Order) repository.save(orderConcrete);
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+            return null;
         }else { throw new DBliveryException("The order don't exist"); }
     }
 
