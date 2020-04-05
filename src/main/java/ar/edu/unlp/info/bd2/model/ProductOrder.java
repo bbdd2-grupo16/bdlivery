@@ -21,10 +21,10 @@ public class ProductOrder {
 
     }
 
-    public ProductOrder(Long quantity, Product product, Long order) {
+    public ProductOrder(Long quantity, Product product, Order order) {
         this.quantity = quantity;
-//        this.product = product;
-//        this.order = order;
+        this.product = product;
+        this.order = order;
     }
 
     public Long getId() { return id; }

@@ -1,6 +1,7 @@
 package ar.edu.unlp.info.bd2.model;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 

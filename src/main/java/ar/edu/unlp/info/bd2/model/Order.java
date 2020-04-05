@@ -28,12 +28,14 @@ public class Order{
     @ManyToOne
     private User delivery;
 
-    private String state;
+    //private String state;
+
+    @ElementCollection
+    private List<String> status;
 
     @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
     @JoinColumn(name="order_id")
     private List<ProductOrder> products;
-
 
     public Order() {
     }
@@ -44,8 +46,9 @@ public class Order{
     	this.coordX = coordX;
     	this.coordY = coordY;
     	this.client = user;
-        this.state = "Pending";
-        this.products = new ArrayList<>();
+        this.products = new ArrayList<ProductOrder>();
+        this.status = new ArrayList<String>();
+        this.status.add("Pending");
     }
 
     public Long getId() { return id; }
@@ -72,51 +75,33 @@ public class Order{
 
     public void setClient(User client) { this.client = client; }
 
-    public String getState() { return state; }
-
-    public void setState(String state) { this.state = state; }
-
     public List<ProductOrder> getProducts() { return products; }
 
     public void setProducts(List<ProductOrder> products) { this.products = products; }
 
-    public Order addProduct (Long quantity, Product product) {
-        ProductOrder new_product = new ProductOrder(quantity,product,this.id);
+    public Order addProduct(Long quantity, Product product) {
+        ProductOrder new_product = new ProductOrder(quantity, product,this);
         this.products.add(new_product);
         return this;
     }
 
-    public Boolean canCancel() {
-        if(this.state == "Pending"){
-            return true;
-        }else {return false;}
+    public void setDeliveryUser(User delivery) {
+        this.delivery = delivery;
     }
 
-    public Boolean canFinish() {
-        if(this.state == "Send"){
-            return true;
-        }else {return false;}
+    public User getDeliveryUser() {
+        return delivery;
     }
 
-    public Boolean canDeliver() {
-        if((this.state == "Pending") && (this.products.size() != 0)){
-            return true;
-        }else {return false;}
+    public List<String> getStatus() {
+        return this.status;
     }
 
-    public Order deliverOrder(User deliveryUser) {
-        this.delivery= deliveryUser;
-        this.state= "Send";
-        return this;
+    public void addState(String state) {
+        this.status.add(state);
     }
 
-    public Order cancelOrder() {
-        this.state="Canceled";
-        return this;
-    }
-
-    public Order finishOrder() {
-        this.state = "Delivered";
-        return this;
+    public String getLastStatus(){
+        return this.getStatus().get(this.getStatus().size()-1);
     }
 }
