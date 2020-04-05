@@ -25,6 +25,9 @@ public class Order{
     @ManyToOne // una orden solo pertenece a un usuario y un usuario puede tener varias ordenes
     private User client; /*cliente que realizó el pedido*/
 
+    @ManyToOne
+    private User delivery;
+
     private String state;
 
     @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
@@ -76,4 +79,44 @@ public class Order{
     public List<ProductOrder> getProducts() { return products; }
 
     public void setProducts(List<ProductOrder> products) { this.products = products; }
+
+    public Order addProduct (Long quantity, Product product) {
+        ProductOrder new_product = new ProductOrder(quantity,product,this.id);
+        this.products.add(new_product);
+        return this;
+    }
+
+    public Boolean canCancel() {
+        if(this.state == "Pending"){
+            return true;
+        }else {return false;}
+    }
+
+    public Boolean canFinish() {
+        if(this.state == "Send"){
+            return true;
+        }else {return false;}
+    }
+
+    public Boolean canDeliver() {
+        if((this.state == "Pending") && (this.products.size() != 0)){
+            return true;
+        }else {return false;}
+    }
+
+    public Order deliverOrder(User deliveryUser) {
+        this.delivery= deliveryUser;
+        this.state= "Send";
+        return this;
+    }
+
+    public Order cancelOrder() {
+        this.state="Canceled";
+        return this;
+    }
+
+    public Order finishOrder() {
+        this.state = "Delivered";
+        return this;
+    }
 }

@@ -179,9 +179,12 @@ public class DBliveryServiceImpl implements DBliveryService{
     
     @Override
     public Order addProduct(Long order, Long quantity, Product product)throws DBliveryException{
-        ProductOrder new_product = new ProductOrder(quantity, product, order);
-
-        return new Order();
+        if (repository.findOrderById(order) != null){
+            Order orderConcrete = repository.findOrderById(order);
+            orderConcrete.addProduct(quantity, product);
+            repository.save(orderConcrete);
+            return orderConcrete;
+        }else { throw new DBliveryException("The order don't exist"); }
     }
 
     /**
@@ -260,8 +263,8 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public String getActualStatus(Long order){
-        Order o = repository.findOrderById(order);
-        return o.getState();
+
+        return "nada";
 //        return repository.findOrderStatusByOrder(order);
     }
 
