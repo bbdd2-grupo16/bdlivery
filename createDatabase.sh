@@ -9,4 +9,4 @@ host=localhost
 commands="DROP DATABASE IF EXISTS \`${newDb}\`; CREATE DATABASE \`${newDb}\`;CREATE USER '${newUser}'@'${host}' IDENTIFIED BY '${newDbPassword}';GRANT USAGE ON *.* TO '${newUser}'@'${host}' IDENTIFIED BY '${newDbPassword}';GRANT ALL privileges ON \`${newDb}\`.*
 TO '${newUser}'@'${host}';FLUSH PRIVILEGES;"
 
-echo "${commands}" | /usr/bin/mysql -u root -p -e
+echo "${commands}" | /usr/bin/mysql -u root -p
