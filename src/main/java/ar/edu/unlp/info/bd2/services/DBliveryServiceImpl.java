@@ -1,7 +1,6 @@
 package ar.edu.unlp.info.bd2.services;
 import ar.edu.unlp.info.bd2.model.*;
 import ar.edu.unlp.info.bd2.repositories.DBliveryRepository;
-import ar.edu.unlp.info.bd2.repositories.DBliveryException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -219,7 +218,7 @@ public class DBliveryServiceImpl implements DBliveryService{
     }
 
     @Override
-    public Order deliverOrder(Long order, User deliveryUser, Date date) throws ar.edu.unlp.info.bd2.repositories.DBliveryException {
+    public Order deliverOrder(Long order, User deliveryUser, Date date) throws DBliveryException {
         return null;
     }
 
@@ -244,7 +243,7 @@ public class DBliveryServiceImpl implements DBliveryService{
     }
 
     @Override
-    public Order cancelOrder(Long order, Date date) throws ar.edu.unlp.info.bd2.repositories.DBliveryException {
+    public Order cancelOrder(Long order, Date date) throws DBliveryException {
         return null;
     }
 
@@ -268,7 +267,7 @@ public class DBliveryServiceImpl implements DBliveryService{
     }
 
     @Override
-    public Order finishOrder(Long order, Date date) throws ar.edu.unlp.info.bd2.repositories.DBliveryException {
+    public Order finishOrder(Long order, Date date) throws DBliveryException {
         return null;
     }
 
