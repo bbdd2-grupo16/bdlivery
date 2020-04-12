@@ -4,6 +4,8 @@ import ar.edu.unlp.info.bd2.repositories.DBliveryRepository;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
+
 
 public class DBliveryServiceImpl implements DBliveryService{
 
@@ -21,6 +23,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     
     @Override
+    @Transactional
     public Product createProduct(String name, Float price, Float weight, Supplier supplier){
         try {
             return (Product) repository.save(new Product(name, price, weight, supplier));
@@ -30,8 +33,14 @@ public class DBliveryServiceImpl implements DBliveryService{
         return null;
     }
 
+    @Transactional
     @Override
     public Product createProduct(String name, Float price, Float weight, Supplier supplier, Date date) {
+        try {
+            return (Product) repository.save(new Product(name, price, weight, supplier, date));
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
         return null;
     }
 
@@ -44,7 +53,8 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param coordY coordeada Y de la dirección del produtor
      * @return el productor creado
      */
-    
+
+    @Transactional
     @Override
     public Supplier createSupplier(String name, String cuil, String address, Float coordX, Float coordY){
         try {
@@ -64,7 +74,8 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param dateOfBirth fecha de nacimiento del usuario
      * @return el usuario creado
      */
-    
+
+    @Transactional
     @Override
     public User createUser(String email, String password, String username, String name, Date dateOfBirth){
         try {
@@ -85,7 +96,8 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el producto modificado
      * @throws DBliveryException en caso de que no exista el producto para el id dado
      */
-    
+
+    @Transactional
     @Override
     public Product updateProductPrice(Long id, Float price, Date startDate) throws DBliveryException {
         Product product = repository.findProductById(id);
@@ -166,6 +178,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el nuevo pedido
      */
 
+    @Transactional
     @Override
     public Order createOrder(Date dateOfOrder, String address, Float coordX, Float coordY, User client){
         try {
@@ -186,6 +199,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
 
     @Override
+    @Transactional
     public Order addProduct(Long order, Long quantity, Product product)throws DBliveryException{
         Order orderConcrete = repository.findOrderById(order);
         if (orderConcrete != null){
@@ -203,6 +217,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @throws DBliveryException en caso de no existir el pedido, que el pedido no se encuentre en estado Pending o sí no contiene productos.
      */
 
+    @Transactional
     @Override
     public Order deliverOrder(Long order, User deliveryUser) throws DBliveryException{
 
@@ -217,9 +232,18 @@ public class DBliveryServiceImpl implements DBliveryService{
         throw new DBliveryException("La orden no existe");
     }
 
+    @Transactional
     @Override
     public Order deliverOrder(Long order, User deliveryUser, Date date) throws DBliveryException {
-        return null;
+        Order orderConcrete = repository.findOrderById(order);
+        if (orderConcrete != null){
+            if (this.canDeliver(orderConcrete.getId())) {
+                orderConcrete.setDeliveryUser(deliveryUser);
+                orderConcrete.addState("Delivered", date);
+                return orderConcrete;
+            }
+        }
+        throw new DBliveryException("La orden no existe");
     }
 
     /**
@@ -229,6 +253,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @throws DBliveryException en caso de no existir el pedido o si el pedido no esta en estado pending
      */
 
+    @Transactional
     @Override
     public Order cancelOrder(Long order) throws DBliveryException{
 
@@ -242,6 +267,7 @@ public class DBliveryServiceImpl implements DBliveryService{
         throw new DBliveryException("La orden no existe");
     }
 
+    @Transactional
     @Override
     public Order cancelOrder(Long order, Date date) throws DBliveryException {
         return null;
@@ -254,6 +280,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @throws DBliveryException en caso que no exista el pedido o si el mismo no esta en estado Send
      */
 
+    @Transactional
     @Override
     public Order finishOrder(Long order) throws DBliveryException{
 
@@ -266,6 +293,7 @@ public class DBliveryServiceImpl implements DBliveryService{
         }else { throw new DBliveryException("The order don't exist"); }
     }
 
+    @Transactional
     @Override
     public Order finishOrder(Long order, Date date) throws DBliveryException {
         return null;
@@ -281,7 +309,7 @@ public class DBliveryServiceImpl implements DBliveryService{
     public boolean canCancel(Long order) throws DBliveryException{
         Order orderConcrete = repository.findOrderById(order);
         if (orderConcrete != null){
-            if(orderConcrete.getLastStatus() == "Pending"){
+            if(orderConcrete.getLastStatus().getState() == "Pending"){
                 return true;
             }else {return false;}
         }else{
@@ -299,7 +327,7 @@ public class DBliveryServiceImpl implements DBliveryService{
     public boolean canFinish(Long id) throws DBliveryException{
         Order orderConcrete = repository.findOrderById(id);
         if (orderConcrete != null){
-            if(orderConcrete.getLastStatus() == "Delivered"){
+            if(orderConcrete.getLastStatus().getState() == "Delivered"){
                 return true;
             }else {return false;}
         }else{ throw new DBliveryException("The order don't exist"); }
@@ -315,7 +343,7 @@ public class DBliveryServiceImpl implements DBliveryService{
     public boolean canDeliver(Long order) throws DBliveryException{
         Order orderConcrete = repository.findOrderById(order);
         if (orderConcrete != null){
-            if((orderConcrete.getLastStatus() == "Pending") && (orderConcrete.getProducts().size() != 0)){
+            if((orderConcrete.getLastStatus().getState() == "Pending") && (orderConcrete.getProducts().size() != 0)){
                 return true;
             }else {return false;}
         }else{
@@ -331,7 +359,7 @@ public class DBliveryServiceImpl implements DBliveryService{
     @Override
     public String getActualStatus(Long order){
         Order orderConcrete = repository.findOrderById(order);
-        return orderConcrete.getLastStatus();
+        return orderConcrete.getLastStatus().getState();
     }
 
     /**
@@ -384,9 +412,15 @@ public class DBliveryServiceImpl implements DBliveryService{
         return null;
     }
 
+    /**
+     * Obtiene todas las ordenes entregadas entre dos fechas
+     * @param startDate
+     * @param endDate
+     * @return una lista con las ordenes que satisfagan la condición
+     */
     @Override
     public List<Order> getDeliveredOrdersInPeriod(Date startDate, Date endDate) {
-        return null;
+        return (List<Order>) repository.findDeliveredOrdersInPeriod(startDate, endDate);
     }
 
     @Override

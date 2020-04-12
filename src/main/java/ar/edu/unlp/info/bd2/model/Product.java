@@ -16,6 +16,7 @@ public class Product{
     private String name; /*nombre del producto a ser creado*/
     private Float price; /*precio actual del producto*/
     private Float weight; /*peso actual del producto*/
+    private Date date; /*Fecha en la que se actualiza el precio*/
 
     @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
     @JoinColumn(name="product_id")
@@ -33,6 +34,17 @@ public class Product{
         this.price = price;
         this.weight = weight;
         this.supplier = supplier;
+        this.date = new Date();
+        this.prices = new ArrayList<Price>();
+        this.prices.add(new Price(price));
+    }
+
+    public Product(String name, Float price, Float weight, Supplier supplier, Date date){
+        this.name = name;
+        this.price = price;
+        this.weight = weight;
+        this.supplier = supplier;
+        this.date = date;
         this.prices = new ArrayList<Price>();
         this.prices.add(new Price(price));
     }

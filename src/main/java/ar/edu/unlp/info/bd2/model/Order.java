@@ -21,17 +21,17 @@ public class Order{
     private Float coordX; /*coordenada X de la dirección*/
     
     private Float coordY; /*coordenada Y de la dirección*/
-    
+    private String state;
+
     @ManyToOne // una orden solo pertenece a un usuario y un usuario puede tener varias ordenes
     private User client; /*cliente que realizó el pedido*/
 
     @ManyToOne
     private User delivery;
 
-    //private String state;
-
-    @ElementCollection
-    private List<String> status;
+    @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
+    @JoinColumn(name="order_id")
+    private List<RecordState> status;
 
     @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
     @JoinColumn(name="order_id")
@@ -46,9 +46,10 @@ public class Order{
     	this.coordX = coordX;
     	this.coordY = coordY;
     	this.client = user;
+    	this.state = "Pending";
         this.products = new ArrayList<ProductOrder>();
-        this.status = new ArrayList<String>();
-        this.status.add("Pending");
+        this.status = new ArrayList<RecordState>();
+        this.status.add(new RecordState("Pending", new Date()));
     }
 
     public Long getId() { return id; }
@@ -93,15 +94,30 @@ public class Order{
         return delivery;
     }
 
-    public List<String> getStatus() {
+    public List<RecordState> getStatus() {
         return this.status;
     }
 
     public void addState(String state) {
-        this.status.add(state);
+        this.state = state;
+        this.status.add(new RecordState(state, new Date()));
     }
 
-    public String getLastStatus(){
+    public void addState(String state, Date date) {
+        this.state = state;
+        this.status.add(new RecordState(state, date));
+    }
+
+
+    public RecordState getLastStatus(){
         return this.getStatus().get(this.getStatus().size()-1);
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }

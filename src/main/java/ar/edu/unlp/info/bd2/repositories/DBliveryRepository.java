@@ -2,10 +2,12 @@ package ar.edu.unlp.info.bd2.repositories;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import ar.edu.unlp.info.bd2.model.*;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,6 +82,16 @@ public class DBliveryRepository{
 
     public void updateOrder(Order o){
         this.sessionFactory.getCurrentSession().saveOrUpdate(o);
+    }
+
+    public List<Order> findDeliveredOrdersInPeriod(Date startDate, Date endDate){
+        String hql = "from Order where (dateOfOrder >= :startDate and dateOfOrder <= :endDate) and state = :state";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
+        query.setParameter("state", "Delivered");
+
+        return (List<Order>) query.getResultList();
     }
 
 }
