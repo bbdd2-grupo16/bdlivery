@@ -1,7 +1,7 @@
 package ar.edu.unlp.info.bd2.services;
 import ar.edu.unlp.info.bd2.model.*;
 import ar.edu.unlp.info.bd2.repositories.DBliveryRepository;
-
+import ar.edu.unlp.info.bd2.repositories.DBliveryException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +28,11 @@ public class DBliveryServiceImpl implements DBliveryService{
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
+        return null;
+    }
+
+    @Override
+    public Product createProduct(String name, Float price, Float weight, Supplier supplier, Date date) {
         return null;
     }
 
@@ -213,6 +218,11 @@ public class DBliveryServiceImpl implements DBliveryService{
         throw new DBliveryException("La orden no existe");
     }
 
+    @Override
+    public Order deliverOrder(Long order, User deliveryUser, Date date) throws ar.edu.unlp.info.bd2.repositories.DBliveryException {
+        return null;
+    }
+
     /**
      * Cancela un pedido
      * @param order id del pedido a cancelar
@@ -232,6 +242,12 @@ public class DBliveryServiceImpl implements DBliveryService{
         }
         throw new DBliveryException("La orden no existe");
     }
+
+    @Override
+    public Order cancelOrder(Long order, Date date) throws ar.edu.unlp.info.bd2.repositories.DBliveryException {
+        return null;
+    }
+
     /**
      * Registra la entrega de un pedido.
      * @param order pedido a finalizar
@@ -249,6 +265,11 @@ public class DBliveryServiceImpl implements DBliveryService{
                 return orderConcrete;
             }else { throw new DBliveryException("The order can't be finished"); }
         }else { throw new DBliveryException("The order don't exist"); }
+    }
+
+    @Override
+    public Order finishOrder(Long order, Date date) throws ar.edu.unlp.info.bd2.repositories.DBliveryException {
+        return null;
     }
 
     /**
@@ -322,5 +343,120 @@ public class DBliveryServiceImpl implements DBliveryService{
     @Override
     public List<Product> getProductByName(String name){
         return (List<Product>) repository.findProductByName(name);
+    }
+
+    @Override
+    public List<Order> getAllOrdersMadeByUser(String username) {
+        return null;
+    }
+
+    @Override
+    public List<User> getUsersSpendingMoreThan(Float amount) {
+        return null;
+    }
+
+    @Override
+    public List<Supplier> getTopNSuppliersInSentOrders(int n) {
+        return null;
+    }
+
+    @Override
+    public List<Product> getTop10MoreExpensiveProducts() {
+        return null;
+    }
+
+    @Override
+    public List<User> getTop6UsersMoreOrders() {
+        return null;
+    }
+
+    @Override
+    public List<Order> getCancelledOrdersInPeriod(Date startDate, Date endDate) {
+        return null;
+    }
+
+    @Override
+    public List<Order> getPendingOrders() {
+        return null;
+    }
+
+    @Override
+    public List<Order> getSentOrders() {
+        return null;
+    }
+
+    @Override
+    public List<Order> getDeliveredOrdersInPeriod(Date startDate, Date endDate) {
+        return null;
+    }
+
+    @Override
+    public List<Order> getDeliveredOrdersForUser(String username) {
+        return null;
+    }
+
+    @Override
+    public List<Order> getSentMoreOneHour() {
+        return null;
+    }
+
+    @Override
+    public List<Order> getDeliveredOrdersSameDay() {
+        return null;
+    }
+
+    @Override
+    public List<User> get5LessDeliveryUsers() {
+        return null;
+    }
+
+    @Override
+    public Product getBestSellingProduct() {
+        return null;
+    }
+
+    @Override
+    public List<Product> getProductsOnePrice() {
+        return null;
+    }
+
+    @Override
+    public List<Product> getProductIncreaseMoreThan100() {
+        return null;
+    }
+
+    @Override
+    public Supplier getSupplierLessExpensiveProduct() {
+        return null;
+    }
+
+    @Override
+    public List<Supplier> getSuppliersDoNotSellOn(Date day) {
+        return null;
+    }
+
+    @Override
+    public List<Product> getSoldProductsOn(Date day) {
+        return null;
+    }
+
+    @Override
+    public List<Order> getOrdersCompleteMorethanOneDay() {
+        return null;
+    }
+
+    @Override
+    public List<Object[]> getProductsWithPriceAt(Date day) {
+        return null;
+    }
+
+    @Override
+    public List<Product> getProductsNotSold() {
+        return null;
+    }
+
+    @Override
+    public List<Order> getOrderWithMoreQuantityOfProducts(Date day) {
+        return null;
     }
 }
