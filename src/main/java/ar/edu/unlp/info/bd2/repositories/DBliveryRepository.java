@@ -89,7 +89,7 @@ public class DBliveryRepository{
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("startDate", startDate);
         query.setParameter("endDate", endDate);
-        query.setParameter("state", "Delivered");
+        query.setParameter("state", "Sent");
 
         return (List<Order>) query.getResultList();
     }

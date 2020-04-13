@@ -100,10 +100,11 @@ public class DBliveryServiceImpl implements DBliveryService{
     @Transactional
     @Override
     public Product updateProductPrice(Long id, Float price, Date startDate) throws DBliveryException {
-        Product product = repository.findProductById(id);
-        if (product == null) {
+        Optional<Product> optional_product = this.getProductById(id);
+        if (!optional_product.isPresent()) {
             throw new DBliveryException("El producto no existe");
         } else {
+            Product product = optional_product.get();
         //  Actualizar precio producto
             product.setPrice(price);
             product.addPrice(new Price(price, startDate));
@@ -125,6 +126,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Optional<User> getUserById(Long id){
+
         return Optional.ofNullable(repository.findUserById(id));
     }
 
@@ -201,12 +203,13 @@ public class DBliveryServiceImpl implements DBliveryService{
     @Override
     @Transactional
     public Order addProduct(Long order, Long quantity, Product product)throws DBliveryException{
-        Order orderConcrete = repository.findOrderById(order);
-        if (orderConcrete != null){
+        Optional<Order> optional_order = this.getOrderById(order);
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
             orderConcrete.addProduct(quantity, product);
             repository.updateOrder(orderConcrete);
             return orderConcrete;
-        }else { throw new DBliveryException("The order don't exist"); }
+        }else { throw new DBliveryException("La orden no existe"); }
     }
 
     /**
@@ -220,14 +223,15 @@ public class DBliveryServiceImpl implements DBliveryService{
     @Transactional
     @Override
     public Order deliverOrder(Long order, User deliveryUser) throws DBliveryException{
-
-        Order orderConcrete = repository.findOrderById(order);
-        if (orderConcrete != null){
+        Optional<Order> optional_order = this.getOrderById(order);
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
             if (this.canDeliver(orderConcrete.getId())) {
                 orderConcrete.setDeliveryUser(deliveryUser);
                 orderConcrete.addState("Delivered");
+                repository.updateOrder(orderConcrete);
                 return orderConcrete;
-            }
+            }else { new DBliveryException("La orden no puede ser"); }
         }
         throw new DBliveryException("La orden no existe");
     }
@@ -235,13 +239,17 @@ public class DBliveryServiceImpl implements DBliveryService{
     @Transactional
     @Override
     public Order deliverOrder(Long order, User deliveryUser, Date date) throws DBliveryException {
-        Order orderConcrete = repository.findOrderById(order);
-        if (orderConcrete != null){
+        System.out.println(order);
+        Optional<Order> optional_order = this.getOrderById(order);
+        System.out.println(optional_order.getClass());
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
             if (this.canDeliver(orderConcrete.getId())) {
                 orderConcrete.setDeliveryUser(deliveryUser);
-                orderConcrete.addState("Delivered", date);
+                orderConcrete.addState("Sent", date);
+                repository.updateOrder(orderConcrete);
                 return orderConcrete;
-            }
+            }else { throw new DBliveryException("La orden no puede ser aprobada"); }
         }
         throw new DBliveryException("La orden no existe");
     }
@@ -256,13 +264,14 @@ public class DBliveryServiceImpl implements DBliveryService{
     @Transactional
     @Override
     public Order cancelOrder(Long order) throws DBliveryException{
-
-        Order orderConcrete = repository.findOrderById(order);
-        if (orderConcrete != null){
+        Optional<Order> optional_order = this.getOrderById(order);
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
             if (this.canCancel(orderConcrete.getId())) {
                 orderConcrete.addState("Cancelled");
+                repository.updateOrder(orderConcrete);
                 return orderConcrete;
-            }else { new DBliveryException("The order can't be cancelled"); }
+            }else { new DBliveryException("La orden no puede ser cancelada"); }
         }
         throw new DBliveryException("La orden no existe");
     }
@@ -283,14 +292,15 @@ public class DBliveryServiceImpl implements DBliveryService{
     @Transactional
     @Override
     public Order finishOrder(Long order) throws DBliveryException{
-
-        Order orderConcrete = repository.findOrderById(order);
-        if (orderConcrete != null){
+        Optional<Order> optional_order = this.getOrderById(order);
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
             if (this.canFinish(orderConcrete.getId())) {
-                orderConcrete.addState("Delivered");
+                orderConcrete.addState("Sent");
+                repository.updateOrder(orderConcrete);
                 return orderConcrete;
-            }else { throw new DBliveryException("The order can't be finished"); }
-        }else { throw new DBliveryException("The order don't exist"); }
+            }else { throw new DBliveryException("La orden no puede ser aprobada"); }
+        }else { throw new DBliveryException("La orden no existe"); }
     }
 
     @Transactional
@@ -307,9 +317,10 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public boolean canCancel(Long order) throws DBliveryException{
-        Order orderConcrete = repository.findOrderById(order);
-        if (orderConcrete != null){
-            if(orderConcrete.getLastStatus().getState() == "Pending"){
+        Optional<Order> optional_order = this.getOrderById(order);
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
+            if(orderConcrete.getState() == "Pending"){
                 return true;
             }else {return false;}
         }else{
@@ -325,12 +336,13 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public boolean canFinish(Long id) throws DBliveryException{
-        Order orderConcrete = repository.findOrderById(id);
-        if (orderConcrete != null){
-            if(orderConcrete.getLastStatus().getState() == "Delivered"){
+        Optional<Order> optional_order = this.getOrderById(id);
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
+            if(orderConcrete.getState() == "Sent"){
                 return true;
             }else {return false;}
-        }else{ throw new DBliveryException("The order don't exist"); }
+        }else{ throw new DBliveryException("La orden no existe"); }
     }
 
     /**
@@ -341,10 +353,14 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public boolean canDeliver(Long order) throws DBliveryException{
-        Order orderConcrete = repository.findOrderById(order);
-        if (orderConcrete != null){
-            if((orderConcrete.getLastStatus().getState() == "Pending") && (orderConcrete.getProducts().size() != 0)){
-                return true;
+        Optional<Order> optional_order = this.getOrderById(order);
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
+            System.out.println(orderConcrete.getState());
+            if(orderConcrete.getState() == "Pending"){
+                if (orderConcrete.getProducts().size() > 0) {
+                    return true;
+                }else{ return false;}
             }else {return false;}
         }else{
             throw new DBliveryException("La orden no existe");
@@ -357,9 +373,13 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el estado del pedido actual
      */
     @Override
-    public String getActualStatus(Long order){
-        Order orderConcrete = repository.findOrderById(order);
-        return orderConcrete.getLastStatus().getState();
+    public String getActualStatus(Long order) {
+        Optional<Order> optional_order = this.getOrderById(order);
+        if (optional_order.isPresent()) {
+            Order orderConcrete = optional_order.get();
+            return orderConcrete.getLastStatus().getState();
+        }
+        return null;
     }
 
     /**
