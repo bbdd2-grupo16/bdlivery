@@ -455,12 +455,12 @@ public class DBliveryServiceImpl implements DBliveryService{
 
     @Override
     public List<Product> getProductIncreaseMoreThan100() {
-        return null;
+        return (List<Product>) repository.findProductsIncreaseMoreThan100();
     }
 
     @Override
     public Supplier getSupplierLessExpensiveProduct() {
-        return null;
+        return (Supplier) repository.findSupplierLessExpensiveProduct();
     }
 
     @Override

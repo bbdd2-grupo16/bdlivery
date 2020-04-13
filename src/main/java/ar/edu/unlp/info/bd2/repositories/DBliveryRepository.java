@@ -3,7 +3,7 @@ package ar.edu.unlp.info.bd2.repositories;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.hibernate.Query.*;
 import ar.edu.unlp.info.bd2.model.*;
 
 import javax.persistence.*;
@@ -92,6 +92,18 @@ public class DBliveryRepository{
         query.setParameter("state", "Delivered");
 
         return (List<Order>) query.getResultList();
+    }
+
+    public List<Product> findProductsIncreaseMoreThan100(){
+        String hql = "from Product as product left join product.prices as price order by price.startDate ";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        return (List<Product>) query.getResultList();
+    }
+
+    public Supplier findSupplierLessExpensiveProduct(){
+        String hql = "from ";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        return (Supplier) query.getSingleResult();
     }
 
 }
