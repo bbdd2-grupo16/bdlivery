@@ -88,8 +88,12 @@ public class Product{
     public List<Price> getPrices() {
         return prices;
     }
+
     public void addPrice(Price price) {
         this.prices.add(price);
+        if (this.prices.size() > 1){
+            this.prices.get(this.prices.size() - 1).setEndDate(new Date());
+        }
     }
 
 }
