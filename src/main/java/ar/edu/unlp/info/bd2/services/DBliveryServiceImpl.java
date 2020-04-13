@@ -239,7 +239,9 @@ public class DBliveryServiceImpl implements DBliveryService{
     @Transactional
     @Override
     public Order deliverOrder(Long order, User deliveryUser, Date date) throws DBliveryException {
+        System.out.println(order);
         Optional<Order> optional_order = this.getOrderById(order);
+        System.out.println(optional_order.getClass());
         if (optional_order.isPresent()){
             Order orderConcrete = optional_order.get();
             if (this.canDeliver(orderConcrete.getId())) {
@@ -247,7 +249,7 @@ public class DBliveryServiceImpl implements DBliveryService{
                 orderConcrete.addState("Sent", date);
                 repository.updateOrder(orderConcrete);
                 return orderConcrete;
-            }else { new DBliveryException("La orden no puede ser aprobada"); }
+            }else { throw new DBliveryException("La orden no puede ser aprobada"); }
         }
         throw new DBliveryException("La orden no existe");
     }
@@ -354,8 +356,11 @@ public class DBliveryServiceImpl implements DBliveryService{
         Optional<Order> optional_order = this.getOrderById(order);
         if (optional_order.isPresent()){
             Order orderConcrete = optional_order.get();
-            if((orderConcrete.getState() == "Pending") && (orderConcrete.getProducts().size() != 0)){
-                return true;
+            System.out.println(orderConcrete.getState());
+            if(orderConcrete.getState() == "Pending"){
+                if (orderConcrete.getProducts().size() > 0) {
+                    return true;
+                }else{ return false;}
             }else {return false;}
         }else{
             throw new DBliveryException("La orden no existe");
