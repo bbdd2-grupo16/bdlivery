@@ -66,8 +66,8 @@ public class DBliveryStatisticsTestCase {
     @Test
     public void testGetTop10MoreExpensiveProducts() {
         List<Product> products = this.service.getTop10MoreExpensiveProducts();
-        assertEquals(10,products.size());
-        this.assertListEquality(products.stream().map(property -> property.getName()).collect(Collectors.toList()),Arrays.asList("Maxi hamburguesa completa","Milanesa napolitana","Ensalada César","Ensalada waldorf","Milanesa de pollo napolitana sola","Sándwich de bondiola de cerdo completo","Lomo al roquefort","Tortilla a la española","Choripán","Bondiola al oporto"));
+        assertEquals(9,products.size());
+        this.assertListEquality(products.stream().map(property -> property.getName()).collect(Collectors.toList()),Arrays.asList("Maxi hamburguesa completa","Milanesa napolitana","Ensalada César","Ensalada waldorf","Milanesa de pollo napolitana sola","Sándwich de bondiola de cerdo completo","Lomo al roquefort","Tortilla a la española","Choripán"));
     }
 
     @Test
@@ -195,7 +195,7 @@ public class DBliveryStatisticsTestCase {
         Order o = ord.get(0);
         assertEquals("Calle 34 Nº661", o.getAddress());
         assertEquals(2,o.getProducts().size());
-        //assertEquals(Float.valueOf("1867"), o.getAmount());
+        assertEquals(Float.valueOf("1867"), o.getAmount());
     }
 
     @Test
@@ -203,7 +203,7 @@ public class DBliveryStatisticsTestCase {
         Optional<Order> ord = this.service.getOrderById(Long.getLong("77"));
         if (ord.isPresent()) {
             Order o = ord.get();
-            //assertEquals(Float.valueOf("2454"),o.getAmount());
+            assertEquals(Float.valueOf("2454"),o.getAmount());
         }
     }
 

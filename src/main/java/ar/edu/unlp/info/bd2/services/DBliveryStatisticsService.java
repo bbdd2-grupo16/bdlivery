@@ -1,10 +1,12 @@
 package ar.edu.unlp.info.bd2.services;
+
 import java.util.Date;
 import java.util.List;
 
 import ar.edu.unlp.info.bd2.model.*;
 
 public interface DBliveryStatisticsService {
+
     /**
      * Obtiene todas las ordenes realizadas por el usuario con username <code>username</code>
      * @param username
@@ -13,7 +15,7 @@ public interface DBliveryStatisticsService {
     List<Order> getAllOrdersMadeByUser(String username);
 
     /**
-     * Obtiene todos los usuarios que han gastando más de <code>amount</code> en ordenes en la plataforma
+     * Obtiene todos los usuarios que han gastando más de <code>amount</code> en alguna orden en la plataforma
      * @param amount
      * @return una lista de usuarios que satisfagan la condici{on
      */
@@ -27,7 +29,7 @@ public interface DBliveryStatisticsService {
     List<Supplier> getTopNSuppliersInSentOrders(int n);
 
     /**
-     * Obtiene los 10 productos más costosos
+     * Obtiene los 9 productos más costosos
      * @return una lista con los productos que satisfacen la condición
      */
     List<Product> getTop10MoreExpensiveProducts();
@@ -66,14 +68,14 @@ public interface DBliveryStatisticsService {
     List <Order> getDeliveredOrdersInPeriod(Date startDate, Date endDate);
 
     /**
-     * Obtiene todas las ordenes entregadas por el repartidor con username <code>username</code> en los últimos 10 días
+     * Obtiene todas las órdenes entregadas para el cliente con username <code>username</code>
      * @param username
      * @return una lista de ordenes que satisfagan la condición
      */
     List <Order> getDeliveredOrdersForUser(String username);
 
     /**
-     * Obtiene las ordenes que fueron enviadas luego de una hora de realizadas
+     * Obtiene las ordenes que fueron enviadas luego de una hora de realizadas (en realidad, luego de 24hs más tarde)
      * @return una lista de ordenes que satisfagan la condición
      */
     List <Order> getSentMoreOneHour();
@@ -85,7 +87,7 @@ public interface DBliveryStatisticsService {
     List <Order> getDeliveredOrdersSameDay();
 
     /**
-     * Obtiene los 5 repartidores que menos ordenes entregaron
+     * Obtiene los 5 repartidores que menos ordenes tuvieron asignadas (tanto sent como delivered)
      * @return una lista de las ordenes que satisfagan la condición
      */
     List <User> get5LessDeliveryUsers();

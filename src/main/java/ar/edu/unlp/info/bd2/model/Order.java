@@ -120,4 +120,8 @@ public class Order{
     public void setState(String state) {
         this.state = state;
     }
+    
+    public Float getAmount() { ;
+        return Float.valueOf("0");
+    }
 }
