@@ -228,7 +228,7 @@ public class DBliveryServiceImpl implements DBliveryService{
             Order orderConcrete = optional_order.get();
             if (this.canDeliver(orderConcrete.getId())) {
                 orderConcrete.setDeliveryUser(deliveryUser);
-                orderConcrete.addState("Delivered");
+                orderConcrete.addState("Sent");
                 repository.updateOrder(orderConcrete);
                 return orderConcrete;
             }else { new DBliveryException("La orden no puede ser"); }
@@ -239,7 +239,6 @@ public class DBliveryServiceImpl implements DBliveryService{
     @Transactional
     @Override
     public Order deliverOrder(Long order, User deliveryUser, Date date) throws DBliveryException {
-        System.out.println(order);
         Optional<Order> optional_order = this.getOrderById(order);
         System.out.println(optional_order.getClass());
         if (optional_order.isPresent()){
@@ -249,7 +248,7 @@ public class DBliveryServiceImpl implements DBliveryService{
                 orderConcrete.addState("Sent", date);
                 repository.updateOrder(orderConcrete);
                 return orderConcrete;
-            }else { throw new DBliveryException("La orden no puede ser aprobada"); }
+            }else { throw new DBliveryException("La orden no puede ser enviada"); }
         }
         throw new DBliveryException("La orden no existe");
     }
@@ -279,7 +278,16 @@ public class DBliveryServiceImpl implements DBliveryService{
     @Transactional
     @Override
     public Order cancelOrder(Long order, Date date) throws DBliveryException {
-        return null;
+        Optional<Order> optional_order = this.getOrderById(order);
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
+            if (this.canCancel(orderConcrete.getId())) {
+                orderConcrete.addState("Cancelled", date);
+                repository.updateOrder(orderConcrete);
+                return orderConcrete;
+            }else { new DBliveryException("La orden no puede ser cancelada"); }
+        }
+        throw new DBliveryException("La orden no existe");
     }
 
     /**
@@ -288,7 +296,6 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el pedido modificado
      * @throws DBliveryException en caso que no exista el pedido o si el mismo no esta en estado Send
      */
-
     @Transactional
     @Override
     public Order finishOrder(Long order) throws DBliveryException{
@@ -296,7 +303,7 @@ public class DBliveryServiceImpl implements DBliveryService{
         if (optional_order.isPresent()){
             Order orderConcrete = optional_order.get();
             if (this.canFinish(orderConcrete.getId())) {
-                orderConcrete.addState("Sent");
+                orderConcrete.addState("Delivered");
                 repository.updateOrder(orderConcrete);
                 return orderConcrete;
             }else { throw new DBliveryException("La orden no puede ser aprobada"); }
@@ -306,7 +313,15 @@ public class DBliveryServiceImpl implements DBliveryService{
     @Transactional
     @Override
     public Order finishOrder(Long order, Date date) throws DBliveryException {
-        return null;
+        Optional<Order> optional_order = this.getOrderById(order);
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
+            if (this.canFinish(orderConcrete.getId())) {
+                orderConcrete.addState("Delivered", date);
+                repository.updateOrder(orderConcrete);
+                return orderConcrete;
+            }else { throw new DBliveryException("La orden no puede ser finalizada"); }
+        }else { throw new DBliveryException("La orden no existe"); }
     }
 
     /**
@@ -357,14 +372,15 @@ public class DBliveryServiceImpl implements DBliveryService{
         if (optional_order.isPresent()){
             Order orderConcrete = optional_order.get();
             System.out.println(orderConcrete.getState());
-            if(orderConcrete.getState() == "Pending"){
+            if (orderConcrete.getState() == "Pending"){
                 if (orderConcrete.getProducts().size() > 0) {
                     return true;
-                }else{ return false;}
-            }else {return false;}
+                }
+            }
         }else{
             throw new DBliveryException("La orden no existe");
         }
+        return false;
     }
 
     /**
@@ -392,43 +408,78 @@ public class DBliveryServiceImpl implements DBliveryService{
         return (List<Product>) repository.findProductByName(name);
     }
 
+    /**
+     * Obtiene todas las ordenes realizadas por el usuario con username <code>username</code>
+     * @param username
+     * @return Una lista de ordenes que satisfagan la condición
+     */
     @Override
     public List<Order> getAllOrdersMadeByUser(String username) {
         return null;
     }
 
+    /**
+     * Obtiene todos los usuarios que han gastando más de <code>amount</code> en alguna orden en la plataforma
+     * @param amount
+     * @return una lista de usuarios que satisfagan la condici{on
+     */
     @Override
-    public List<User> getUsersSpendingMoreThan(Float amount) {
+    public List<User> getUsersSpendingMoreThan(Float amount){
         return null;
     }
 
+    /**
+     * Obtiene los <code>n</code> proveedores que más productos tienen en ordenes que están siendo enviadas
+     * @param n
+     * @return una lista con los <code>n</code> proveedores que satisfagan la condición
+     */
     @Override
     public List<Supplier> getTopNSuppliersInSentOrders(int n) {
         return null;
     }
 
+    /**
+     * Obtiene los 9 productos más costosos
+     * @return una lista con los productos que satisfacen la condición
+     */
     @Override
     public List<Product> getTop10MoreExpensiveProducts() {
         return null;
     }
 
+    /**
+     * Obtiene los 6 usuarios que más cantidad de ordenes han realizado
+     * @return una lista con los usuarios que satisfacen la condición
+     */
     @Override
     public List<User> getTop6UsersMoreOrders() {
         return null;
     }
 
+    /**
+     * Obtiene todas las ordenes canceladas entre dos fechas
+     * @param startDate
+     * @param endDate
+     * @return una lista con las ordenes que satisfagan la condición
+     */
     @Override
-    public List<Order> getCancelledOrdersInPeriod(Date startDate, Date endDate) {
+    public List <Order> getCancelledOrdersInPeriod(Date startDate, Date endDate) {
         return null;
     }
 
+    /**
+     * Obtiene el listado de las ordenes pendientes
+     */
     @Override
-    public List<Order> getPendingOrders() {
+    public List <Order> getPendingOrders() {
         return null;
     }
 
+    /**
+     * Obtiene el listado de las ordenes enviadas y no entregadas
+     */
     @Override
-    public List<Order> getSentOrders() {
+    public List <Order> getSentOrders() {
         return null;
     }
 
@@ -441,75 +492,138 @@ public class DBliveryServiceImpl implements DBliveryService{
     @Override
     public List<Order> getDeliveredOrdersInPeriod(Date startDate, Date endDate) {
         return (List<Order>) repository.findDeliveredOrdersInPeriod(startDate, endDate);
+
     }
 
+    /**
+     * Obtiene todas las órdenes entregadas para el cliente con username <code>username</code>
+     * @param username
+     * @return una lista de ordenes que satisfagan la condición
+     */
     @Override
     public List<Order> getDeliveredOrdersForUser(String username) {
-        return null;
+        return (List<Order>) repository.findDeliveredOrdersForUser(username);
     }
 
+    /**
+     * Obtiene las ordenes que fueron enviadas luego de una hora de realizadas (en realidad, luego de 24hs más tarde)
+     * @return una lista de ordenes que satisfagan la condición
+     */
     @Override
     public List<Order> getSentMoreOneHour() {
         return null;
     }
 
+    /**
+     * Obtiene las ordenes que fueron entregadas el mismo día de realizadas
+     * @return una lista de ordenes que satisfagan la condición
+     */
     @Override
     public List<Order> getDeliveredOrdersSameDay() {
         return null;
     }
 
+    /**
+     * Obtiene los 5 repartidores que menos ordenes tuvieron asignadas (tanto sent como delivered)
+     * @return una lista de las ordenes que satisfagan la condición
+     */
     @Override
     public List<User> get5LessDeliveryUsers() {
         return null;
     }
 
+    /**
+     * Obtiene el producto con más demanda
+     * @return el producto que satisfaga la condición
+     */
     @Override
     public Product getBestSellingProduct() {
         return null;
     }
 
+    /**
+     * Obtiene los productos que no cambiaron su precio
+     * @return una lista de productos que satisfagan la condición
+     */
     @Override
     public List<Product> getProductsOnePrice() {
         return null;
     }
 
+    /**
+     * Obtiene la lista de productos que han aumentado más de un 100% desde su precio inicial
+     * @return una lista de productos que satisfagan la condición
+     */
     @Override
     public List<Product> getProductIncreaseMoreThan100() {
         return (List<Product>) repository.findProductsIncreaseMoreThan100();
     }
 
+    /**
+     * Obtiene el proveedor con el producto de menor valor historico de la plataforma
+     * @return el proveedor que cumple la condición
+     */
     @Override
     public Supplier getSupplierLessExpensiveProduct() {
         return (Supplier) repository.findSupplierLessExpensiveProduct();
     }
 
+    /**
+     * Obtiene los proveedores que no vendieron productos en un <code>day</code>
+     * @param day
+     * @return una lista de proveedores que cumplen la condición
+     */
     @Override
-    public List<Supplier> getSuppliersDoNotSellOn(Date day) {
+    public List <Supplier> getSuppliersDoNotSellOn(Date day) {
         return null;
     }
 
+    /**
+     * obtiene los productos vendidos en un <code>day</code>
+     * @param day
+     * @return una lista los productos vendidos
+     */
     @Override
-    public List<Product> getSoldProductsOn(Date day) {
+    public List <Product> getSoldProductsOn(Date day) {
         return null;
     }
 
+    /**
+     * obtiene las ordenes que fueron entregadas en m{as de un día desde que fueron iniciadas(status pending)
+     * @return una lista de las ordenes que satisfagan la condición
+     */
     @Override
     public List<Order> getOrdersCompleteMorethanOneDay() {
         return null;
     }
 
+    /**
+     * obtiene el listado de productos con su precio a una fecha dada
+     * @param day
+     * @return la lista de cada producto con su precio en la fecha dada
+     */
     @Override
     public List<Object[]> getProductsWithPriceAt(Date day) {
         return null;
     }
 
+    /**
+     * obtiene la lista de productos que no se han vendido
+     * @return la lista de productos que satisfagan la condición
+     */
     @Override
-    public List<Product> getProductsNotSold() {
+    public List<Product> getProductsNotSold(){
         return null;
     }
 
+    /**
+     * obtiene la/s orden/es con mayor cantidad de productos ordenados de la fecha dada
+     * @day
+     * @return una lista con las ordenes que cumplen la condición
+     */
     @Override
     public List<Order> getOrderWithMoreQuantityOfProducts(Date day) {
         return null;
     }
+
 }

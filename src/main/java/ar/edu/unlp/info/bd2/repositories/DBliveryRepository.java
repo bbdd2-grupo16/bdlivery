@@ -84,6 +84,7 @@ public class DBliveryRepository{
         this.sessionFactory.getCurrentSession().saveOrUpdate(o);
     }
 
+    /*Obtiene todas las ordenes entregadas entre dos fechas*/
     public List<Order> findDeliveredOrdersInPeriod(Date startDate, Date endDate){
         String hql = "from Order where (dateOfOrder >= :startDate and dateOfOrder <= :endDate) and state = :state";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
@@ -100,10 +101,35 @@ public class DBliveryRepository{
         return (List<Product>) query.getResultList();
     }
 
-    public Supplier findSupplierLessExpensiveProduct(){
+    public Supplier findSupplierLessExpensiveProduct() {
         String hql = "from ";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         return (Supplier) query.getSingleResult();
+    }
+    
+    /*Obtiene todas las ordenes entregadas por el repartidor con username <code>username</code>
+    en los últimos 10 días*/
+    public List<Order> findDeliveredOrdersForUser(String username) {
+
+        String hql = "from Order where (dateOfOrder >= :startDate and dateOfOrder <= :endDate) and state = :state";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        query.setParameter("username", username);
+        query.setParameter("state", "Finish");
+
+        return (List<Order>) query.getResultList();
+    }
+
+    /*Obtiene las ordenes que fueron enviadas luego de una hora de realizadas*/
+    public List<Order> findSentMoreOneHour(Date startDate, Date endDate){
+        String hql = "from Order as o " +
+                    "inner join RecordStatus as rs on o.id = rs.order_id " +
+                    "where (select date from RecordStatus where rs.state = 'Finish' and rs.order_id = o.id) - " +
+                    "(select date from RecordStatus where rs.state = 'Pending' and rs.order_id = o.id) > 1" +
+                    "and o.state = :state)";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        query.setParameter("state", "Finish");
+
+        return (List<Order>) query.getResultList();
     }
 
 }
