@@ -492,7 +492,6 @@ public class DBliveryServiceImpl implements DBliveryService{
     @Override
     public List<Order> getDeliveredOrdersInPeriod(Date startDate, Date endDate) {
         return (List<Order>) repository.findDeliveredOrdersInPeriod(startDate, endDate);
-
     }
 
     /**
@@ -506,12 +505,13 @@ public class DBliveryServiceImpl implements DBliveryService{
     }
 
     /**
-     * Obtiene las ordenes que fueron enviadas luego de una hora de realizadas (en realidad, luego de 24hs más tarde)
+     * Obtiene las ordenes que fueron enviadas luego de una hora de realizadas
+     * (en realidad, luego de 24hs más tarde)
      * @return una lista de ordenes que satisfagan la condición
      */
     @Override
     public List<Order> getSentMoreOneHour() {
-        return null;
+        return (List<Order>) repository.findSentMoreOneHour();
     }
 
     /**
@@ -520,7 +520,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List<Order> getDeliveredOrdersSameDay() {
-        return null;
+        return (List<Order>) repository.findDeliveredOrdersSameDay();
     }
 
     /**
@@ -529,7 +529,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List<User> get5LessDeliveryUsers() {
-        return null;
+        return (List<User>) repository.find5LessDeliveryUsers();
     }
 
     /**
