@@ -335,7 +335,7 @@ public class DBliveryServiceImpl implements DBliveryService{
         Optional<Order> optional_order = this.getOrderById(order);
         if (optional_order.isPresent()){
             Order orderConcrete = optional_order.get();
-            if(orderConcrete.getState() == "Pending"){
+            if(this.getActualStatus(orderConcrete.getId()).equals("Pending")){
                 return true;
             }else {return false;}
         }else{
@@ -354,7 +354,7 @@ public class DBliveryServiceImpl implements DBliveryService{
         Optional<Order> optional_order = this.getOrderById(id);
         if (optional_order.isPresent()){
             Order orderConcrete = optional_order.get();
-            if(orderConcrete.getState() == "Sent"){
+            if(this.getActualStatus(orderConcrete.getId()).equals("Sent")){
                 return true;
             }else {return false;}
         }else{ throw new DBliveryException("La orden no existe"); }
@@ -371,8 +371,7 @@ public class DBliveryServiceImpl implements DBliveryService{
         Optional<Order> optional_order = this.getOrderById(order);
         if (optional_order.isPresent()){
             Order orderConcrete = optional_order.get();
-            System.out.println(orderConcrete.getState());
-            if (orderConcrete.getState() == "Pending"){
+            if (this.getActualStatus(orderConcrete.getId()).equals("Pending")){
                 if (orderConcrete.getProducts().size() > 0) {
                     return true;
                 }
@@ -389,13 +388,9 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el estado del pedido actual
      */
     @Override
-    public String getActualStatus(Long order) {
-        Optional<Order> optional_order = this.getOrderById(order);
-        if (optional_order.isPresent()) {
-            Order orderConcrete = optional_order.get();
-            return orderConcrete.getLastStatus().getState();
-        }
-        return null;
+    public String getActualStatus(Long order){
+        Order orderConcrete = repository.findOrderById(order);
+        return orderConcrete.getLastStatus().getState();
     }
 
     /**
@@ -492,7 +487,6 @@ public class DBliveryServiceImpl implements DBliveryService{
     @Override
     public List<Order> getDeliveredOrdersInPeriod(Date startDate, Date endDate) {
         return (List<Order>) repository.findDeliveredOrdersInPeriod(startDate, endDate);
-
     }
 
     /**
@@ -506,12 +500,13 @@ public class DBliveryServiceImpl implements DBliveryService{
     }
 
     /**
-     * Obtiene las ordenes que fueron enviadas luego de una hora de realizadas (en realidad, luego de 24hs más tarde)
+     * Obtiene las ordenes que fueron enviadas luego de una hora de realizadas
+     * (en realidad, luego de 24hs más tarde)
      * @return una lista de ordenes que satisfagan la condición
      */
     @Override
     public List<Order> getSentMoreOneHour() {
-        return null;
+        return (List<Order>) repository.findSentMoreOneHour();
     }
 
     /**
@@ -520,7 +515,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List<Order> getDeliveredOrdersSameDay() {
-        return null;
+        return (List<Order>) repository.findDeliveredOrdersSameDay();
     }
 
     /**
@@ -529,7 +524,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List<User> get5LessDeliveryUsers() {
-        return null;
+        return (List<User>) repository.find5LessDeliveryUsers();
     }
 
     /**
