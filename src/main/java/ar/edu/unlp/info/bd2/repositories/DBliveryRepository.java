@@ -106,7 +106,7 @@ public class DBliveryRepository{
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         return (Supplier) query.getSingleResult();
     }
-    
+
     /*Obtiene todas las ordenes entregadas por el repartidor con username <code>username</code>
     en los últimos 10 días*/
     public List<Order> findDeliveredOrdersForUser(String username) {
