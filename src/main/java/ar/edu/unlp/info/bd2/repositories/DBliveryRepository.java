@@ -100,18 +100,6 @@ public class DBliveryRepository{
         return (List<Order>) query.getResultList();
     }
 
-    public List<Product> findProductsIncreaseMoreThan100(){
-        String hql = "from Product as product left join product.prices as price order by price.startDate ";
-        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
-        return (List<Product>) query.getResultList();
-    }
-
-    public Supplier findSupplierLessExpensiveProduct() {
-        String hql = "from ";
-        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
-        return (Supplier) query.getSingleResult();
-    }
-
     /*Obtiene todas las órdenes entregadas para el cliente con username <code>username</code>
     en los últimos 10 días*/
     public List<Order> findDeliveredOrdersForUser(String username) {
@@ -170,4 +158,51 @@ public class DBliveryRepository{
         return (List<User>) query.setMaxResults(5).getResultList();
     }
 
+    public List<Product> findProductsIncreaseMoreThan100(){
+        String hql = "from Product as product left join product.prices as price order by price.startDate ";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        return (List<Product>) query.getResultList();
+    }
+
+    public Supplier findSupplierLessExpensiveProduct() {
+        String hql = "from ";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        return (Supplier) query.getSingleResult();
+    }
+
+    public Supplier findSupplierDoNotSellOn(Date day){
+        String hql = "";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        return (Supplier) query.getSingleResult();
+    }
+
+    public List<Product> findSoldProductsOn(Date day){
+        String hql = "";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        return (List<Product>) query.getResultList();
+    }
+
+    public List<ProductOrder> findOrdersCompleteMoreThanOneDay(){
+        String hql = "";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        return (List<ProductOrder>) query.getResultList();
+    }
+
+    public List<Product> findProductsWithPriceAt(Date day){
+        String hql = "";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        return (List<Product>) query.getResultList();
+    }
+
+    public List<Product> findProductsNotSold(){
+        String hql = "";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        return (List<Product>) query.getResultList();
+    }
+
+    public List<ProductOrder> findOrderWithMoreQuantityOfProducts(Date day){
+        String hql = "";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        return (List<ProductOrder>) query.getResultList();
+    }
 }
