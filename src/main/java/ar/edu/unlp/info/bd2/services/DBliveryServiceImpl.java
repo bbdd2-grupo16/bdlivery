@@ -335,7 +335,7 @@ public class DBliveryServiceImpl implements DBliveryService{
         Optional<Order> optional_order = this.getOrderById(order);
         if (optional_order.isPresent()){
             Order orderConcrete = optional_order.get();
-            if(orderConcrete.getState() == "Pending"){
+            if(this.getActualStatus(orderConcrete.getId()).equals("Pending")){
                 return true;
             }else {return false;}
         }else{
@@ -354,7 +354,7 @@ public class DBliveryServiceImpl implements DBliveryService{
         Optional<Order> optional_order = this.getOrderById(id);
         if (optional_order.isPresent()){
             Order orderConcrete = optional_order.get();
-            if(orderConcrete.getState() == "Sent"){
+            if(this.getActualStatus(orderConcrete.getId()).equals("Sent")){
                 return true;
             }else {return false;}
         }else{ throw new DBliveryException("La orden no existe"); }
@@ -371,8 +371,7 @@ public class DBliveryServiceImpl implements DBliveryService{
         Optional<Order> optional_order = this.getOrderById(order);
         if (optional_order.isPresent()){
             Order orderConcrete = optional_order.get();
-            System.out.println(orderConcrete.getState());
-            if (orderConcrete.getState() == "Pending"){
+            if (this.getActualStatus(orderConcrete.getId()).equals("Pending")){
                 if (orderConcrete.getProducts().size() > 0) {
                     return true;
                 }
@@ -389,13 +388,9 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el estado del pedido actual
      */
     @Override
-    public String getActualStatus(Long order) {
-        Optional<Order> optional_order = this.getOrderById(order);
-        if (optional_order.isPresent()) {
-            Order orderConcrete = optional_order.get();
-            return orderConcrete.getLastStatus().getState();
-        }
-        return null;
+    public String getActualStatus(Long order){
+        Order orderConcrete = repository.findOrderById(order);
+        return orderConcrete.getLastStatus().getState();
     }
 
     /**

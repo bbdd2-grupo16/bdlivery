@@ -87,7 +87,11 @@ public class DBliveryRepository{
 
     /*Obtiene todas las ordenes entregadas entre dos fechas*/
     public List<Order> findDeliveredOrdersInPeriod(Date startDate, Date endDate){
-        String hql = "from Order where (dateOfOrder >= :startDate and dateOfOrder <= :endDate) and state = :state";
+        String hql = "from Order as o " +
+                "inner join RecordState as rs on rs.order = o " +
+                "where (o.dateOfOrder >= :startDate and o.dateOfOrder <= :endDate)" +
+//                "and :state = (select state, max(date) from RecordState group by rs.order)";
+                "and :state = (select rs.state from RecordState order by rs.date desc 1)";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("startDate", startDate);
         query.setParameter("endDate", endDate);
@@ -99,31 +103,31 @@ public class DBliveryRepository{
     /*Obtiene todas las órdenes entregadas para el cliente con username <code>username</code>
     en los últimos 10 días*/
     public List<Order> findDeliveredOrdersForUser(String username) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.add(Calendar.DAY_OF_MONTH, -10);
-        Date startDate = calendar.getTime();
 
         String hql = "from Order as o inner join User as u on u.id = o.client " +
-                "where u.username = :username and " +
-                "(dateOfOrder >= :startDate) and state = :state";
+                "inner join RecordState as rs on o = rs.order " +
+                "where u.username = :username " +
+                "and rs.state = :state";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("username", username);
-        query.setParameter("startDate", startDate);
-//        query.setParameter("state", "Delivered");
+        query.setParameter("state", "Delivered");
 
         return (List<Order>) query.getResultList();
     }
 
     /*Obtiene las ordenes que fueron enviadas luego de una hora de realizadas*/
     public List<Order> findSentMoreOneHour(){
-        String hql = "from Order as o " +
-                    "inner join RecordStatus as rs on o.id = rs.order_id " +
-                    "where (select date from RecordStatus where rs.state = 'Delivered' and rs.order_id = o.id) - " +
-                    "(select date from RecordStatus where rs.state = 'Pending' and rs.order_id = o.id) > 1" +
-                    "and o.state = :state)";
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTime(new Date());
+//        calendar.add(Calendar.DAY_OF_MONTH, -10);
+//        Date startDate = calendar.getTime();
+
+        String hql = "from Order as o "+
+                    "where (select DATE_FORMAT(date,'%d-%M-%Y') from RecordState as rs where rs.state = 'Delivered' and rs.order = o) - " +
+                    "(select DATE_FORMAT(date,'%d-%M-%Y') from RecordState rs2 where rs2.state = 'Pending' and rs2.order = o) >= 1"
+                    ;
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
-        query.setParameter("state", "Delivered");
+//        query.setParameter("state", "Delivered");
 
         return (List<Order>) query.getResultList();
     }
@@ -131,12 +135,11 @@ public class DBliveryRepository{
     //* Obtiene las ordenes que fueron entregadas el mismo día de realizadas
     public List<Order> findDeliveredOrdersSameDay() {
         String hql = "from Order as o " +
-                "inner join RecordStatus as rs on o.id = rs.order_id " +
-                "where (select date from RecordStatus where rs.state = 'Delivered' and rs.order_id = o.id) = " +
-                "(select date from RecordStatus where rs.state = 'Pending' and rs.order_id = o.id)" +
-                "and o.state = :state)";
+                "where (select DATE_FORMAT(date,'%d-%M-%Y') from RecordState as rs " +
+                        "where rs.state = 'Delivered' and rs.order = o) = " +
+                        "(select DATE_FORMAT(date,'%d-%M-%Y') from RecordState as rs2 " +
+                        "where rs2.state = 'Pending' and rs2.order = o)";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
-        query.setParameter("state", "Delivered");
 
         return (List<Order>) query.getResultList();
     }
@@ -144,7 +147,7 @@ public class DBliveryRepository{
     // Obtiene los 5 repartidores que menos ordenes tuvieron asignadas (tanto sent como delivered)
     public List<User> find5LessDeliveryUsers() {
         String hql = "select u, count(o.id) " +
-                "from User u, Order o where o.delivery = u.id " +
+                "from User u, Order o where o.delivery.id = u.id " +
                 "and o.state = :sent or o.state = :delivered "+
                 "group by o.id order by count(o.id)";
 

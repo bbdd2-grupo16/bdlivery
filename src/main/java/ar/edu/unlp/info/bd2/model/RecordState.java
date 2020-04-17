@@ -10,7 +10,6 @@ public class RecordState {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private Date date; /*fecha en que se actualizo el estado*/
     private String state; /*Nombre del estado*/
     @ManyToOne
@@ -36,9 +35,7 @@ public class RecordState {
         this.date = date;
     }
 
-    public String getState() {
-        return state;
-    }
+    public String getState() { return state; }
 
     public void setState(String state) {
         this.state = state;
