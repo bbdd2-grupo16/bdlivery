@@ -146,10 +146,10 @@ public class DBliveryRepository{
 
     // Obtiene los 5 repartidores que menos ordenes tuvieron asignadas (tanto sent como delivered)
     public List<User> find5LessDeliveryUsers() {
-        String hql = "select u, count(o.id) " +
-                "from User u, Order o where o.delivery.id = u.id " +
-                "and o.state = :sent or o.state = :delivered "+
-                "group by o.id order by count(o.id)";
+        String hql = "from User u inner join Order o on o.delivery = u " +
+                "where (:delivered in (select rs.state from RecordState rs where rs.order = o) " +
+                "or :sent in (select rs2.state from RecordState rs2 where rs2.order = o)) "+
+                "group by o.id, count(*) order by count(*)";
 
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("delivered", "Delivered");
@@ -158,4 +158,38 @@ public class DBliveryRepository{
         return (List<User>) query.setMaxResults(5).getResultList();
     }
 
+    //  Obtiene el producto con más demanda
+    public Product findBestSellingProduct() {
+        String hql = "select p, count(p) from Product p " +
+                "inner join ProductOrder as po on po.product = p " +
+                "group by p.id order by count(p) desc";
+
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+
+        System.out.println(query.getFirstResult());
+
+        return (Product) query.getSingleResult();
+    }
+
+    //  Obtiene los productos que no cambiaron su precio
+    public List<Product> findProductsOnePrice() {
+        String hql = "select p from Product p " +
+                "inner join Price as pr on pr.product = p " +
+                "group by p.id having count(p.id) = 1 ";
+
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+
+        return (List<Product>) query.getResultList();
+    }
+
+    //  Obtiene la lista de productos que han aumentado más de un 100% desde su precio inicial
+    public List<Product> findProductIncreaseMoreThan100() {
+        String hql = "select p from Product p " +
+                "inner join Price as pr on pr.product = p " +
+                "group by p.id having count(p.id) = 1 ";
+
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+
+        return (List<Product>) query.getResultList();
+    }
 }

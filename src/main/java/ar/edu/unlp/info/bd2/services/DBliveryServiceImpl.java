@@ -524,6 +524,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List<User> get5LessDeliveryUsers() {
+
         return (List<User>) repository.find5LessDeliveryUsers();
     }
 
@@ -533,7 +534,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Product getBestSellingProduct() {
-        return null;
+        return (Product) repository.findBestSellingProduct();
     }
 
     /**
@@ -542,7 +543,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List<Product> getProductsOnePrice() {
-        return null;
+        return (List<Product>) repository.findProductsOnePrice();
     }
 
     /**
@@ -551,7 +552,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List <Product> getProductIncreaseMoreThan100() {
-        return null;
+        return (List<Product>) repository.findProductIncreaseMoreThan100();
     }
 
     /**
