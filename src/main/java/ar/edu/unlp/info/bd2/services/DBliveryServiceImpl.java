@@ -570,7 +570,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List <Supplier> getSuppliersDoNotSellOn(Date day) {
-        return null;
+        return (List<Supplier>) repository.findSupplierDoNotSellOn(day);
     }
 
     /**
@@ -580,7 +580,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List <Product> getSoldProductsOn(Date day) {
-        return null;
+        return (List<Product>) repository.findSoldProductsOn(day);
     }
 
     /**
@@ -589,7 +589,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List<Order> getOrdersCompleteMorethanOneDay() {
-        return null;
+        return (List<Order>) repository.findOrdersCompleteMoreThanOneDay();
     }
 
     /**
@@ -598,8 +598,8 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return la lista de cada producto con su precio en la fecha dada
      */
     @Override
-    public List<Object[]> getProductsWithPriceAt(Date day) {
-        return null;
+    public List <Object[]> getProductsWithPriceAt(Date day) {
+        return (List <Object[]>) repository.findProductsWithPriceAt(day);
     }
 
     /**
@@ -608,7 +608,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List<Product> getProductsNotSold(){
-        return null;
+        return (List<Product>) repository.findProductsNotSold();
     }
 
     /**
@@ -618,7 +618,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List<Order> getOrderWithMoreQuantityOfProducts(Date day) {
-        return null;
+        return repository.findOrderWithMoreQuantityOfProducts(day);
     }
 
 }

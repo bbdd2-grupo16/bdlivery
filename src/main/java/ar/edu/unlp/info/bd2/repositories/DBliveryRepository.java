@@ -164,45 +164,98 @@ public class DBliveryRepository{
         return (List<Product>) query.getResultList();
     }
 
+    /*Mari*/
+    /*Obtiene el proveedor con el producto de menor valor historico de la plataforma*/
     public Supplier findSupplierLessExpensiveProduct() {
-        String hql = "from ";
+        String hql = "select supplier from Supplier as supplier where exists" +
+                " (select supplier, min(price.price)" +
+                " from Supplier as supplier" +
+                " inner join Product as product on product.supplier = supplier" +
+                " inner join Price as price on price.product = product" +
+                " group by supplier.id)";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        query.setFirstResult(1);
+        query.setMaxResults(1);
         return (Supplier) query.getSingleResult();
     }
 
-    public Supplier findSupplierDoNotSellOn(Date day){
-        String hql = "";
+    /*Obtiene los proveedores que no vendieron productos en un day*/
+    public List <Supplier> findSupplierDoNotSellOn(Date day){
+        String hql = " select supplier" +
+                " from RecordState as recordState" +
+                " inner join Order as order on order = recordState.order" +
+                " inner join ProductOrder as productOrder on order = productOrder.order" +
+                " left join Product as product on productOrder.product = product" +
+                " inner join Supplier as supplier on product.supplier = supplier" +
+                " where order.dateOfOrder = :day" +
+                " and productOrder.product = null";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
-        return (Supplier) query.getSingleResult();
+        query.setParameter("day", day);
+        return (List <Supplier>) query.getResultList();
     }
 
+    /*Obtiene los productos vendidos en un day*/
     public List<Product> findSoldProductsOn(Date day){
-        String hql = "";
+        String hql = "select distinct product.id" +
+                " from Product as product" +
+                " inner join ProductOrder as productOrder on product = productOrder.product" +
+                " inner join Order as order on order = productOrder.order" +
+                " inner join RecordState as recordState on order = recordState.order" +
+                " where recordState.state = :state or recordState.state = :stateDelivered" +
+                " and order.dateOfOrder = :day";
+
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        query.setParameter("state", "Sent");
+        query.setParameter("stateDelivered", "Delivered");
+        query.setParameter("day", day);
+
         return (List<Product>) query.getResultList();
     }
 
-    public List<ProductOrder> findOrdersCompleteMoreThanOneDay(){
-        String hql = "";
+    /*Obtiene las ordenes que fueron entregadas en mas de un dia desde que fueron iniciadas*/
+    public List<Order> findOrdersCompleteMoreThanOneDay(){
+        String hql = "select order" +
+                " from Order as order" +
+                " inner join RecordState as recordState on order = recordState.order" +
+                " where recordState.state = :state" +
+                " and recordState.date > order.dateOfOrder";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
-        return (List<ProductOrder>) query.getResultList();
+        query.setParameter("state", "Delivered");
+        return (List<Order>) query.getResultList();
     }
 
-    public List<Product> findProductsWithPriceAt(Date day){
-        String hql = "";
+    /*Obtiene el listado de productos con su precio en una fecha dada*/
+    public List <Object[]> findProductsWithPriceAt(Date day){
+        String hql = "select product, price" +
+                " from Price as price" +
+                " inner join Product as product on price.product = product" +
+                " where :day BETWEEN price.startDate AND price.endDate";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
-        return (List<Product>) query.getResultList();
+        query.setParameter("day", day);
+        return (List <Object[]>) query.getResultList();
     }
 
+    /*Obtiene la lista de productos que no se han vendido*/
     public List<Product> findProductsNotSold(){
-        String hql = "";
+        String hql = "select product from Product as product" +
+                " left join ProductOrder as productOrder on product = productOrder.product" +
+                " where productOrder.product = null";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         return (List<Product>) query.getResultList();
     }
 
-    public List<ProductOrder> findOrderWithMoreQuantityOfProducts(Date day){
-        String hql = "";
+    /*Obtiene la/s orden/es con mayor cantidad de productos ordenados de la fecha dada*/
+    public List<Order> findOrderWithMoreQuantityOfProducts(Date day){
+        String hql = "select order from Order as order where exists" +
+                " (select order, max(po.quantity) as max" +
+                " from Order as o" +
+                " inner join ProductOrder as po on po.order = o" +
+                " where o.dateOfOrder = :day" +
+                " group by o.id)";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
-        return (List<ProductOrder>) query.getResultList();
+        query.setParameter("day", day);
+        query.setFirstResult(1);
+        query.setMaxResults(1);
+        return (List<Order>) query.getResultList();
     }
 }
