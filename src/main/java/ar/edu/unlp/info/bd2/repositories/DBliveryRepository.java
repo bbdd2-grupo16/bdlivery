@@ -87,24 +87,22 @@ public class DBliveryRepository{
 
     /*Obtiene todas las ordenes entregadas entre dos fechas*/
     public List<Order> findDeliveredOrdersInPeriod(Date startDate, Date endDate){
-        String hql = "from Order as o " +
+        String hql = "select o from Order as o " +
                 "inner join RecordState as rs on rs.order = o " +
                 "where (o.dateOfOrder >= :startDate and o.dateOfOrder <= :endDate)" +
-//                "and :state = (select state, max(date) from RecordState group by rs.order)";
-                "and :state = (select rs.state from RecordState order by rs.date desc 1)";
+                "and :state = rs.state";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("startDate", startDate);
         query.setParameter("endDate", endDate);
-        query.setParameter("state", "Sent");
+        query.setParameter("state", "Delivered");
 
         return (List<Order>) query.getResultList();
     }
 
-    /*Obtiene todas las órdenes entregadas para el cliente con username <code>username</code>
-    en los últimos 10 días*/
+    /*Obtiene todas las órdenes entregadas para el cliente con username <code>username</code>*/
     public List<Order> findDeliveredOrdersForUser(String username) {
 
-        String hql = "from Order as o inner join User as u on u.id = o.client " +
+        String hql = "select o from Order as o inner join User as u on u = o.client " +
                 "inner join RecordState as rs on o = rs.order " +
                 "where u.username = :username " +
                 "and rs.state = :state";
@@ -117,17 +115,12 @@ public class DBliveryRepository{
 
     /*Obtiene las ordenes que fueron enviadas luego de una hora de realizadas*/
     public List<Order> findSentMoreOneHour(){
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTime(new Date());
-//        calendar.add(Calendar.DAY_OF_MONTH, -10);
-//        Date startDate = calendar.getTime();
 
         String hql = "from Order as o "+
-                    "where (select DATE_FORMAT(date,'%d-%M-%Y') from RecordState as rs where rs.state = 'Delivered' and rs.order = o) - " +
+                    "where (select DATE_FORMAT(date,'%d-%M-%Y') from RecordState as rs where rs.state = 'Sent' and rs.order = o) - " +
                     "(select DATE_FORMAT(date,'%d-%M-%Y') from RecordState rs2 where rs2.state = 'Pending' and rs2.order = o) >= 1"
                     ;
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
-//        query.setParameter("state", "Delivered");
 
         return (List<Order>) query.getResultList();
     }
@@ -146,29 +139,33 @@ public class DBliveryRepository{
 
     // Obtiene los 5 repartidores que menos ordenes tuvieron asignadas (tanto sent como delivered)
     public List<User> find5LessDeliveryUsers() {
-        String hql = "from User u inner join Order o on o.delivery = u " +
-                "where (:delivered in (select rs.state from RecordState rs where rs.order = o) " +
-                "or :sent in (select rs2.state from RecordState rs2 where rs2.order = o)) "+
-                "group by o.id, count(*) order by count(*)";
+        String hql =
+                "select u2 from User u2 where exists (select u, count(o.id) from User u " +
+                    "inner join Order o on u = o.delivery " +
+                    "where (:delivered in (select rs.state from RecordState rs where o = rs.order) " +
+                    "or :sent in (select rs2.state from RecordState rs2 where o = rs2.order)) " +
+                    "group by u.id having count(o.id) > 0 order by count(o.id)) ";
 
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("delivered", "Delivered");
         query.setParameter("sent", "Sent");
 
-        return (List<User>) query.setMaxResults(5).getResultList();
+        return (List<User>) query.setFirstResult(0).setMaxResults(5).getResultList();
     }
 
     //  Obtiene el producto con más demanda
     public Product findBestSellingProduct() {
-        String hql = "select p, count(p) from Product p " +
-                "inner join ProductOrder as po on po.product = p " +
-                "group by p.id order by count(p) desc";
+//        String hql = "select p from Product p where exists " +
+//                "(select po.product, count(po.product) from ProductOrder as po " +
+//                "group by po.product order by count(po.product) desc)";
+//
+        String hql = "select po.product, count(po) as cant, max(count(po)) from ProductOrder as po " +
+                "group by po.product";
 
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
 
-        System.out.println(query.getFirstResult());
 
-        return (Product) query.getSingleResult();
+        return (Product) query.setFirstResult(0).setMaxResults(1).getSingleResult();
     }
 
     //  Obtiene los productos que no cambiaron su precio
@@ -186,7 +183,7 @@ public class DBliveryRepository{
     public List<Product> findProductIncreaseMoreThan100() {
         String hql = "select p from Product p " +
                 "inner join Price as pr on pr.product = p " +
-                "group by p.id having count(p.id) = 1 ";
+                "group by p.id having max(pr.price) - min(pr.price) >= min(pr.price)";
 
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
 
