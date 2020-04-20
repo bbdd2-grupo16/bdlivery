@@ -207,6 +207,7 @@ public class DBliveryRepository{
         return (Supplier) query.getSingleResult();
     }
 
+    /*Mari*/
     /*Obtiene los proveedores que no vendieron productos en un day*/
     public List <Supplier> findSupplierDoNotSellOn(Date day){
         String hql = " select supplier" +
@@ -261,6 +262,7 @@ public class DBliveryRepository{
                     "and DATE_FORMAT(:day,'%Y/%m/%d')  <= DATE_FORMAT(price.endDate,'%Y/%m/%d')) " +
                     "or (DATE_FORMAT(price.startDate,'%Y/%m/%d') <= DATE_FORMAT(:day,'%Y/%m/%d') " +
                     "and price.endDate is null)";
+
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("day", day);
 
@@ -278,12 +280,11 @@ public class DBliveryRepository{
 
     /*Obtiene la/s orden/es con mayor cantidad de productos ordenados de la fecha dada*/
     public List<Order> findOrderWithMoreQuantityOfProducts(Date day){
-        String hql = "select order from Order as order where exists" +
-                " (select order, max(po.quantity) as max" +
-                " from Order as o" +
+        String hql = "select o from Order as o" +
                 " inner join ProductOrder as po on po.order = o" +
                 " where o.dateOfOrder = :day" +
-                " group by o.id)";
+                " group by po.id" +
+                " order by count(po.quantity) desc";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("day", day);
         query.setFirstResult(1);
