@@ -192,7 +192,6 @@ public class DBliveryRepository{
         return (List<Product>) query.getResultList();
     }
 
-    /*Mari*/
     /*Obtiene el proveedor con el producto de menor valor historico de la plataforma*/
     public Supplier findSupplierLessExpensiveProduct() {
         String hql = "select supplier from Supplier as supplier where exists" +
@@ -207,7 +206,6 @@ public class DBliveryRepository{
         return (Supplier) query.getSingleResult();
     }
 
-    /*Mari*/
     /*Obtiene los proveedores que no vendieron productos en un day*/
     public List <Supplier> findSupplierDoNotSellOn(Date day){
         String hql = " select supplier from Supplier as supplier" +
@@ -223,7 +221,6 @@ public class DBliveryRepository{
         return (List <Supplier>) query.getResultList();
     }
 
-    /*Mari*/
     /*Obtiene los productos vendidos en un day*/
     public List<Product> findSoldProductsOn(Date day){
         String hql = "select distinct product" +
@@ -237,21 +234,18 @@ public class DBliveryRepository{
         return (List<Product>) query.getResultList();
     }
 
-    /*Mari*/
     /*Obtiene las ordenes que fueron entregadas en mas de un dia desde que fueron iniciadas*/
     public List<Order> findOrdersCompleteMoreThanOneDay(){
-        String hql = "select order" +
-                " from Order as order" +
-                " inner join RecordState as recordState on order = recordState.order" +
-                " where DATE_FORMAT(order.dateOfOrder,'%Y/%m/%d') -" +
-                " DATE_FORMAT(recordState.date,'%Y/%m/%d') = " +
-                " and recordState.state = :state";
+        String hql = "select o" +
+                " from Order as o" +
+                " inner join RecordState as recordState on recordState.order = o" +
+                " where recordState.state = :state" +
+                " and DATE_FORMAT(recordState.date,'%Y/%m/%d') >= DATE_FORMAT(adddate(o.dateOfOrder, 1),'%Y/%m/%d')";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("state", "Delivered");
         return (List<Order>) query.getResultList();
     }
 
-    /*Mari*/
     /*Obtiene el listado de productos con su precio en una fecha dada*/
     public List <Object[]> findProductsWithPriceAt(Date day) {
 
@@ -269,7 +263,6 @@ public class DBliveryRepository{
         return (List <Object[]>) query.getResultList();
     }
 
-    /*Mari*/
     /*Obtiene la lista de productos que no se han vendido*/
     public List<Product> findProductsNotSold(){
         String hql = "select product from Product as product" +
