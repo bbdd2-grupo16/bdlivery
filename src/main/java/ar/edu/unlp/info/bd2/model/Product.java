@@ -46,7 +46,7 @@ public class Product{
         this.supplier = supplier;
         this.date = date;
         this.prices = new ArrayList<Price>();
-        this.prices.add(new Price(price));
+        this.prices.add(new Price(price, date));
     }
 
     public Long getId() {
@@ -92,7 +92,7 @@ public class Product{
     public void addPrice(Price price) {
         this.prices.add(price);
         if (this.prices.size() > 1){
-            this.prices.get(this.prices.size() - 1).setEndDate(new Date());
+            this.prices.get(this.prices.size() - 2).setEndDate(price.getStartDate());
         }
     }
 

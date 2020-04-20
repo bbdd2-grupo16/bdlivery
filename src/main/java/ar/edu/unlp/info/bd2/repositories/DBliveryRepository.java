@@ -7,6 +7,9 @@ import org.hibernate.Query.*;
 import ar.edu.unlp.info.bd2.model.*;
 
 import javax.persistence.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -153,6 +156,42 @@ public class DBliveryRepository{
         return (List<User>) query.setFirstResult(0).setMaxResults(5).getResultList();
     }
 
+    //  Obtiene el producto con más demanda
+    public Product findBestSellingProduct() {
+//        String hql = "select p from Product p where exists " +
+//                "(select po.product, count(po.product) from ProductOrder as po " +
+//                "group by po.product order by count(po.product) desc)";
+//
+        String hql = "select po.product, count(po) as cant, max(count(po)) from ProductOrder as po " +
+                "group by po.product";
+
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+
+
+        return (Product) query.setFirstResult(0).setMaxResults(1).getSingleResult();
+    }
+
+    //  Obtiene los productos que no cambiaron su precio
+    public List<Product> findProductsOnePrice() {
+        String hql = "select p from Product p " +
+                "inner join Price as pr on pr.product = p " +
+                "group by p.id having count(p.id) = 1 ";
+
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        return (List<Product>) query.getResultList();
+    }
+
+    //  Obtiene la lista de productos que han aumentado más de un 100% desde su precio inicial
+    public List<Product> findProductIncreaseMoreThan100() {
+        String hql = "select p from Product p " +
+                "inner join Price as pr on pr.product = p " +
+                "group by p.id having max(pr.price) - min(pr.price) >= min(pr.price)";
+
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+
+        return (List<Product>) query.getResultList();
+    }
+
     /*Mari*/
     /*Obtiene el proveedor con el producto de menor valor historico de la plataforma*/
     public Supplier findSupplierLessExpensiveProduct() {
@@ -199,30 +238,6 @@ public class DBliveryRepository{
         query.setParameter("day", day);
         return (List<Product>) query.getResultList();
     }
-    //  Obtiene el producto con más demanda
-    public Product findBestSellingProduct() {
-//        String hql = "select p from Product p where exists " +
-//                "(select po.product, count(po.product) from ProductOrder as po " +
-//                "group by po.product order by count(po.product) desc)";
-//
-        String hql = "select po.product, count(po) as cant, max(count(po)) from ProductOrder as po " +
-                "group by po.product";
-
-        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
-
-
-        return (Product) query.setFirstResult(0).setMaxResults(1).getSingleResult();
-    }
-
-    //  Obtiene los productos que no cambiaron su precio
-    public List<Product> findProductsOnePrice() {
-        String hql = "select p from Product p " +
-                "inner join Price as pr on pr.product = p " +
-                "group by p.id having count(p.id) = 1 ";
-
-        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
-        return (List<Product>) query.getResultList();
-    }
 
     /*Obtiene las ordenes que fueron entregadas en mas de un dia desde que fueron iniciadas*/
     public List<Order> findOrdersCompleteMoreThanOneDay(){
@@ -237,13 +252,18 @@ public class DBliveryRepository{
     }
 
     /*Obtiene el listado de productos con su precio en una fecha dada*/
-    public List <Object[]> findProductsWithPriceAt(Date day){
-        String hql = "select product, price" +
+    public List <Object[]> findProductsWithPriceAt(Date day) {
+
+        String hql = "select product, price.price" +
                 " from Price as price" +
                 " inner join Product as product on price.product = product" +
-                " where :day BETWEEN price.startDate AND price.endDate";
+                " where (DATE_FORMAT(price.startDate ,'%Y/%m/%d') <= DATE_FORMAT(:day,'%Y/%m/%d') " +
+                    "and DATE_FORMAT(:day,'%Y/%m/%d')  <= DATE_FORMAT(price.endDate,'%Y/%m/%d')) " +
+                    "or (DATE_FORMAT(price.startDate,'%Y/%m/%d') <= DATE_FORMAT(:day,'%Y/%m/%d') " +
+                    "and price.endDate is null)";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("day", day);
+
         return (List <Object[]>) query.getResultList();
     }
 
@@ -269,16 +289,5 @@ public class DBliveryRepository{
         query.setFirstResult(1);
         query.setMaxResults(1);
         return (List<Order>) query.getResultList();
-    }
-
-    //  Obtiene la lista de productos que han aumentado más de un 100% desde su precio inicial
-    public List<Product> findProductIncreaseMoreThan100() {
-        String hql = "select p from Product p " +
-                "inner join Price as pr on pr.product = p " +
-                "group by p.id having max(pr.price) - min(pr.price) >= min(pr.price)";
-
-        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
-
-        return (List<Product>) query.getResultList();
     }
 }
