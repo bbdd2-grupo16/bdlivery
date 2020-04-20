@@ -210,48 +210,48 @@ public class DBliveryRepository{
     /*Mari*/
     /*Obtiene los proveedores que no vendieron productos en un day*/
     public List <Supplier> findSupplierDoNotSellOn(Date day){
-        String hql = " select supplier" +
-                " from RecordState as recordState" +
-                " inner join Order as order on order = recordState.order" +
+        String hql = " select supplier from Supplier as supplier" +
+                " where supplier not in" +
+                " (select distinct supplier" +
+                " from Order as order" +
                 " inner join ProductOrder as productOrder on order = productOrder.order" +
-                " left join Product as product on productOrder.product = product" +
+                " inner join Product as product on productOrder.product = product" +
                 " inner join Supplier as supplier on product.supplier = supplier" +
-                " where order.dateOfOrder = :day" +
-                " and productOrder.product = null";
+                " where order.dateOfOrder = DATE_FORMAT(:day, '%Y/%m/%d'))";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("day", day);
         return (List <Supplier>) query.getResultList();
     }
 
+    /*Mari*/
     /*Obtiene los productos vendidos en un day*/
     public List<Product> findSoldProductsOn(Date day){
-        String hql = "select distinct product.id" +
-                " from Product as product" +
-                " inner join ProductOrder as productOrder on product = productOrder.product" +
-                " inner join Order as order on order = productOrder.order" +
-                " inner join RecordState as recordState on order = recordState.order" +
-                " where recordState.state = :state or recordState.state = :stateDelivered" +
-                " and order.dateOfOrder = :day";
+        String hql = "select distinct product" +
+                " from Order as order" +
+                " inner join ProductOrder as productOrder on order = productOrder.order" +
+                " inner join Product as product on productOrder.product = product" +
+                " where order.dateOfOrder = DATE_FORMAT(:day, '%Y/%m/%d')";
 
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
-        query.setParameter("state", "Sent");
-        query.setParameter("stateDelivered", "Delivered");
         query.setParameter("day", day);
         return (List<Product>) query.getResultList();
     }
 
+    /*Mari*/
     /*Obtiene las ordenes que fueron entregadas en mas de un dia desde que fueron iniciadas*/
     public List<Order> findOrdersCompleteMoreThanOneDay(){
         String hql = "select order" +
                 " from Order as order" +
                 " inner join RecordState as recordState on order = recordState.order" +
-                " where recordState.state = :state" +
-                " and recordState.date > order.dateOfOrder";
+                " where DATE_FORMAT(order.dateOfOrder,'%Y/%m/%d') -" +
+                " DATE_FORMAT(recordState.date,'%Y/%m/%d') = " +
+                " and recordState.state = :state";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("state", "Delivered");
         return (List<Order>) query.getResultList();
     }
 
+    /*Mari*/
     /*Obtiene el listado de productos con su precio en una fecha dada*/
     public List <Object[]> findProductsWithPriceAt(Date day) {
 
@@ -269,6 +269,7 @@ public class DBliveryRepository{
         return (List <Object[]>) query.getResultList();
     }
 
+    /*Mari*/
     /*Obtiene la lista de productos que no se han vendido*/
     public List<Product> findProductsNotSold(){
         String hql = "select product from Product as product" +
@@ -278,6 +279,7 @@ public class DBliveryRepository{
         return (List<Product>) query.getResultList();
     }
 
+    /*Mari*/
     /*Obtiene la/s orden/es con mayor cantidad de productos ordenados de la fecha dada*/
     public List<Order> findOrderWithMoreQuantityOfProducts(Date day){
         String hql = "select o from Order as o" +
