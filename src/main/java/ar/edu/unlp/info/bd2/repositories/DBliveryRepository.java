@@ -142,12 +142,11 @@ public class DBliveryRepository{
 
     // Obtiene los 5 repartidores que menos ordenes tuvieron asignadas (tanto sent como delivered)
     public List<User> find5LessDeliveryUsers() {
-        String hql =
-                "select u2 from User u2 where exists (select u, count(o.id) from User u " +
-                    "inner join Order o on u = o.delivery " +
-                    "where (:delivered in (select rs.state from RecordState rs where o = rs.order) " +
-                    "or :sent in (select rs2.state from RecordState rs2 where o = rs2.order)) " +
-                    "group by u.id having count(o.id) > 0 order by count(o.id)) ";
+        String hql = "select u from User u " +
+                "inner join Order o on u = o.delivery " +
+                "where (:delivered in (select rs.state from RecordState rs where o = rs.order) " +
+                "or :sent in (select rs2.state from RecordState rs2 where o = rs2.order)) " +
+                "group by u having count(o.id) > 0 order by count(o.id)";
 
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("delivered", "Delivered");
@@ -158,15 +157,10 @@ public class DBliveryRepository{
 
     //  Obtiene el producto con más demanda
     public Product findBestSellingProduct() {
-//        String hql = "select p from Product p where exists " +
-//                "(select po.product, count(po.product) from ProductOrder as po " +
-//                "group by po.product order by count(po.product) desc)";
-//
-        String hql = "select po.product, count(po) as cant, max(count(po)) from ProductOrder as po " +
-                "group by po.product";
+        String hql = "select po.product from ProductOrder as po " +
+                "group by po.product order by count(po) desc";
 
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
-
 
         return (Product) query.setFirstResult(0).setMaxResults(1).getSingleResult();
     }
