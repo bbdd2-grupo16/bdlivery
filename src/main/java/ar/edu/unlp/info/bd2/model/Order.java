@@ -22,7 +22,7 @@ public class Order {
 
     private Float coordY; /*coordenada Y de la dirección*/
     private String state;
-    private Float amount = Float.valueOf("0");
+    private Float amount;
 
     @ManyToOne // una orden solo pertenece a un usuario y un usuario puede tener varias ordenes
     private User client; /*cliente que realizó el pedido*/
@@ -50,10 +50,7 @@ public class Order {
         this.products = new ArrayList<ProductOrder>();
         this.status = new ArrayList<RecordState>();
         this.status.add(new RecordState("Pending", date));
-
-        for (int i=0; i < this.products.size(); i++) {
-            this.amount += this.products.get(i).getProduct().getPrice();
-        }
+        this.amount = Float.valueOf("0");
     }
 
     public Long getId() {
@@ -115,6 +112,7 @@ public class Order {
     public Order addProduct(Long quantity, Product product) {
         ProductOrder new_product = new ProductOrder(quantity, product, this);
         this.products.add(new_product);
+        this.amount += product.getPrice() * quantity;
         return this;
     }
 
