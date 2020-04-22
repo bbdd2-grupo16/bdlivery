@@ -21,7 +21,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param supplier el productor del producto
      * @return el producto creado
      */
-    
+
     @Override
     @Transactional
     public Product createProduct(String name, Float price, Float weight, Supplier supplier){
@@ -410,7 +410,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List<Order> getAllOrdersMadeByUser(String username) {
-        return null;
+        return (List<Order>) repository.getAllOrdersMadeByUser(username);
     }
 
     /**
@@ -420,7 +420,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List<User> getUsersSpendingMoreThan(Float amount){
-        return null;
+        return (List<User>) repository.getUsersSpendingMoreThan(amount);
     }
 
     /**
@@ -439,7 +439,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List<Product> getTop10MoreExpensiveProducts() {
-        return null;
+        return (List<Product>) repository.getTop10MoreExpensiveProducts();
     }
 
     /**
@@ -459,7 +459,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List <Order> getCancelledOrdersInPeriod(Date startDate, Date endDate) {
-        return null;
+        return (List<Order>) repository.getCancelledOrdersInPeriod(startDate,endDate);
     }
 
     /**
@@ -467,7 +467,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List <Order> getPendingOrders() {
-        return null;
+        return (List<Order>) repository.getPendingOrders();
     }
 
     /**

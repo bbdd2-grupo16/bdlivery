@@ -79,13 +79,78 @@ public class DBliveryRepository{
         query.setParameter("email", email);
 
         return (User) query.getSingleResult();
-    }
+       }
 
     public Order findOrderById(Long id){
         String hql = "from Order where id = :id";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql).setParameter("id", id);
 
         return (Order) query.getSingleResult();
+    }
+
+    //Obtiene todas las ordenes realizadas por el usuario con username
+    public  List<Order> getAllOrdersMadeByUser(String username){
+        String hql ="select o from Order as o inner join User as u on u = o.client "+
+                "where u.username = :username ";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        query.setParameter("username", username);
+        return (List<Order>) query.getResultList();
+    }
+    
+    //Obtiene todos los usuarios que han gastando más de amount en alguna orden en la plataforma
+    public List<User> getUsersSpendingMoreThan(Float amount){
+        String hql = "select u from Order as o inner join User as u on u = o.client "+
+                "where o.amount > :amount ";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        query.setParameter("amount", amount);
+        return (List<User>) query.getResultList();
+    }
+
+    //Obtiene los 9 productos más costosos
+    public List<Product> getTop10MoreExpensiveProducts(){
+        String hql = "select p from Product p " +
+                "inner join Price as pr on pr.product = p " +
+                "group by p.id having max(pr.price)";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        return (List<Product>) query.setFirstResult(0).setMaxResults(9).getResultList();
+    }
+
+    //Obtiene todas las ordenes canceladas entre dos fechas
+    public List <Order> getCancelledOrdersInPeriod(Date startDate, Date endDate){
+        String hql = "select o from Order as o " +
+                "inner join RecordState as rs on rs.order = o " +
+                "where (o.dateOfOrder >= :start and o.dateOfOrder <= :end)" +
+                "and :state = rs.state";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        query.setParameter("start", startDate);
+        query.setParameter("end", endDate);
+        query.setParameter("state", "Cancelled");
+
+        return (List<Order>) query.getResultList();
+    }
+
+    //Obtiene el listado de las ordenes pendientes
+    public List <Order>  getPendingOrders(){
+        String hql = "select o from Order as o " +
+                "inner join RecordState as rs on rs.order = o " +
+                "where :state = rs.state";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        query.setParameter("state", "Pending");
+        return (List<Order>) query.getResultList();
+
+    }
+
+    //Obtiene el listado de las ordenes enviadas y no entregadas
+    public List <Order>  getSentOrders(){
+        String hql = "select o from Order as o " +
+                "inner join RecordState as rs on rs.order = o " +
+                "where :state1 = rs.state "+
+                "or :state2 = rs.state";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        query.setParameter("state1", "Sent");
+        query.setParameter("state2", "Cancelled");
+
+        return (List<Order>) query.getResultList();
     }
 
     /*Obtiene todas las ordenes entregadas entre dos fechas*/
