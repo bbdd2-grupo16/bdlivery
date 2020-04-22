@@ -102,7 +102,7 @@ public class Product{
                 return p.getPrice();
             }
         }
-        return this.getPrice();
+        return this.getPrices().get(this.getPrices().size() - 1).getPrice();
     }
 
 }
