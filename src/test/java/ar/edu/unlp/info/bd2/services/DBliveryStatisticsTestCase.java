@@ -200,7 +200,7 @@ public class DBliveryStatisticsTestCase {
 
     @Test
     public void testOrderAmount() {
-        Optional<Order> ord = this.service.getOrderById(Long.getLong("77"));
+        Optional<Order> ord = this.service.getOrderById(Long.valueOf("77").longValue());
         if (ord.isPresent()) {
             Order o = ord.get();
             assertEquals(Float.valueOf("2454"),o.getAmount());

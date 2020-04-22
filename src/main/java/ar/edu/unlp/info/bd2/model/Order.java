@@ -112,7 +112,7 @@ public class Order {
     public Order addProduct(Long quantity, Product product) {
         ProductOrder new_product = new ProductOrder(quantity, product, this);
         this.products.add(new_product);
-        this.amount += product.getPrice() * quantity;
+        this.amount += product.getPriceAt(this.dateOfOrder) * quantity;
         return this;
     }
 

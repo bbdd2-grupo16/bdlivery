@@ -96,4 +96,13 @@ public class Product{
         }
     }
 
+    public Float getPriceAt(Date day) {
+        for (Price p : this.getPrices()) {
+            if ( (p.getStartDate().before(day)) && (p.getEndDate() != null) && (p.getEndDate().after(day)) ){
+                return p.getPrice();
+            }
+        }
+        return this.getPrice();
+    }
+
 }
