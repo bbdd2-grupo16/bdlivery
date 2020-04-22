@@ -272,8 +272,8 @@ public class DBliveryRepository{
         String hql = "select o from Order as o" +
                 " inner join ProductOrder as po on po.order = o" +
                 " where o.dateOfOrder = :day" +
-                " group by po.id" +
-                " order by count(po.quantity) desc";
+                " group by o" +
+                " order by count(po.quantity) asc";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("day", day);
         query.setFirstResult(1);
