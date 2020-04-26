@@ -106,13 +106,33 @@ public class DBliveryRepository{
         return (List<User>) query.getResultList();
     }
 
+    //Obtiene los n proveedores que más productos tienen en ordenes que están siendo enviadas
+    public List<Supplier> getTopNSuppliersInSentOrders(int n) {
+        String hql = "select s from ProductOrder as po inner join Product as p on po.product = p.id "+
+                "inner join Supplier as s on p.supplier = s.id "+
+                "inner join RecordState as rs on rs.order = po.order "+
+                "where rs.state='Send' group by s.id order by count(*) desc";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        return (List<Supplier>) query.setFirstResult(0).setMaxResults(n).getResultList();
+    }
+
+
     //Obtiene los 9 productos más costosos
     public List<Product> getTop10MoreExpensiveProducts(){
         String hql = "select p from Product p " +
                 "inner join Price as pr on pr.product = p " +
-                "group by p.id having max(pr.price)";
+                "where pr.id in ( select max(id) from Price group by product) "+
+                "order by pr.price desc";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         return (List<Product>) query.setFirstResult(0).setMaxResults(9).getResultList();
+    }
+
+    //Obtiene los 6 usuarios que más cantidad de ordenes han realizado
+    public List<User> getTop6UsersMoreOrders(){
+        String hql = "select u, count(o.id) from Order as o inner join User as u on u = o.client "+
+                "group by u.id order by count(o.id) desc";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        return (List<User>) query.setFirstResult(0).setMaxResults(6).getResultList();
     }
 
     //Obtiene todas las ordenes canceladas entre dos fechas
@@ -133,9 +153,8 @@ public class DBliveryRepository{
     public List <Order>  getPendingOrders(){
         String hql = "select o from Order as o " +
                 "inner join RecordState as rs on rs.order = o " +
-                "where :state = rs.state";
+                "group by o.id having count(o.id) = 1 ";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
-        query.setParameter("state", "Pending");
         return (List<Order>) query.getResultList();
 
     }
@@ -144,11 +163,10 @@ public class DBliveryRepository{
     public List <Order>  getSentOrders(){
         String hql = "select o from Order as o " +
                 "inner join RecordState as rs on rs.order = o " +
-                "where :state1 = rs.state "+
-                "or :state2 = rs.state";
+                "where rs.state='Sent' and rs.order not in "+
+                "(select rs1.order from RecordState as rs1 where rs1.state='Pending' "+
+                "and rs1.state!='Sent')";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
-        query.setParameter("state1", "Sent");
-        query.setParameter("state2", "Cancelled");
 
         return (List<Order>) query.getResultList();
     }

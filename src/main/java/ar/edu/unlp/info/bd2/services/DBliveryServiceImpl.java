@@ -430,7 +430,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List<Supplier> getTopNSuppliersInSentOrders(int n) {
-        return null;
+        return (List<Supplier>) repository.getTopNSuppliersInSentOrders(n);
     }
 
     /**
@@ -448,7 +448,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public List<User> getTop6UsersMoreOrders() {
-        return null;
+        return (List<User>) repository.getTop6UsersMoreOrders();
     }
 
     /**
@@ -474,8 +474,8 @@ public class DBliveryServiceImpl implements DBliveryService{
      * Obtiene el listado de las ordenes enviadas y no entregadas
      */
     @Override
-    public List <Order> getSentOrders() {
-        return null;
+    public List<Order> getSentOrders() {
+        return (List<Order>) repository.getSentOrders();
     }
 
     /**
