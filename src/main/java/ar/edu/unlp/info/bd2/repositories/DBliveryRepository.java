@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class DBliveryRepository{
@@ -100,7 +101,7 @@ public class DBliveryRepository{
     //Obtiene todos los usuarios que han gastando más de amount en alguna orden en la plataforma
     public List<User> getUsersSpendingMoreThan(Float amount){
         String hql = "select u from Order as o inner join User as u on u = o.client "+
-                "where o.amount > :amount ";
+                "where (o.getAmount) > :amount ";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("amount", amount);
         return (List<User>) query.getResultList();
@@ -111,7 +112,7 @@ public class DBliveryRepository{
         String hql = "select s from ProductOrder as po inner join Product as p on po.product = p.id "+
                 "inner join Supplier as s on p.supplier = s.id "+
                 "inner join RecordState as rs on rs.order = po.order "+
-                "where rs.state='Send' group by s.id order by count(*) desc";
+                "where rs.state='Sent' group by s.id order by count(s) desc ";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         return (List<Supplier>) query.setFirstResult(0).setMaxResults(n).getResultList();
     }
@@ -130,9 +131,14 @@ public class DBliveryRepository{
     //Obtiene los 6 usuarios que más cantidad de ordenes han realizado
     public List<User> getTop6UsersMoreOrders(){
         String hql = "select u, count(o.id) from Order as o inner join User as u on u = o.client "+
-                "group by u.id order by count(o.id) desc";
-        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
-        return (List<User>) query.setFirstResult(0).setMaxResults(6).getResultList();
+                "group by u order by count(o.id) desc";
+        List<Object []> query = this.sessionFactory.getCurrentSession().createQuery(hql).setMaxResults(6).list();
+        List<User> users = new ArrayList<>();
+        for (Object [] row : query) {
+            users.add((User) row[0]);
+        }
+
+        return (List<User>) users;
     }
 
     //Obtiene todas las ordenes canceladas entre dos fechas
@@ -162,9 +168,9 @@ public class DBliveryRepository{
     //Obtiene el listado de las ordenes enviadas y no entregadas
     public List <Order>  getSentOrders(){
         String hql = "select o from Order as o " +
-                "inner join RecordState as rs on rs.order = o " +
-                "where rs.state='Sent' and rs.order not in "+
-                "(select rs1.order from RecordState as rs1 where rs1.state='Pending' "+
+                "join o.status as os " +
+                "where os.state='Sent' and os.order not in "+
+                "(select rs1.order from RecordState as rs1 where rs1.state!='Pending' "+
                 "and rs1.state!='Sent')";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
 
