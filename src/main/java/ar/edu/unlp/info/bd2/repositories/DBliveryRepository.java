@@ -100,10 +100,17 @@ public class DBliveryRepository{
     
     //Obtiene todos los usuarios que han gastando más de amount en alguna orden en la plataforma
     public List<User> getUsersSpendingMoreThan(Float amount){
-        String hql = "select u from Order as o inner join User as u on u = o.client "+
-                "where (o.getAmount) > :amount ";
+        String hql = "select distinct(u) from Order as o inner join User as u on u = o.client "+
+                "inner join ProductOrder as po on o = po.order "+
+                "inner join Product as prod on prod = po.product "+
+                "inner join Price as p on prod = p.product "+
+                " where (p.endDate is null and o.dateOfOrder >= p.startDate ) "+
+                " or (p.endDate is not null and o.dateOfOrder >= p.startDate "+
+                " and o.dateOfOrder <= p.endDate) "+
+                "group by o "+
+                "having sum(p.price * po.quantity) > :amount ";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
-        query.setParameter("amount", amount);
+        query.setParameter("amount", amount.doubleValue());
         return (List<User>) query.getResultList();
     }
 
