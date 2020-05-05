@@ -186,10 +186,10 @@ public class DBliveryRepository{
 
     /*Obtiene todas las ordenes entregadas entre dos fechas*/
     public List<Order> findDeliveredOrdersInPeriod(Date startDate, Date endDate){
-        String hql = "select o from Order as o " +
-                "inner join RecordState as rs on rs.order = o " +
-                "where (o.dateOfOrder >= :startDate and o.dateOfOrder <= :endDate)" +
-                "and :state = rs.state";
+        String hql = "select rs.order from RecordState as rs " +
+                "where (rs.order.dateOfOrder >= :startDate and rs.order.dateOfOrder <= :endDate) " +
+                "and rs.state = :state";
+
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("startDate", startDate);
         query.setParameter("endDate", endDate);
@@ -201,10 +201,10 @@ public class DBliveryRepository{
     /*Obtiene todas las órdenes entregadas para el cliente con username <code>username</code>*/
     public List<Order> findDeliveredOrdersForUser(String username) {
 
-        String hql = "select o from Order as o inner join User as u on u = o.client " +
-                "inner join RecordState as rs on o = rs.order " +
-                "where u.username = :username " +
+        String hql = "select rs.order from RecordState as rs " +
+                "where rs.order.client.username = :username " +
                 "and rs.state = :state";
+
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("username", username);
         query.setParameter("state", "Delivered");
@@ -219,6 +219,7 @@ public class DBliveryRepository{
                     "where (select DATE_FORMAT(date,'%d-%M-%Y') from RecordState as rs where rs.state = 'Sent' and rs.order = o) - " +
                     "(select DATE_FORMAT(date,'%d-%M-%Y') from RecordState rs2 where rs2.state = 'Pending' and rs2.order = o) >= 1"
                     ;
+
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
 
         return (List<Order>) query.getResultList();
@@ -226,27 +227,22 @@ public class DBliveryRepository{
 
     //* Obtiene las ordenes que fueron entregadas el mismo día de realizadas
     public List<Order> findDeliveredOrdersSameDay() {
-        String hql = "from Order as o " +
-                "where (select DATE_FORMAT(date,'%d-%M-%Y') from RecordState as rs " +
-                        "where rs.state = 'Delivered' and rs.order = o) = " +
-                        "(select DATE_FORMAT(date,'%d-%M-%Y') from RecordState as rs2 " +
-                        "where rs2.state = 'Pending' and rs2.order = o)";
+        String hql = "select rs.order from RecordState as rs " +
+                "where DATE_FORMAT(rs.date,'%d-%M-%Y') = DATE_FORMAT(rs.order.dateOfOrder,'%d-%M-%Y')" +
+                "and rs.state = :state";
+
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+        query.setParameter("state", "Delivered");
 
         return (List<Order>) query.getResultList();
     }
 
     // Obtiene los 5 repartidores que menos ordenes tuvieron asignadas (tanto sent como delivered)
     public List<User> find5LessDeliveryUsers() {
-        String hql = "select u from User u " +
-                "inner join Order o on u = o.delivery " +
-                "where (:delivered in (select rs.state from RecordState rs where o = rs.order) " +
-                "or :sent in (select rs2.state from RecordState rs2 where o = rs2.order)) " +
-                "group by u having count(o.id) > 0 order by count(o.id)";
+        String hql = "select o.delivery from Order o " +
+                "group by o.delivery having count(o.id) > 0 order by count(o.id)";
 
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
-        query.setParameter("delivered", "Delivered");
-        query.setParameter("sent", "Sent");
 
         return (List<User>) query.setFirstResult(0).setMaxResults(5).getResultList();
     }
@@ -254,7 +250,7 @@ public class DBliveryRepository{
     //  Obtiene el producto con más demanda
     public Product findBestSellingProduct() {
         String hql = "select po.product from ProductOrder as po " +
-                "group by po.product order by count(po) desc";
+                "group by po.product order by count(po.quantity) desc";
 
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
 
@@ -263,9 +259,8 @@ public class DBliveryRepository{
 
     //  Obtiene los productos que no cambiaron su precio
     public List<Product> findProductsOnePrice() {
-        String hql = "select p from Product p " +
-                "inner join Price as pr on pr.product = p " +
-                "group by p.id having count(p.id) = 1 ";
+        String hql = "select pr.product from Price as pr " +
+                "group by pr.product having count(pr.product) = 1 ";
 
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         return (List<Product>) query.getResultList();
@@ -273,9 +268,8 @@ public class DBliveryRepository{
 
     //  Obtiene la lista de productos que han aumentado más de un 100% desde su precio inicial
     public List<Product> findProductIncreaseMoreThan100() {
-        String hql = "select p from Product p " +
-                "inner join Price as pr on pr.product = p " +
-                "group by p.id having max(pr.price) - min(pr.price) >= min(pr.price)";
+        String hql = "select pr.product from Price as pr " +
+                "group by pr.product having max(pr.price) - min(pr.price) >= min(pr.price)";
 
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
 
