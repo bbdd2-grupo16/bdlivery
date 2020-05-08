@@ -318,12 +318,17 @@ public class DBliveryRepository{
 
     /*Obtiene las ordenes que fueron entregadas en mas de un dia desde que fueron iniciadas*/
     public List<Order> findOrdersCompleteMoreThanOneDay(){
-        String hql = "select o" +
+        /*String hql = "select o" +
                 " from Order as o" +
                 " inner join RecordState as recordState on recordState.order = o" +
                 " where recordState.state = :state" +
                 " and DATE_FORMAT(recordState.date,'%Y/%m/%d') >= DATE_FORMAT(adddate(o.dateOfOrder, 1),'%Y/%m/%d')";
-        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
+         */
+        String hqlRefactor = "select o" +
+                " from Order as o" +
+                " where o.status = :state" +
+                " and DATE_FORMAT(o.status.date,'%Y/%m/%d') >= DATE_FORMAT(adddate(o.dateOfOrder, 1),'%Y/%m/%d')";
+        Query query = this.sessionFactory.getCurrentSession().createQuery(hqlRefactor);
         query.setParameter("state", "Delivered");
         return (List<Order>) query.getResultList();
     }
