@@ -215,10 +215,8 @@ public class DBliveryRepository{
     /*Obtiene las ordenes que fueron enviadas luego de una hora de realizadas*/
     public List<Order> findSentMoreOneHour(){
 
-        String hql = "from Order as o "+
-                    "where (select DATE_FORMAT(date,'%d-%M-%Y') from RecordState as rs where rs.state = 'Sent' and rs.order = o) - " +
-                    "(select DATE_FORMAT(date,'%d-%M-%Y') from RecordState rs2 where rs2.state = 'Pending' and rs2.order = o) >= 1"
-                    ;
+        String hql = "select rs.order from RecordState as rs "+
+                    "where (DATE_FORMAT(rs.date,'%d-%M-%Y') - DATE_FORMAT(rs.order.dateOfOrder,'%d-%M-%Y')) >= 1 and  rs.state = 'Sent'";
 
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
 
