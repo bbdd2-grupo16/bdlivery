@@ -91,8 +91,8 @@ public class DBliveryRepository{
 
     //Obtiene todas las ordenes realizadas por el usuario con username
     public  List<Order> getAllOrdersMadeByUser(String username){
-        String hql ="select o from Order as o inner join User as u on u = o.client "+
-                "where u.username = :username ";
+        String hql ="select o from Order as o "+
+                "where o.client.username = :username ";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("username", username);
         return (List<Order>) query.getResultList();
@@ -100,7 +100,7 @@ public class DBliveryRepository{
     
     //Obtiene todos los usuarios que han gastando más de amount en alguna orden en la plataforma
     public List<User> getUsersSpendingMoreThan(Float amount){
-        String hql = "select distinct(u) from Order as o inner join User as u on u = o.client "+
+        String hql = "select distinct(o.client) from Order as o "+
                 "inner join ProductOrder as po on o = po.order "+
                 "inner join Product as prod on prod = po.product "+
                 "inner join Price as p on prod = p.product "+
@@ -116,8 +116,8 @@ public class DBliveryRepository{
 
     //Obtiene los n proveedores que más productos tienen en ordenes que están siendo enviadas
     public List<Supplier> getTopNSuppliersInSentOrders(int n) {
-        String hql = "select s from ProductOrder as po inner join Product as p on po.product = p.id "+
-                "inner join Supplier as s on p.supplier = s.id "+
+        String hql = "select s from ProductOrder as po "+
+                "inner join Supplier as s on po.product.supplier = s.id "+
                 "inner join RecordState as rs on rs.order = po.order "+
                 "where rs.state='Sent' group by s.id order by count(s) desc ";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
@@ -129,7 +129,6 @@ public class DBliveryRepository{
     public List<Product> getTop10MoreExpensiveProducts(){
         String hql = "select p from Product p " +
                 "inner join Price as pr on pr.product = p " +
-                "where pr.id in ( select max(id) from Price group by product) "+
                 "order by pr.price desc";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         return (List<Product>) query.setFirstResult(0).setMaxResults(9).getResultList();
@@ -150,9 +149,8 @@ public class DBliveryRepository{
 
     //Obtiene todas las ordenes canceladas entre dos fechas
     public List <Order> getCancelledOrdersInPeriod(Date startDate, Date endDate){
-        String hql = "select o from Order as o " +
-                "inner join RecordState as rs on rs.order = o " +
-                "where (o.dateOfOrder >= :start and o.dateOfOrder <= :end)" +
+        String hql = "select rs.order from RecordState as rs " +
+                "where (rs.order.dateOfOrder >= :start and rs.order.dateOfOrder <= :end)" +
                 "and :state = rs.state";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("start", startDate);
