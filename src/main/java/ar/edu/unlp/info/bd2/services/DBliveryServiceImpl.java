@@ -124,6 +124,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param id
      * @return el usuario con el id provisto
      */
+    @Transactional
     @Override
     public Optional<User> getUserById(Long id){
 
@@ -135,6 +136,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param email
      * @return el usuario con el email provisto
      */
+    @Transactional
     @Override
     public Optional<User> getUserByEmail(String email){
         return Optional.ofNullable(repository.findUserByEmail(email));
@@ -145,6 +147,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param username
      * @return el usuario con el username provisto
      */
+    @Transactional
     @Override
     public Optional<User> getUserByUsername(String username){
         return Optional.ofNullable(repository.findUserByUsername(username));
@@ -155,6 +158,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param id
      * @return el producto con el id provisto
      */
+    @Transactional
     @Override
     public Optional<Product> getProductById(Long id){
         return Optional.ofNullable(repository.findProductById(id));
@@ -165,6 +169,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param id
      * @return el pedido con el id provisto
      */
+    @Transactional
     @Override
     public Optional<Order> getOrderById(Long id){
         return Optional.ofNullable(repository.findOrderById(id));
@@ -330,6 +335,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return true en caso que pueda ser cancelado false en caso contrario.
      * @throws DBliveryException si no existe el pedido.
      */
+    @Transactional
     @Override
     public boolean canCancel(Long order) throws DBliveryException{
         Optional<Order> optional_order = this.getOrderById(order);
@@ -349,6 +355,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return true en caso que pueda ser finalizado, false en caso contrario
      * @throws DBliveryException en caso de no existir el pedido
      */
+    @Transactional
     @Override
     public boolean canFinish(Long id) throws DBliveryException{
         Optional<Order> optional_order = this.getOrderById(id);
@@ -366,6 +373,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return true en caso que pueda ser enviado, false en caso contrario
      * @throws DBliveryException si el pedido no esta en estado pending.
      */
+    @Transactional
     @Override
     public boolean canDeliver(Long order) throws DBliveryException{
         Optional<Order> optional_order = this.getOrderById(order);
@@ -387,6 +395,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param order pedido del cual se debe retornar el estado actual
      * @return el estado del pedido actual
      */
+    @Transactional
     @Override
     public String getActualStatus(Long order){
         Order orderConcrete = repository.findOrderById(order);
@@ -398,6 +407,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param name string a buscar
      * @return Lista de productos
      */
+    @Transactional
     @Override
     public List<Product> getProductByName(String name){
         return (List<Product>) repository.findProductByName(name);
@@ -408,6 +418,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param username
      * @return Una lista de ordenes que satisfagan la condición
      */
+    @Transactional
     @Override
     public List<Order> getAllOrdersMadeByUser(String username) {
         return (List<Order>) repository.getAllOrdersMadeByUser(username);
@@ -418,6 +429,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param amount
      * @return una lista de usuarios que satisfagan la condici{on
      */
+    @Transactional
     @Override
     public List<User> getUsersSpendingMoreThan(Float amount){
         return (List<User>) repository.getUsersSpendingMoreThan(amount);
@@ -428,6 +440,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param n
      * @return una lista con los <code>n</code> proveedores que satisfagan la condición
      */
+    @Transactional
     @Override
     public List<Supplier> getTopNSuppliersInSentOrders(int n) {
         return (List<Supplier>) repository.getTopNSuppliersInSentOrders(n);
@@ -437,6 +450,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * Obtiene los 9 productos más costosos
      * @return una lista con los productos que satisfacen la condición
      */
+    @Transactional
     @Override
     public List<Product> getTop10MoreExpensiveProducts() {
         return (List<Product>) repository.getTop10MoreExpensiveProducts();
@@ -446,6 +460,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * Obtiene los 6 usuarios que más cantidad de ordenes han realizado
      * @return una lista con los usuarios que satisfacen la condición
      */
+    @Transactional
     @Override
     public List<User> getTop6UsersMoreOrders() {
         return (List<User>) repository.getTop6UsersMoreOrders();
@@ -457,6 +472,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param endDate
      * @return una lista con las ordenes que satisfagan la condición
      */
+    @Transactional
     @Override
     public List <Order> getCancelledOrdersInPeriod(Date startDate, Date endDate) {
         return (List<Order>) repository.getCancelledOrdersInPeriod(startDate,endDate);
@@ -465,6 +481,7 @@ public class DBliveryServiceImpl implements DBliveryService{
     /**
      * Obtiene el listado de las ordenes pendientes
      */
+    @Transactional
     @Override
     public List <Order> getPendingOrders() {
         return (List<Order>) repository.getPendingOrders();
@@ -473,6 +490,7 @@ public class DBliveryServiceImpl implements DBliveryService{
     /**
      * Obtiene el listado de las ordenes enviadas y no entregadas
      */
+    @Transactional
     @Override
     public List<Order> getSentOrders() {
         return (List<Order>) repository.getSentOrders();
@@ -484,6 +502,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param endDate
      * @return una lista con las ordenes que satisfagan la condición
      */
+    @Transactional
     @Override
     public List<Order> getDeliveredOrdersInPeriod(Date startDate, Date endDate) {
         return (List<Order>) repository.findDeliveredOrdersInPeriod(startDate, endDate);
@@ -494,6 +513,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param username
      * @return una lista de ordenes que satisfagan la condición
      */
+    @Transactional
     @Override
     public List<Order> getDeliveredOrdersForUser(String username) {
         return (List<Order>) repository.findDeliveredOrdersForUser(username);
@@ -504,6 +524,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * (en realidad, luego de 24hs más tarde)
      * @return una lista de ordenes que satisfagan la condición
      */
+    @Transactional
     @Override
     public List<Order> getSentMoreOneHour() {
         return (List<Order>) repository.findSentMoreOneHour();
@@ -513,6 +534,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * Obtiene las ordenes que fueron entregadas el mismo día de realizadas
      * @return una lista de ordenes que satisfagan la condición
      */
+    @Transactional
     @Override
     public List<Order> getDeliveredOrdersSameDay() {
         return (List<Order>) repository.findDeliveredOrdersSameDay();
@@ -522,9 +544,9 @@ public class DBliveryServiceImpl implements DBliveryService{
      * Obtiene los 5 repartidores que menos ordenes tuvieron asignadas (tanto sent como delivered)
      * @return una lista de las ordenes que satisfagan la condición
      */
+    @Transactional
     @Override
     public List<User> get5LessDeliveryUsers() {
-
         return (List<User>) repository.find5LessDeliveryUsers();
     }
 
@@ -532,6 +554,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * Obtiene el producto con más demanda
      * @return el producto que satisfaga la condición
      */
+    @Transactional
     @Override
     public Product getBestSellingProduct() {
         return (Product) repository.findBestSellingProduct();
@@ -541,6 +564,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * Obtiene los productos que no cambiaron su precio
      * @return una lista de productos que satisfagan la condición
      */
+    @Transactional
     @Override
     public List<Product> getProductsOnePrice() {
         return (List<Product>) repository.findProductsOnePrice();
@@ -550,6 +574,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * Obtiene la lista de productos que han aumentado más de un 100% desde su precio inicial
      * @return una lista de productos que satisfagan la condición
      */
+    @Transactional
     @Override
     public List<Product> getProductIncreaseMoreThan100() {
         return (List<Product>) repository.findProductIncreaseMoreThan100();
@@ -559,6 +584,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * Obtiene el proveedor con el producto de menor valor historico de la plataforma
      * @return el proveedor que cumple la condición
      */
+    @Transactional
     @Override
     public Supplier getSupplierLessExpensiveProduct() {
         return (Supplier) repository.findSupplierLessExpensiveProduct();
@@ -569,6 +595,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param day
      * @return una lista de proveedores que cumplen la condición
      */
+    @Transactional
     @Override
     public List <Supplier> getSuppliersDoNotSellOn(Date day) {
         return (List<Supplier>) repository.findSupplierDoNotSellOn(day);
@@ -579,6 +606,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param day
      * @return una lista los productos vendidos
      */
+    @Transactional
     @Override
     public List <Product> getSoldProductsOn(Date day) {
         return (List<Product>) repository.findSoldProductsOn(day);
@@ -588,6 +616,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * obtiene las ordenes que fueron entregadas en m{as de un día desde que fueron iniciadas(status pending)
      * @return una lista de las ordenes que satisfagan la condición
      */
+    @Transactional
     @Override
     public List<Order> getOrdersCompleteMorethanOneDay() {
         return (List<Order>) repository.findOrdersCompleteMoreThanOneDay();
@@ -598,6 +627,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param day
      * @return la lista de cada producto con su precio en la fecha dada
      */
+    @Transactional
     @Override
     public List <Object[]> getProductsWithPriceAt(Date day) {
         return (List <Object[]>) repository.findProductsWithPriceAt(day);
@@ -607,6 +637,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * obtiene la lista de productos que no se han vendido
      * @return la lista de productos que satisfagan la condición
      */
+    @Transactional
     @Override
     public List<Product> getProductsNotSold(){
         return (List<Product>) repository.findProductsNotSold();
@@ -617,6 +648,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @day
      * @return una lista con las ordenes que cumplen la condición
      */
+    @Transactional
     @Override
     public List<Order> getOrderWithMoreQuantityOfProducts(Date day) {
         return repository.findOrderWithMoreQuantityOfProducts(day);
