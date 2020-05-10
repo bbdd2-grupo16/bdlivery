@@ -346,8 +346,12 @@ public class DBliveryRepository{
     public List<Order> findOrderWithMoreQuantityOfProducts(Date day){
         String hql = "select po.order from ProductOrder as po" +
                 " where po.order.dateOfOrder = :day" +
-                " group by po.order" +
-                " having max( sum(po.quantity) )";
+                " group by po.order having" +
+                " ( sum(po.quantity) >=" +
+                " ALL (select sum(po2.quantity)" +
+                " from ProductOrder po2" +
+                " where po2.order.dateOfOrder = :day" +
+                " group by po2.order))";
         Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
         query.setParameter("day", day);
         return (List<Order>) query.getResultList();
