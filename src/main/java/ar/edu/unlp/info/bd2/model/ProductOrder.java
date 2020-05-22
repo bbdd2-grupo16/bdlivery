@@ -1,10 +1,13 @@
 package ar.edu.unlp.info.bd2.model;
 
+import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+import org.bson.types.ObjectId;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "PRODUCT_ORDER")
-public class ProductOrder {
+public class ProductOrder implements PersistentObject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -42,4 +45,14 @@ public class ProductOrder {
     public Order getOrder() { return order; }
 
     public void setOrder(Order order) { this.order = order; }
+
+    @Override
+    public ObjectId getObjectId() {
+        return null;
+    }
+
+    @Override
+    public void setObjectId(ObjectId objectId) {
+
+    }
 }

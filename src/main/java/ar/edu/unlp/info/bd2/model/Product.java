@@ -1,5 +1,8 @@
 package ar.edu.unlp.info.bd2.model;
 
+import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+import org.bson.types.ObjectId;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -7,7 +10,7 @@ import java.util.ArrayList;
 
 @Entity
 @Table(name = "PRODUCT")
-public class Product{
+public class Product implements PersistentObject{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -105,4 +108,13 @@ public class Product{
         return this.getPrices().get(this.getPrices().size() - 1).getPrice();
     }
 
+    @Override
+    public ObjectId getObjectId() {
+        return null;
+    }
+
+    @Override
+    public void setObjectId(ObjectId objectId) {
+
+    }
 }

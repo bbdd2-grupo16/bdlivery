@@ -1,10 +1,13 @@
 package ar.edu.unlp.info.bd2.model;
 
+import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+import org.bson.types.ObjectId;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name="SUPPLIER")
-public class Supplier{
+public class Supplier implements PersistentObject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -73,5 +76,15 @@ public class Supplier{
 
     public void setCoordY(Float coordY) {
         this.coordY = coordY;
+    }
+
+    @Override
+    public ObjectId getObjectId() {
+        return null;
+    }
+
+    @Override
+    public void setObjectId(ObjectId objectId) {
+
     }
 }

@@ -1,11 +1,14 @@
 package ar.edu.unlp.info.bd2.model;
 
+import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+import org.bson.types.ObjectId;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "RECORD_STATE")
-public class RecordState {
+public class RecordState implements PersistentObject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,5 +46,15 @@ public class RecordState {
 
     public Order getOrder() {
         return order;
+    }
+
+    @Override
+    public ObjectId getObjectId() {
+        return null;
+    }
+
+    @Override
+    public void setObjectId(ObjectId objectId) {
+
     }
 }

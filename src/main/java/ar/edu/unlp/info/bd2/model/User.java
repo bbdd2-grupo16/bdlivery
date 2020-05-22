@@ -1,5 +1,8 @@
 package ar.edu.unlp.info.bd2.model;
 
+import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+import org.bson.types.ObjectId;
+
 import javax.persistence.*;
 
 import java.util.List;
@@ -8,7 +11,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "USER_")
-public class User{
+public class User implements PersistentObject{
 
      @Id
      @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -85,6 +88,16 @@ public class User{
 
      public List<Order> getOrders() {
           return orders;
+     }
+
+     @Override
+     public ObjectId getObjectId() {
+          return null;
+     }
+
+     @Override
+     public void setObjectId(ObjectId objectId) {
+
      }
 
 //     public void setOrders(Order orders) {

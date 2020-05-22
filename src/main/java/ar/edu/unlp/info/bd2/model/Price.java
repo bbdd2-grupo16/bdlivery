@@ -1,11 +1,14 @@
 package ar.edu.unlp.info.bd2.model;
 
+import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+import org.bson.types.ObjectId;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name="PRICE")
-public class Price {
+public class Price implements PersistentObject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,4 +66,13 @@ public class Price {
         return product;
     }
 
+    @Override
+    public ObjectId getObjectId() {
+        return null;
+    }
+
+    @Override
+    public void setObjectId(ObjectId objectId) {
+
+    }
 }
