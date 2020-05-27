@@ -1,33 +1,36 @@
 package ar.edu.unlp.info.bd2.model;
 
 import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
 
-import javax.persistence.*;
 import java.util.Date;
 
-@Entity
-@Table(name = "RECORD_STATE")
 public class RecordState implements PersistentObject {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @BsonId
+    private ObjectId objectId;
     private Date date; /*fecha en que se actualizo el estado*/
-    private String state; /*Nombre del estado*/
-    @ManyToOne
-    private Order order;
+    private String status; /*Nombre del estado*/
+//    @ManyToOne
+//    private Order order;
 
     public RecordState() {
     }
 
     public RecordState(String state, Date date) {
         this.date = date;
-        this.state = state;
+        this.status = status;
     }
 
-    public Long getId() {
-        return id;
+    @Override
+    public ObjectId getObjectId() {
+        return objectId;
+    }
+
+    @Override
+    public void setObjectId(ObjectId objectId) {
+        this.objectId = objectId;
     }
 
     public Date getDate() {
@@ -38,23 +41,14 @@ public class RecordState implements PersistentObject {
         this.date = date;
     }
 
-    public String getState() { return state; }
+    public String getStatus() { return status; }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setStatus(String state) {
+        this.status = state;
     }
+//
+//    public Order getOrder() {
+//        return order;
+//    }
 
-    public Order getOrder() {
-        return order;
-    }
-
-    @Override
-    public ObjectId getObjectId() {
-        return null;
-    }
-
-    @Override
-    public void setObjectId(ObjectId objectId) {
-
-    }
 }

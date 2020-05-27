@@ -1,4 +1,4 @@
-package ar.edu.unlp.info.bd2.repositories;
+package ar.edu.unlp.info.bd2.services;
 
 public class DBliveryException extends Exception {
 

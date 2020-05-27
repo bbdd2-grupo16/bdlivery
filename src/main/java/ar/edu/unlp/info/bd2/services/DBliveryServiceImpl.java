@@ -1,17 +1,20 @@
 package ar.edu.unlp.info.bd2.services;
 import ar.edu.unlp.info.bd2.model.*;
-import ar.edu.unlp.info.bd2.repositories.DBliveryRepository;
+import ar.edu.unlp.info.bd2.repositories.DBliveryMongoRepository;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.transaction.annotation.Transactional;
+
+import org.bson.types.ObjectId;
+//import org.springframework.transaction.annotation.Transactional;
 
 
 public class DBliveryServiceImpl implements DBliveryService{
 
-    private DBliveryRepository repository;
+    private DBliveryMongoRepository repository;
 
-    public DBliveryServiceImpl(DBliveryRepository repository) {this.repository = repository;}
+    public DBliveryServiceImpl(DBliveryMongoRepository repository) {this.repository = repository;}
 
     /**
      *  Crea y devuelve un nuevo Producto.
@@ -23,21 +26,19 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
 
     @Override
-    @Transactional
     public Product createProduct(String name, Float price, Float weight, Supplier supplier){
         try {
-            return (Product) repository.save(new Product(name, price, weight, supplier));
+            return (Product) repository.save(new Product(name, price, weight, supplier), "products", Product.class);
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
         return null;
     }
 
-    @Transactional
     @Override
     public Product createProduct(String name, Float price, Float weight, Supplier supplier, Date date) {
         try {
-            return (Product) repository.save(new Product(name, price, weight, supplier, date));
+            return (Product) repository.save(new Product(name, price, weight, supplier, date), "products", Product.class);
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -54,11 +55,10 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el productor creado
      */
 
-    @Transactional
     @Override
     public Supplier createSupplier(String name, String cuil, String address, Float coordX, Float coordY){
         try {
-            return (Supplier) repository.save(new Supplier(name, cuil, address, coordX, coordY));
+            return (Supplier) repository.save(new Supplier(name, cuil, address, coordX, coordY), "suppliers", Supplier.class);
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -75,13 +75,10 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el usuario creado
      */
 
-    @Transactional
     @Override
     public User createUser(String email, String password, String username, String name, Date dateOfBirth){
         try {
-            User user = new User(email, password, username, name, dateOfBirth);
-            System.out.println(user.getName());
-            return (User) repository.save(user);
+            return (User) repository.save(new User(email, password, username, name, dateOfBirth), "users", User.class);
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -97,25 +94,24 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @throws DBliveryException en caso de que no exista el producto para el id dado
      */
 
-    @Transactional
     @Override
-    public Product updateProductPrice(Long id, Float price, Date startDate) throws DBliveryException {
-        Optional<Product> optional_product = this.getProductById(id);
-        if (!optional_product.isPresent()) {
-            throw new DBliveryException("El producto no existe");
-        } else {
-            Product product = optional_product.get();
-        //  Actualizar precio producto
-            product.setPrice(price);
-            product.addPrice(new Price(price, startDate));
-            try{
-                return (Product) repository.save(product);
-            }catch (DBliveryException e){
-                System.out.println(e.getMessage());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+    public Product updateProductPrice(ObjectId id, Float price, Date startDate) throws DBliveryException {
+//        Optional<Product> optional_product = this.getProductById(id);
+//        if (!optional_product.isPresent()) {
+//            throw new DBliveryException("El producto no existe");
+//        } else {
+//            Product product = optional_product.get();
+//        //  Actualizar precio producto
+//            product.setPrice(price);
+//            product.addPrice(new Price(price, startDate));
+//            try{
+//                return (Product) repository.save(product);
+//            }catch (DBliveryException e){
+//                System.out.println(e.getMessage());
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
         return null;
     }
 
@@ -124,11 +120,10 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param id
      * @return el usuario con el id provisto
      */
-    @Transactional
     @Override
-    public Optional<User> getUserById(Long id){
-
-        return Optional.ofNullable(repository.findUserById(id));
+    public Optional<User> getUserById(ObjectId id){
+//        return Optional.ofNullable(repository.findUserById(id));
+        return null;
     }
 
     /**
@@ -136,10 +131,11 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param email
      * @return el usuario con el email provisto
      */
-    @Transactional
     @Override
     public Optional<User> getUserByEmail(String email){
-        return Optional.ofNullable(repository.findUserByEmail(email));
+//        return Optional.ofNullable(repository.findUserByEmail(email));
+        return null;
+
     }
 
     /**
@@ -147,10 +143,11 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param username
      * @return el usuario con el username provisto
      */
-    @Transactional
     @Override
     public Optional<User> getUserByUsername(String username){
-        return Optional.ofNullable(repository.findUserByUsername(username));
+//        return Optional.ofNullable(repository.findUserByUsername(username));
+        return null;
+
     }
 
     /**
@@ -158,10 +155,10 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param id
      * @return el producto con el id provisto
      */
-    @Transactional
     @Override
-    public Optional<Product> getProductById(Long id){
-        return Optional.ofNullable(repository.findProductById(id));
+    public Optional<Product> getProductById(ObjectId id){
+//        return Optional.ofNullable(repository.findProductById(id));
+        return null;
     }
 
     /**
@@ -169,10 +166,11 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param id
      * @return el pedido con el id provisto
      */
-    @Transactional
     @Override
-    public Optional<Order> getOrderById(Long id){
-        return Optional.ofNullable(repository.findOrderById(id));
+    public Optional<Order> getOrderById(ObjectId id){
+
+//        return Optional.ofNullable(repository.findOrderById(id));
+        return null;
     }
 
     /**
@@ -184,15 +182,13 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param client cliente que realizó el pedido
      * @return el nuevo pedido
      */
-
-    @Transactional
     @Override
     public Order createOrder(Date dateOfOrder, String address, Float coordX, Float coordY, User client){
-        try {
-            return (Order) repository.save(new Order(dateOfOrder, address, coordX, coordY, client));
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
+//        try {
+//            return (Order) repository.save(new Order(dateOfOrder, address, coordX, coordY, client));
+//        }catch (Exception e){
+//            System.out.println(e.getMessage());
+//        }
         return null;
     }
 
@@ -204,17 +200,16 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el pedido con el nuevo producto
      * @throws DBliveryException en caso de no existir el pedido
      */
-
     @Override
-    @Transactional
-    public Order addProduct(Long order, Long quantity, Product product)throws DBliveryException{
-        Optional<Order> optional_order = this.getOrderById(order);
-        if (optional_order.isPresent()){
-            Order orderConcrete = optional_order.get();
-            orderConcrete.addProduct(quantity, product);
-            repository.updateOrder(orderConcrete);
-            return orderConcrete;
-        }else { throw new DBliveryException("La orden no existe"); }
+    public Order addProduct(ObjectId order, Long quantity, Product product)throws DBliveryException{
+//        Optional<Order> optional_order = this.getOrderById(order);
+//        if (optional_order.isPresent()){
+//            Order orderConcrete = optional_order.get();
+//            orderConcrete.addProduct(quantity, product);
+//            repository.updateOrder(orderConcrete);
+//            return orderConcrete;
+//        }
+        throw new DBliveryException("La orden no existe");
     }
 
     /**
@@ -224,37 +219,34 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el pedido modificado
      * @throws DBliveryException en caso de no existir el pedido, que el pedido no se encuentre en estado Pending o sí no contiene productos.
      */
-
-    @Transactional
     @Override
-    public Order deliverOrder(Long order, User deliveryUser) throws DBliveryException{
-        Optional<Order> optional_order = this.getOrderById(order);
-        if (optional_order.isPresent()){
-            Order orderConcrete = optional_order.get();
-            if (this.canDeliver(orderConcrete.getId())) {
-                orderConcrete.setDeliveryUser(deliveryUser);
-                orderConcrete.addState("Sent");
-                repository.updateOrder(orderConcrete);
-                return orderConcrete;
-            }else { new DBliveryException("La orden no puede ser"); }
-        }
+    public Order deliverOrder(ObjectId order, User deliveryUser) throws DBliveryException{
+//        Optional<Order> optional_order = this.getOrderById(order);
+//        if (optional_order.isPresent()){
+//            Order orderConcrete = optional_order.get();
+//            if (this.canDeliver(orderConcrete.getId())) {
+//                orderConcrete.setDeliveryUser(deliveryUser);
+//                orderConcrete.addState("Sent");
+//                repository.updateOrder(orderConcrete);
+//                return orderConcrete;
+//            }else { new DBliveryException("La orden no puede ser"); }
+//        }
         throw new DBliveryException("La orden no existe");
     }
 
-    @Transactional
     @Override
-    public Order deliverOrder(Long order, User deliveryUser, Date date) throws DBliveryException {
-        Optional<Order> optional_order = this.getOrderById(order);
-        System.out.println(optional_order.getClass());
-        if (optional_order.isPresent()){
-            Order orderConcrete = optional_order.get();
-            if (this.canDeliver(orderConcrete.getId())) {
-                orderConcrete.setDeliveryUser(deliveryUser);
-                orderConcrete.addState("Sent", date);
-                repository.updateOrder(orderConcrete);
-                return orderConcrete;
-            }else { throw new DBliveryException("La orden no puede ser enviada"); }
-        }
+    public Order deliverOrder(ObjectId order, User deliveryUser, Date date) throws DBliveryException {
+//        Optional<Order> optional_order = this.getOrderById(order);
+//        System.out.println(optional_order.getClass());
+//        if (optional_order.isPresent()){
+//            Order orderConcrete = optional_order.get();
+//            if (this.canDeliver(orderConcrete.getId())) {
+//                orderConcrete.setDeliveryUser(deliveryUser);
+//                orderConcrete.addState("Sent", date);
+//                repository.updateOrder(orderConcrete);
+//                return orderConcrete;
+//            }else { throw new DBliveryException("La orden no puede ser enviada"); }
+//        }
         throw new DBliveryException("La orden no existe");
     }
 
@@ -264,34 +256,31 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el pedido modificado
      * @throws DBliveryException en caso de no existir el pedido o si el pedido no esta en estado pending
      */
-
-    @Transactional
     @Override
-    public Order cancelOrder(Long order) throws DBliveryException{
-        Optional<Order> optional_order = this.getOrderById(order);
-        if (optional_order.isPresent()){
-            Order orderConcrete = optional_order.get();
-            if (this.canCancel(orderConcrete.getId())) {
-                orderConcrete.addState("Cancelled");
-                repository.updateOrder(orderConcrete);
-                return orderConcrete;
-            }else { new DBliveryException("La orden no puede ser cancelada"); }
-        }
+    public Order cancelOrder(ObjectId order) throws DBliveryException{
+//        Optional<Order> optional_order = this.getOrderById(order);
+//        if (optional_order.isPresent()){
+//            Order orderConcrete = optional_order.get();
+//            if (this.canCancel(orderConcrete.getId())) {
+//                orderConcrete.addState("Cancelled");
+//                repository.updateOrder(orderConcrete);
+//                return orderConcrete;
+//            }else { new DBliveryException("La orden no puede ser cancelada"); }
+//        }
         throw new DBliveryException("La orden no existe");
     }
 
-    @Transactional
     @Override
-    public Order cancelOrder(Long order, Date date) throws DBliveryException {
-        Optional<Order> optional_order = this.getOrderById(order);
-        if (optional_order.isPresent()){
-            Order orderConcrete = optional_order.get();
-            if (this.canCancel(orderConcrete.getId())) {
-                orderConcrete.addState("Cancelled", date);
-                repository.updateOrder(orderConcrete);
-                return orderConcrete;
-            }else { new DBliveryException("La orden no puede ser cancelada"); }
-        }
+    public Order cancelOrder(ObjectId order, Date date) throws DBliveryException {
+//        Optional<Order> optional_order = this.getOrderById(order);
+//        if (optional_order.isPresent()){
+//            Order orderConcrete = optional_order.get();
+//            if (this.canCancel(orderConcrete.getId())) {
+//                orderConcrete.addState("Cancelled", date);
+//                repository.updateOrder(orderConcrete);
+//                return orderConcrete;
+//            }else { new DBliveryException("La orden no puede ser cancelada"); }
+//        }
         throw new DBliveryException("La orden no existe");
     }
 
@@ -301,32 +290,33 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return el pedido modificado
      * @throws DBliveryException en caso que no exista el pedido o si el mismo no esta en estado Send
      */
-    @Transactional
     @Override
-    public Order finishOrder(Long order) throws DBliveryException{
-        Optional<Order> optional_order = this.getOrderById(order);
-        if (optional_order.isPresent()){
-            Order orderConcrete = optional_order.get();
-            if (this.canFinish(orderConcrete.getId())) {
-                orderConcrete.addState("Delivered");
-                repository.updateOrder(orderConcrete);
-                return orderConcrete;
-            }else { throw new DBliveryException("La orden no puede ser aprobada"); }
-        }else { throw new DBliveryException("La orden no existe"); }
+    public Order finishOrder(ObjectId order) throws DBliveryException{
+//        Optional<Order> optional_order = this.getOrderById(order);
+//        if (optional_order.isPresent()){
+//            Order orderConcrete = optional_order.get();
+//            if (this.canFinish(orderConcrete.getId())) {
+//                orderConcrete.addState("Delivered");
+//                repository.updateOrder(orderConcrete);
+//                return orderConcrete;
+//            }else { throw new DBliveryException("La orden no puede ser aprobada"); }
+//        }
+        throw new DBliveryException("La orden no existe");
+
     }
 
-    @Transactional
     @Override
-    public Order finishOrder(Long order, Date date) throws DBliveryException {
-        Optional<Order> optional_order = this.getOrderById(order);
-        if (optional_order.isPresent()){
-            Order orderConcrete = optional_order.get();
-            if (this.canFinish(orderConcrete.getId())) {
-                orderConcrete.addState("Delivered", date);
-                repository.updateOrder(orderConcrete);
-                return orderConcrete;
-            }else { throw new DBliveryException("La orden no puede ser finalizada"); }
-        }else { throw new DBliveryException("La orden no existe"); }
+    public Order finishOrder(ObjectId order, Date date) throws DBliveryException {
+//        Optional<Order> optional_order = this.getOrderById(order);
+//        if (optional_order.isPresent()){
+//            Order orderConcrete = optional_order.get();
+//            if (this.canFinish(orderConcrete.getId())) {
+//                orderConcrete.addState("Delivered", date);
+//                repository.updateOrder(orderConcrete);
+//                return orderConcrete;
+//            }else { throw new DBliveryException("La orden no puede ser finalizada"); }
+//        }
+        throw new DBliveryException("La orden no existe");
     }
 
     /**
@@ -335,18 +325,16 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return true en caso que pueda ser cancelado false en caso contrario.
      * @throws DBliveryException si no existe el pedido.
      */
-    @Transactional
     @Override
-    public boolean canCancel(Long order) throws DBliveryException{
-        Optional<Order> optional_order = this.getOrderById(order);
-        if (optional_order.isPresent()){
-            Order orderConcrete = optional_order.get();
-            if(this.getActualStatus(orderConcrete.getId()).equals("Pending")){
-                return true;
-            }else {return false;}
-        }else{
-            throw new DBliveryException("La orden no existe");
-        }
+    public boolean canCancel(ObjectId order) throws DBliveryException{
+//        Optional<Order> optional_order = this.getOrderById(order);
+//        if (optional_order.isPresent()){
+//            Order orderConcrete = optional_order.get();
+//            if(this.getActualStatus(orderConcrete.getId()).equals("Pending")){
+//                return true;
+//            }else {return false;}
+//        }
+        throw new DBliveryException("La orden no existe");
     }
 
     /**
@@ -355,16 +343,16 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return true en caso que pueda ser finalizado, false en caso contrario
      * @throws DBliveryException en caso de no existir el pedido
      */
-    @Transactional
     @Override
-    public boolean canFinish(Long id) throws DBliveryException{
-        Optional<Order> optional_order = this.getOrderById(id);
-        if (optional_order.isPresent()){
-            Order orderConcrete = optional_order.get();
-            if(this.getActualStatus(orderConcrete.getId()).equals("Sent")){
-                return true;
-            }else {return false;}
-        }else{ throw new DBliveryException("La orden no existe"); }
+    public boolean canFinish(ObjectId id) throws DBliveryException{
+//        Optional<Order> optional_order = this.getOrderById(id);
+//        if (optional_order.isPresent()){
+//            Order orderConcrete = optional_order.get();
+//            if(this.getActualStatus(orderConcrete.getId()).equals("Sent")){
+//                return true;
+//            }else {return false;}
+//        }
+        throw new DBliveryException("La orden no existe");
     }
 
     /**
@@ -373,20 +361,19 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @return true en caso que pueda ser enviado, false en caso contrario
      * @throws DBliveryException si el pedido no esta en estado pending.
      */
-    @Transactional
     @Override
-    public boolean canDeliver(Long order) throws DBliveryException{
-        Optional<Order> optional_order = this.getOrderById(order);
-        if (optional_order.isPresent()){
-            Order orderConcrete = optional_order.get();
-            if (this.getActualStatus(orderConcrete.getId()).equals("Pending")){
-                if (orderConcrete.getProducts().size() > 0) {
-                    return true;
-                }
-            }
-        }else{
-            throw new DBliveryException("La orden no existe");
-        }
+    public boolean canDeliver(ObjectId order) throws DBliveryException{
+//        Optional<Order> optional_order = this.getOrderById(order);
+//        if (optional_order.isPresent()){
+//            Order orderConcrete = optional_order.get();
+//            if (this.getActualStatus(orderConcrete.getId()).equals("Pending")){
+//                if (orderConcrete.getProducts().size() > 0) {
+//                    return true;
+//                }
+//            }
+//        }else{
+//            throw new DBliveryException("La orden no existe");
+//        }
         return false;
     }
 
@@ -395,11 +382,11 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param order pedido del cual se debe retornar el estado actual
      * @return el estado del pedido actual
      */
-    @Transactional
     @Override
-    public String getActualStatus(Long order){
-        Order orderConcrete = repository.findOrderById(order);
-        return orderConcrete.getLastStatus().getState();
+    public String getActualStatus(ObjectId order){
+//        Order orderConcrete = repository.findOrderById(order);
+//        return orderConcrete.getLastStatus().getStatus();
+        return null;
     }
 
     /**
@@ -407,251 +394,9 @@ public class DBliveryServiceImpl implements DBliveryService{
      * @param name string a buscar
      * @return Lista de productos
      */
-    @Transactional
     @Override
-    public List<Product> getProductByName(String name){
-        return (List<Product>) repository.findProductByName(name);
+    public List<Product> getProductsByName(String name){
+//        return (List<Product>) repository.findProductByName(name);
+        return null;
     }
-
-    /**
-     * Obtiene todas las ordenes realizadas por el usuario con username <code>username</code>
-     * @param username
-     * @return Una lista de ordenes que satisfagan la condición
-     */
-    @Transactional
-    @Override
-    public List<Order> getAllOrdersMadeByUser(String username) {
-        return (List<Order>) repository.getAllOrdersMadeByUser(username);
-    }
-
-    /**
-     * Obtiene todos los usuarios que han gastando más de <code>amount</code> en alguna orden en la plataforma
-     * @param amount
-     * @return una lista de usuarios que satisfagan la condici{on
-     */
-    @Transactional
-    @Override
-    public List<User> getUsersSpendingMoreThan(Float amount){
-        return (List<User>) repository.getUsersSpendingMoreThan(amount);
-    }
-
-    /**
-     * Obtiene los <code>n</code> proveedores que más productos tienen en ordenes que están siendo enviadas
-     * @param n
-     * @return una lista con los <code>n</code> proveedores que satisfagan la condición
-     */
-    @Transactional
-    @Override
-    public List<Supplier> getTopNSuppliersInSentOrders(int n) {
-        return (List<Supplier>) repository.getTopNSuppliersInSentOrders(n);
-    }
-
-    /**
-     * Obtiene los 9 productos más costosos
-     * @return una lista con los productos que satisfacen la condición
-     */
-    @Transactional
-    @Override
-    public List<Product> getTop10MoreExpensiveProducts() {
-        return (List<Product>) repository.getTop10MoreExpensiveProducts();
-    }
-
-    /**
-     * Obtiene los 6 usuarios que más cantidad de ordenes han realizado
-     * @return una lista con los usuarios que satisfacen la condición
-     */
-    @Transactional
-    @Override
-    public List<User> getTop6UsersMoreOrders() {
-        return (List<User>) repository.getTop6UsersMoreOrders();
-    }
-
-    /**
-     * Obtiene todas las ordenes canceladas entre dos fechas
-     * @param startDate
-     * @param endDate
-     * @return una lista con las ordenes que satisfagan la condición
-     */
-    @Transactional
-    @Override
-    public List <Order> getCancelledOrdersInPeriod(Date startDate, Date endDate) {
-        return (List<Order>) repository.getCancelledOrdersInPeriod(startDate,endDate);
-    }
-
-    /**
-     * Obtiene el listado de las ordenes pendientes
-     */
-    @Transactional
-    @Override
-    public List <Order> getPendingOrders() {
-        return (List<Order>) repository.getPendingOrders();
-    }
-
-    /**
-     * Obtiene el listado de las ordenes enviadas y no entregadas
-     */
-    @Transactional
-    @Override
-    public List<Order> getSentOrders() {
-        return (List<Order>) repository.getSentOrders();
-    }
-
-    /**
-     * Obtiene todas las ordenes entregadas entre dos fechas
-     * @param startDate
-     * @param endDate
-     * @return una lista con las ordenes que satisfagan la condición
-     */
-    @Transactional
-    @Override
-    public List<Order> getDeliveredOrdersInPeriod(Date startDate, Date endDate) {
-        return (List<Order>) repository.findDeliveredOrdersInPeriod(startDate, endDate);
-    }
-
-    /**
-     * Obtiene todas las órdenes entregadas para el cliente con username <code>username</code>
-     * @param username
-     * @return una lista de ordenes que satisfagan la condición
-     */
-    @Transactional
-    @Override
-    public List<Order> getDeliveredOrdersForUser(String username) {
-        return (List<Order>) repository.findDeliveredOrdersForUser(username);
-    }
-
-    /**
-     * Obtiene las ordenes que fueron enviadas luego de una hora de realizadas
-     * (en realidad, luego de 24hs más tarde)
-     * @return una lista de ordenes que satisfagan la condición
-     */
-    @Transactional
-    @Override
-    public List<Order> getSentMoreOneHour() {
-        return (List<Order>) repository.findSentMoreOneHour();
-    }
-
-    /**
-     * Obtiene las ordenes que fueron entregadas el mismo día de realizadas
-     * @return una lista de ordenes que satisfagan la condición
-     */
-    @Transactional
-    @Override
-    public List<Order> getDeliveredOrdersSameDay() {
-        return (List<Order>) repository.findDeliveredOrdersSameDay();
-    }
-
-    /**
-     * Obtiene los 5 repartidores que menos ordenes tuvieron asignadas (tanto sent como delivered)
-     * @return una lista de las ordenes que satisfagan la condición
-     */
-    @Transactional
-    @Override
-    public List<User> get5LessDeliveryUsers() {
-        return (List<User>) repository.find5LessDeliveryUsers();
-    }
-
-    /**
-     * Obtiene el producto con más demanda
-     * @return el producto que satisfaga la condición
-     */
-    @Transactional
-    @Override
-    public Product getBestSellingProduct() {
-        return (Product) repository.findBestSellingProduct();
-    }
-
-    /**
-     * Obtiene los productos que no cambiaron su precio
-     * @return una lista de productos que satisfagan la condición
-     */
-    @Transactional
-    @Override
-    public List<Product> getProductsOnePrice() {
-        return (List<Product>) repository.findProductsOnePrice();
-    }
-
-    /**
-     * Obtiene la lista de productos que han aumentado más de un 100% desde su precio inicial
-     * @return una lista de productos que satisfagan la condición
-     */
-    @Transactional
-    @Override
-    public List<Product> getProductIncreaseMoreThan100() {
-        return (List<Product>) repository.findProductIncreaseMoreThan100();
-    }
-
-    /**
-     * Obtiene el proveedor con el producto de menor valor historico de la plataforma
-     * @return el proveedor que cumple la condición
-     */
-    @Transactional
-    @Override
-    public Supplier getSupplierLessExpensiveProduct() {
-        return (Supplier) repository.findSupplierLessExpensiveProduct();
-    }
-
-    /**
-     * Obtiene los proveedores que no vendieron productos en un <code>day</code>
-     * @param day
-     * @return una lista de proveedores que cumplen la condición
-     */
-    @Transactional
-    @Override
-    public List <Supplier> getSuppliersDoNotSellOn(Date day) {
-        return (List<Supplier>) repository.findSupplierDoNotSellOn(day);
-    }
-
-    /**
-     * obtiene los productos vendidos en un <code>day</code>
-     * @param day
-     * @return una lista los productos vendidos
-     */
-    @Transactional
-    @Override
-    public List <Product> getSoldProductsOn(Date day) {
-        return (List<Product>) repository.findSoldProductsOn(day);
-    }
-
-    /**
-     * obtiene las ordenes que fueron entregadas en m{as de un día desde que fueron iniciadas(status pending)
-     * @return una lista de las ordenes que satisfagan la condición
-     */
-    @Transactional
-    @Override
-    public List<Order> getOrdersCompleteMorethanOneDay() {
-        return (List<Order>) repository.findOrdersCompleteMoreThanOneDay();
-    }
-
-    /**
-     * obtiene el listado de productos con su precio a una fecha dada
-     * @param day
-     * @return la lista de cada producto con su precio en la fecha dada
-     */
-    @Transactional
-    @Override
-    public List <Object[]> getProductsWithPriceAt(Date day) {
-        return (List <Object[]>) repository.findProductsWithPriceAt(day);
-    }
-
-    /**
-     * obtiene la lista de productos que no se han vendido
-     * @return la lista de productos que satisfagan la condición
-     */
-    @Transactional
-    @Override
-    public List<Product> getProductsNotSold(){
-        return (List<Product>) repository.findProductsNotSold();
-    }
-
-    /**
-     * obtiene la/s orden/es con mayor cantidad de productos ordenados de la fecha dada
-     * @day
-     * @return una lista con las ordenes que cumplen la condición
-     */
-    @Transactional
-    @Override
-    public List<Order> getOrderWithMoreQuantityOfProducts(Date day) {
-        return repository.findOrderWithMoreQuantityOfProducts(day);
-    }
-
 }

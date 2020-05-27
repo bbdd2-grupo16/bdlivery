@@ -1,26 +1,17 @@
 package ar.edu.unlp.info.bd2.model;
 
 import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name="SUPPLIER")
 public class Supplier implements PersistentObject {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    @BsonId
+    private ObjectId objectId;
     private String name; /* @param name nombre del productor*/
-
     private String cuil; /* @param cuil cuil del productor*/
-
     private String address; /* @param address dirección del productor*/
-
     private Float coordX; /* @param coordX  coordenada X de la dirección del productor*/
-
     private Float coordY; /* @param coordY coordeada Y de la dirección del produtor*/
 
     public Supplier() {
@@ -34,8 +25,14 @@ public class Supplier implements PersistentObject {
         this.coordY = coordY;
     }
 
-    public Long getId() {
-        return id;
+    @Override
+    public ObjectId getObjectId() {
+        return objectId;
+    }
+
+    @Override
+    public void setObjectId(ObjectId objectId) {
+        this.objectId = objectId;
     }
 
     public String getName() {
@@ -78,13 +75,4 @@ public class Supplier implements PersistentObject {
         this.coordY = coordY;
     }
 
-    @Override
-    public ObjectId getObjectId() {
-        return null;
-    }
-
-    @Override
-    public void setObjectId(ObjectId objectId) {
-
-    }
 }

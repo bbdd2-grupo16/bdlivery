@@ -1,30 +1,26 @@
 package ar.edu.unlp.info.bd2.model;
 
 import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
-
-import javax.persistence.*;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
 
-@Entity
-@Table(name = "USER_")
 public class User implements PersistentObject{
 
-     @Id
-     @GeneratedValue(strategy = GenerationType.IDENTITY)
-     private Long id;
+     @BsonId
+     private ObjectId objectId;
      private String username; /*nombre de usuario del usuario*/
      private String email; /*email del usuario*/
      private String password; /*password clave del usuario*/
      private String name; /*nombre y apellido del usuario*/
      private Date dateOfBirth; /*fecha de nacimiento del usuario*/
-
-     @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
-     @JoinColumn(name="user_id")
-     private List<Order> orders;
+//
+//     @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
+//     @JoinColumn(name="user_id")
+//     private List<Order> orders;
 
      public User() { //jpa only
      }
@@ -35,15 +31,17 @@ public class User implements PersistentObject{
           this.username = username;
           this.name = name;
           this.dateOfBirth = dateOfBirth;
-          this.orders = new ArrayList<Order>();
+//          this.orders = new ArrayList<Order>();
      }
 
-     public Long getId() {
-          return id;
+     @Override
+     public ObjectId getObjectId() {
+          return objectId;
      }
 
-     public void setId(Long id) {
-          this.id = id;
+     @Override
+     public void setObjectId(ObjectId objectId) {
+          this.objectId = objectId;
      }
 
      public String getEmail() {
@@ -85,20 +83,10 @@ public class User implements PersistentObject{
      public void setDateOfBirth(Date dateOfBirth) {
           this.dateOfBirth = dateOfBirth;
      }
-
-     public List<Order> getOrders() {
-          return orders;
-     }
-
-     @Override
-     public ObjectId getObjectId() {
-          return null;
-     }
-
-     @Override
-     public void setObjectId(ObjectId objectId) {
-
-     }
+//
+//     public List<Order> getOrders() {
+//          return orders;
+//     }
 
 //     public void setOrders(Order orders) {
 //          this.orders = orders;

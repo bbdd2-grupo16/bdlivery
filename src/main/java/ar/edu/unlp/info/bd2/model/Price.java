@@ -1,24 +1,21 @@
 package ar.edu.unlp.info.bd2.model;
 
 import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
 
-import javax.persistence.*;
 import java.util.Date;
 
-@Entity
-@Table(name="PRICE")
 public class Price implements PersistentObject {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @BsonId
+    private ObjectId objectId;
     private Float price; /* @param precio del producto*/
     private Date startDate; /* @param inicio de precio en vigencia*/
     private Date endDate; /* @param fin de precio en vigencia*/
 
-    @ManyToOne // un precio solo pertenece a un producto y un producto puede tener varios precios
-    private Product product; /*cliente que realizó el pedido*/
+//    @ManyToOne // un precio solo pertenece a un producto y un producto puede tener varios precios
+//    private Product product; /*cliente que realizó el pedido*/
 
     public Price() {
     }
@@ -35,9 +32,16 @@ public class Price implements PersistentObject {
         this.endDate = null;
     }
 
-    public Long getId() {
-        return id;
+    @Override
+    public ObjectId getObjectId() {
+        return objectId;
     }
+
+    @Override
+    public void setObjectId(ObjectId objectId) {
+        this.objectId = objectId;
+    }
+
     public Float getPrice() {
         return price;
     }
@@ -62,17 +66,8 @@ public class Price implements PersistentObject {
         this.endDate = endDate;
     }
 
-    public Product getProduct() {
-        return product;
-    }
+//    public Product getProduct() {
+//        return product;
+//    }
 
-    @Override
-    public ObjectId getObjectId() {
-        return null;
-    }
-
-    @Override
-    public void setObjectId(ObjectId objectId) {
-
-    }
 }

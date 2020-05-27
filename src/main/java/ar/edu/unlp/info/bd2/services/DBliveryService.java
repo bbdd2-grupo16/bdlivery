@@ -1,6 +1,5 @@
 package ar.edu.unlp.info.bd2.services;
 import ar.edu.unlp.info.bd2.model.*;
-import ar.edu.unlp.info.bd2.repositories.DBliveryException;
 import org.bson.types.ObjectId;
 
 import java.util.Date;
@@ -74,12 +73,12 @@ public interface DBliveryService {
 	 */
 	Optional<User> getUserByUsername(String username);
 
-//	/**
-//	 * Obtiene el producto por id
-//	 * @param id
-//	 * @return el producto con el id provisto
-//	 */
-//	Optional<Product> getProductById(Long id);
+	/**
+	 * Obtiene el producto por id
+	 * @param id
+	 * @return el producto con el id provisto
+	 */
+	Optional<Product> getProductById(ObjectId id);
 
 	/**
 	 * Obtiene el pedido por id

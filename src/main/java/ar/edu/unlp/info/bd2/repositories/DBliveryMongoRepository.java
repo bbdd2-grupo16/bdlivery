@@ -11,7 +11,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class DBliveryMongoRepository {
@@ -27,7 +26,7 @@ public class DBliveryMongoRepository {
     }
 
     public MongoDatabase getDb() {
-        return this.client.getDatabase("dblivery");
+        return this.client.getDatabase("bd2_grupo" + this.getGroupNumber());
     }
 
     public <T extends PersistentObject> List<T> getAssociatedObjects(
@@ -46,5 +45,20 @@ public class DBliveryMongoRepository {
         return stream.collect(Collectors.toList());
     }
 
+    private Integer getGroupNumber() {
+        return 16;
+    }
+
+    public Object save(Object object, String collection, Class className){
+        MongoCollection<Object> objectMongoCollection = this.getDb().getCollection(collection, className);
+        objectMongoCollection.insertOne(object);
+        return object;
+    }
+
+//    public User createUser(User user){
+//        MongoCollection<User> userCollection = this.getDb().getCollection("users", User.class);
+//        userCollection.insertOne(user);
+//        return user;
+//    }
 
 }
