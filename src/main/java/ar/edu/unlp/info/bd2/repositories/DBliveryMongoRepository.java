@@ -7,6 +7,8 @@ import static com.mongodb.client.model.Filters.regex;
 import ar.edu.unlp.info.bd2.model.*;
 import ar.edu.unlp.info.bd2.mongo.*;
 import com.mongodb.client.*;
+import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.Indexes;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -55,10 +57,10 @@ public class DBliveryMongoRepository {
         return object;
     }
 
-//    public User createUser(User user){
-//        MongoCollection<User> userCollection = this.getDb().getCollection("users", User.class);
-//        userCollection.insertOne(user);
-//        return user;
-//    }
+    public void createUser(User user){
+        MongoCollection<User> collection = this.getDb().getCollection("User", User.class);
+        IndexOptions indexOptions = new IndexOptions().unique(true);
+        collection.createIndex(Indexes.ascending("email, username"), indexOptions);
+    }
 
 }
