@@ -2,6 +2,7 @@ package ar.edu.unlp.info.bd2.model;
 
 import ar.edu.unlp.info.bd2.mongo.PersistentObject;
 import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.types.ObjectId;
 
 import java.util.Date;
@@ -13,12 +14,13 @@ public class RecordState implements PersistentObject {
     private Date date; /*fecha en que se actualizo el estado*/
     private String status; /*Nombre del estado*/
 //    @ManyToOne
-//    private Order order;
+    @BsonIgnore
+    private Order order;
 
     public RecordState() {
     }
 
-    public RecordState(String state, Date date) {
+    public RecordState(String status, Date date) {
         this.date = date;
         this.status = status;
     }
@@ -43,8 +45,8 @@ public class RecordState implements PersistentObject {
 
     public String getStatus() { return status; }
 
-    public void setStatus(String state) {
-        this.status = state;
+    public void setStatus(String status) {
+        this.status = status;
     }
 //
 //    public Order getOrder() {

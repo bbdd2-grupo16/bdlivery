@@ -2,6 +2,7 @@ package ar.edu.unlp.info.bd2.model;
 
 import ar.edu.unlp.info.bd2.mongo.PersistentObject;
 import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.types.ObjectId;
 
 import java.util.List;
@@ -17,10 +18,11 @@ public class User implements PersistentObject{
      private String password; /*password clave del usuario*/
      private String name; /*nombre y apellido del usuario*/
      private Date dateOfBirth; /*fecha de nacimiento del usuario*/
-//
-//     @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
-//     @JoinColumn(name="user_id")
-//     private List<Order> orders;
+
+     //@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
+     //@JoinColumn(name="user_id")
+     @BsonIgnore
+     private List<Order> orders;
 
      public User() { //jpa only
      }

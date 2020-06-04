@@ -4,6 +4,7 @@ import ar.edu.unlp.info.bd2.mongo.PersistentObject;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class Product implements PersistentObject{
 //    @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
 //    @JoinColumn(name="product_id")
 //    private List<Price> prices; /*Historial de precios*/
+    private List<Price> prices;
 //
 //    @ManyToOne // Un producto tiene un unico productor
 //    private Supplier supplier; /*el productor del producto*/
@@ -44,8 +46,8 @@ public class Product implements PersistentObject{
         this.weight = weight;
 //        this.supplier = supplier;
         this.date = date;
-//        this.prices = new ArrayList<Price>();
-//        this.prices.add(new Price(price, date));
+        this.prices = new ArrayList<Price>();
+        this.prices.add(new Price(price, date));
     }
 
     @Override
@@ -90,17 +92,17 @@ public class Product implements PersistentObject{
 //        this.supplier = supplier;
 //    }
 //
-//    public List<Price> getPrices() {
-//        return prices;
-//    }
-//
-//    public void addPrice(Price price) {
-//        this.prices.add(price);
-//        if (this.prices.size() > 1){
-//            this.prices.get(this.prices.size() - 2).setEndDate(price.getStartDate());
-//        }
-//    }
-//
+    public List<Price> getPrices() {
+        return prices;
+    }
+
+    public void addPrice(Price price) {
+        this.prices.add(price);
+        if (this.prices.size() > 1){
+            this.prices.get(this.prices.size() - 2).setEndDate(price.getStartDate());
+        }
+    }
+
 //    public Float getPriceAt(Date day) {
 //        for (Price p : this.getPrices()) {
 //            if ( (p.getStartDate().before(day)) && (p.getEndDate() != null) && (p.getEndDate().after(day)) ){

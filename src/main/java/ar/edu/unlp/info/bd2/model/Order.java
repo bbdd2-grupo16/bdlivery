@@ -20,21 +20,23 @@ public class Order implements PersistentObject {
     private Float coordX; /*coordenada X de la dirección*/
 
     private Float coordY; /*coordenada Y de la dirección*/
-    private String state;
-//
-//    @ManyToOne // una orden solo pertenece a un usuario y un usuario puede tener varias ordenes
-//    private User client; /*cliente que realizó el pedido*/
-//
+    //private String state;
+
+    /**
+     *  una orden solo pertenece a un usuario y un usuario puede tener varias ordenes
+     */
+    private User client; /*cliente que realizó el pedido*/
+
 //    @ManyToOne
 //    private User delivery;
-//
+
 //    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 //    @JoinColumn(name = "order_id")
-//    private List<RecordState> status;
-//
+    private List<RecordState> status;
+
 //    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 //    @JoinColumn(name = "order_id")
-//    private List<ProductOrder> products;
+    private List<ProductOrder> products;
 
     public Order() {
     }
@@ -44,10 +46,10 @@ public class Order implements PersistentObject {
         this.address = address;
         this.coordX = coordX;
         this.coordY = coordY;
-//        this.client = user;
-//        this.products = new ArrayList<ProductOrder>();
-//        this.status = new ArrayList<RecordState>();
-//        this.status.add(new RecordState("Pending", date));
+        this.client = user;
+        this.products = new ArrayList<ProductOrder>();
+        this.status = new ArrayList<RecordState>();
+        this.status.add(new RecordState("Pending", date));
     }
 
     @Override
@@ -92,28 +94,28 @@ public class Order implements PersistentObject {
         this.coordY = coordY;
     }
 
-//    public User getClient() {
-//        return client;
-//    }
-//
-//    public void setClient(User client) {
-//        this.client = client;
-//    }
-//
-//    public List<ProductOrder> getProducts() {
-//        return products;
-//    }
-//
-//    public void setProducts(List<ProductOrder> products) {
-//        this.products = products;
-//    }
-//
-//    public Order addProduct(Long quantity, Product product) {
-//        ProductOrder new_product = new ProductOrder(quantity, product, this);
-//        this.products.add(new_product);
-//        return this;
-//    }
-//
+    public User getClient() {
+        return client;
+    }
+
+    public void setClient(User client) {
+        this.client = client;
+    }
+
+    public List<ProductOrder> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<ProductOrder> products) {
+        this.products = products;
+    }
+
+    public Order addProduct(Long quantity, Product product) {
+        ProductOrder new_product = new ProductOrder(quantity, product, this);
+        this.products.add(new_product);
+        return this;
+    }
+
 //    public void setDeliveryUser(User delivery) {
 //        this.delivery = delivery;
 //    }
@@ -121,27 +123,27 @@ public class Order implements PersistentObject {
 //    public User getDeliveryUser() {
 //        return delivery;
 //    }
-//
-//    public List<RecordState> getStatus() {
-//        return this.status;
-//    }
-//
-//    public void addState(String state) {
-//        this.status.add(new RecordState(state, new Date()));
-//    }
-//
-//    public void addState(String state, Date date) {
-//        this.status.add(new RecordState(state, date));
-//    }
-//
-//    public RecordState getLastStatus() {
-//        return this.getStatus().get(this.getStatus().size() - 1);
-//    }
-//
-//    public void setState(String state) {
-//        this.state = state;
-//    }
-//
+
+    public List<RecordState> getStatus() {
+        return this.status;
+    }
+
+    public void addState(String state) {
+        this.status.add(new RecordState(state, new Date()));
+    }
+
+    public void addState(String state, Date date) {
+        this.status.add(new RecordState(state, date));
+    }
+
+    public RecordState getLastStatus() {
+        return this.getStatus().get(this.getStatus().size() - 1);
+    }
+
+    /*public void setState(String state) {
+        this.state = state;
+    }*/
+
 //    public Float getAmount() {
 //        Float amount = Float.valueOf("0");
 //        for ( ProductOrder po : this.products ) {

@@ -122,8 +122,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Optional<User> getUserById(ObjectId id){
-//        return Optional.ofNullable(repository.findUserById(id));
-        return null;
+        return Optional.ofNullable(repository.findUserById(id));
     }
 
     /**
@@ -133,9 +132,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Optional<User> getUserByEmail(String email){
-//        return Optional.ofNullable(repository.findUserByEmail(email));
-        return null;
-
+      return Optional.ofNullable(repository.findUserByEmail(email));
     }
 
     /**
@@ -145,9 +142,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Optional<User> getUserByUsername(String username){
-//        return Optional.ofNullable(repository.findUserByUsername(username));
-        return null;
-
+      return Optional.ofNullable(repository.findUserByUsername(username));
     }
 
     /**
@@ -157,8 +152,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Optional<Product> getProductById(ObjectId id){
-//        return Optional.ofNullable(repository.findProductById(id));
-        return null;
+        return Optional.ofNullable(repository.findProductById(id));
     }
 
     /**
@@ -168,9 +162,7 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Optional<Order> getOrderById(ObjectId id){
-
-//        return Optional.ofNullable(repository.findOrderById(id));
-        return null;
+      return Optional.ofNullable(repository.findOrderById(id));
     }
 
     /**
@@ -184,11 +176,11 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Order createOrder(Date dateOfOrder, String address, Float coordX, Float coordY, User client){
-//        try {
-//            return (Order) repository.save(new Order(dateOfOrder, address, coordX, coordY, client));
-//        }catch (Exception e){
-//            System.out.println(e.getMessage());
-//        }
+        try {
+            return (Order) repository.save(new Order(dateOfOrder, address, coordX, coordY, client), "orders", Order.class);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
         return null;
     }
 
@@ -202,13 +194,13 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public Order addProduct(ObjectId order, Long quantity, Product product)throws DBliveryException{
-//        Optional<Order> optional_order = this.getOrderById(order);
-//        if (optional_order.isPresent()){
-//            Order orderConcrete = optional_order.get();
-//            orderConcrete.addProduct(quantity, product);
-//            repository.updateOrder(orderConcrete);
-//            return orderConcrete;
-//        }
+        Optional<Order> optional_order = this.getOrderById(order);
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
+            orderConcrete.addProduct(quantity, product);
+            //repository.updateOrder(orderConcrete);
+            return orderConcrete;
+        }
         throw new DBliveryException("La orden no existe");
     }
 
@@ -327,13 +319,13 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public boolean canCancel(ObjectId order) throws DBliveryException{
-//        Optional<Order> optional_order = this.getOrderById(order);
-//        if (optional_order.isPresent()){
-//            Order orderConcrete = optional_order.get();
-//            if(this.getActualStatus(orderConcrete.getId()).equals("Pending")){
-//                return true;
-//            }else {return false;}
-//        }
+        Optional<Order> optional_order = this.getOrderById(order);
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
+            if(this.getActualStatus(orderConcrete.getObjectId()).equals("Pending")){
+                return true;
+            }else {return false;}
+        }
         throw new DBliveryException("La orden no existe");
     }
 
@@ -384,9 +376,8 @@ public class DBliveryServiceImpl implements DBliveryService{
      */
     @Override
     public String getActualStatus(ObjectId order){
-//        Order orderConcrete = repository.findOrderById(order);
-//        return orderConcrete.getLastStatus().getStatus();
-        return null;
+        Order orderConcrete = repository.findOrderById(order);
+        return orderConcrete.getLastStatus().getStatus();
     }
 
     /**
