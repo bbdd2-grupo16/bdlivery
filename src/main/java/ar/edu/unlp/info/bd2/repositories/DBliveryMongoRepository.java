@@ -59,34 +59,34 @@ public class DBliveryMongoRepository {
     return object;
   }
 
-  public void createUser(User user){
+  /*public void createUser(User user){
     MongoCollection<User> collection = this.getDb().getCollection("User", User.class);
     IndexOptions indexOptions = new IndexOptions().unique(true);
     collection.createIndex(Indexes.ascending("email, username"), indexOptions);
-  }
+  }*/
 
   public User findUserById(ObjectId id){
-    MongoCollection<User> collection = this.client.getDatabase("bd2_grupo16").getCollection("users",User.class);
+    MongoCollection<User> collection = this.getDb().getCollection("users",User.class);
     return collection.find(eq("_id", id)).first();
   }
 
   public User findUserByUsername(String username){
-    MongoCollection<User> collection = this.client.getDatabase("bd2_grupo16").getCollection("users", User.class);
+    MongoCollection<User> collection = this.getDb().getCollection("users", User.class);
     return collection.find(eq("username", username)).first();
   }
 
   public User findUserByEmail(String email){
-    MongoCollection<User> collection = this.client.getDatabase("bd2_grupo16").getCollection("users", User.class);
+    MongoCollection<User> collection = this.getDb().getCollection("users", User.class);
     return collection.find(eq("email", email)).first();
   }
 
   public Order findOrderById(ObjectId id){
-    MongoCollection<Order> collection = this.client.getDatabase("bd2_grupo16").getCollection("orders", Order.class);
+    MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
     return collection.find(eq("_id", id)).first();
   }
 
   public Product findProductById(ObjectId id){
-    MongoCollection<Product> collection = this.client.getDatabase("bd2_grupo16").getCollection("products", Product.class);
+    MongoCollection<Product> collection = this.getDb().getCollection("products", Product.class);
     return collection.find(eq("_id", id)).first();
   }
 
