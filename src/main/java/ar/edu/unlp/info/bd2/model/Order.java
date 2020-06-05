@@ -2,6 +2,7 @@ package ar.edu.unlp.info.bd2.model;
 
 import ar.edu.unlp.info.bd2.mongo.PersistentObject;
 import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.types.ObjectId;
 
 import java.util.Date;
@@ -20,23 +21,17 @@ public class Order implements PersistentObject {
     private Float coordX; /*coordenada X de la dirección*/
 
     private Float coordY; /*coordenada Y de la dirección*/
-    //private String state;
 
     /**
      *  una orden solo pertenece a un usuario y un usuario puede tener varias ordenes
      */
     private User client; /*cliente que realizó el pedido*/
 
-//    @ManyToOne
-//    private User delivery;
+    private User delivery; /*User que realizó la entrega*/
 
-//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JoinColumn(name = "order_id")
-    private List<RecordState> status;
-
-//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JoinColumn(name = "order_id")
-    private List<ProductOrder> products;
+    private List<RecordState> status; /*Listado de estados por los que pasó la orden*/
+    
+    private List<ProductOrder> products; /*Listado de productos que posee la orden*/
 
     public Order() {
     }
@@ -116,16 +111,20 @@ public class Order implements PersistentObject {
         return this;
     }
 
-//    public void setDeliveryUser(User delivery) {
-//        this.delivery = delivery;
-//    }
-//
-//    public User getDeliveryUser() {
-//        return delivery;
-//    }
+    public void setDeliveryUser(User delivery) {
+        this.delivery = delivery;
+    }
+
+    public User getDeliveryUser() {
+        return delivery;
+    }
 
     public List<RecordState> getStatus() {
         return this.status;
+    }
+
+    public void setStatus(List<RecordState> status) {
+        this.status = status;
     }
 
     public void addState(String state) {
@@ -139,10 +138,6 @@ public class Order implements PersistentObject {
     public RecordState getLastStatus() {
         return this.getStatus().get(this.getStatus().size() - 1);
     }
-
-    /*public void setState(String state) {
-        this.state = state;
-    }*/
 
 //    public Float getAmount() {
 //        Float amount = Float.valueOf("0");

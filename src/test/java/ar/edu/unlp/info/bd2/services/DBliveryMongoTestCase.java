@@ -60,7 +60,7 @@ public class DBliveryMongoTestCase {
         Product p1 = this.service.createProduct("Combo Stacker ATR", Float.valueOf(2521.2F), Float.valueOf(2.5F),s1);
         assertNotNull(p1.getObjectId());
         assertEquals("Combo Stacker ATR",p1.getName());
-//        assertEquals(1,p1.getPrices().size());
+        assertEquals(1,p1.getPrices().size());
     }
 
     @Test
@@ -70,10 +70,10 @@ public class DBliveryMongoTestCase {
         Supplier s1 = this.service.createSupplier("Burger King", "30710256443", "Av. Corrientes 956", Float.valueOf(-53.45F), Float.valueOf(-60.22F));
         Product p1 = this.service.createProduct("Combo Stacker ATR", Float.valueOf(2521.2F), Float.valueOf(2.5F),s1);
         assertNotNull(p1.getObjectId());
-//        assertEquals(1,p1.getPrices().size());
+        assertEquals(1,p1.getPrices().size());
         Product p2 = this.service.updateProductPrice(p1.getObjectId(),Float.valueOf(3000.0F),startDate);
         assertEquals(Float.valueOf(3000.0F),p2.getPrice());
-//        assertEquals(2,p2.getPrices().size());
+        assertEquals(2,p2.getPrices().size());
     }
 
     @Test
@@ -96,10 +96,9 @@ public class DBliveryMongoTestCase {
         }
         Order ord = o3.get();
         assertNotNull(ord.getObjectId());
-        System.out.println("Status de la orden..." + ord.getStatus());
-//        assertEquals(1,ord.getStatus().size());
+        assertEquals(1,ord.getStatus().size());
         assertEquals(u1.getObjectId(),ord.getClient().getObjectId());
-//        assertEquals(1,ord.getProducts().size());
+        assertEquals(1,ord.getProducts().size());
     }
 
     @Test
@@ -126,8 +125,8 @@ public class DBliveryMongoTestCase {
         assertTrue(this.service.canDeliver(o2.getObjectId()));
         Order o3 = this.service.deliverOrder(o2.getObjectId(),u2);
         assertNotNull(o3.getObjectId());
-//        assertEquals(2,o3.getStatus().size());
-//        assertEquals(u2,o3.getDeliveryUser());
+        assertEquals(2,o3.getStatus().size());
+        assertEquals(u2,o3.getDeliveryUser());
     }
 
 
@@ -157,8 +156,8 @@ public class DBliveryMongoTestCase {
         assertThrows(DBliveryException.class, () -> this.service.cancelOrder(o3.getObjectId()),"The order can't be cancelled");
         Order o4 = this.service.createOrder(orderDate,"Av. Corrientes 1405 2° B", Float.valueOf(-54.45F), Float.valueOf(-62.22F),u1);
         Order o5 = this.service.cancelOrder(o4.getObjectId());
-//        assertEquals(this.service.getActualStatus(o5.getObjectId()).getStatus(),"Cancelled");
-//        assertEquals(2,o5.getStatus().size());
+        assertEquals(this.service.getActualStatus(o5.getObjectId()).getStatus(),"Cancelled");
+        assertEquals(2,o5.getStatus().size());
     }
 
     @Test
@@ -180,13 +179,13 @@ public class DBliveryMongoTestCase {
         User u2 = this.service.createUser("delivery@info.unlp.edu.ar", "123456", "delivery", "Delivery", dob2);
         Order o1 = this.service.createOrder(orderDate,"Av. Corrientes 1405 2° B", Float.valueOf(-54.45F), Float.valueOf(-62.22F),u1);
         Order o2 = this.service.addProduct(o1.getObjectId(), 1L, p1);
-        //assertThrows(DBliveryException.class, () -> this.service.finishOrder(o2.getObjectId()),"The order can't be finished");
-        //Order o3 = this.service.deliverOrder(o2.getObjectId(),u2);
-       // assertTrue(this.service.canFinish(o3.getObjectId()));
-       // Order o4 = this.service.finishOrder(o3.getObjectId());
-       // assertNotNull(o4.getObjectId());
-//        assertEquals(3,o4.getStatus().size());
-//        assertEquals(this.service.getActualStatus(o4.getObjectId()).getStatus(),"Delivered");
+        assertThrows(DBliveryException.class, () -> this.service.finishOrder(o2.getObjectId()),"The order can't be finished");
+        Order o3 = this.service.deliverOrder(o2.getObjectId(),u2);
+        assertTrue(this.service.canFinish(o3.getObjectId()));
+        Order o4 = this.service.finishOrder(o3.getObjectId());
+        assertNotNull(o4.getObjectId());
+        assertEquals(3,o4.getStatus().size());
+        assertEquals(this.service.getActualStatus(o4.getObjectId()).getStatus(),"Delivered");
     }
 
     @Test
@@ -228,9 +227,8 @@ public class DBliveryMongoTestCase {
         Product p1 = this.service.createProduct("Combo Stacker ATR", Float.valueOf(2521.2F), Float.valueOf(2.5F),s1);
         Product p2 = this.service.createProduct("Combo Tostado de Campo", Float.valueOf(2210.2F), Float.valueOf(2.2F), s1);
         Product p3 = this.service.createProduct("Combo Stacker ATR triple", Float.valueOf(1210F), Float.valueOf(1.8F), s1);
-        //assertEquals(this.service.getProductsByName("Combo Stacker ATR").size(),2);
-        //assertEquals(this.service.getProductsByName("Combo Tostado de Campo").size(),1);
-        //assertEquals(this.service.getProductsByName("triple").size(),1);
-
+        assertEquals(this.service.getProductsByName("Combo Stacker ATR").size(),2);
+        assertEquals(this.service.getProductsByName("Combo Tostado de Campo").size(),1);
+        assertEquals(this.service.getProductsByName("triple").size(),1);
     }
 }

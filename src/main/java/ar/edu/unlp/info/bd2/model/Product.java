@@ -2,6 +2,7 @@ package ar.edu.unlp.info.bd2.model;
 
 import ar.edu.unlp.info.bd2.mongo.PersistentObject;
 import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.types.ObjectId;
 
 import java.util.Collection;
@@ -20,11 +21,11 @@ public class Product implements PersistentObject{
 
 //    @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
 //    @JoinColumn(name="product_id")
-//    private List<Price> prices; /*Historial de precios*/
-    private List<Price> prices;
+    @BsonIgnore
+    private List<Price> prices; /*Historial de precios*/
 //
 //    @ManyToOne // Un producto tiene un unico productor
-//    private Supplier supplier; /*el productor del producto*/
+    private Supplier supplier; /*el productor del producto*/
 
     public Product() {
 
@@ -34,17 +35,17 @@ public class Product implements PersistentObject{
         this.name = name;
         this.price = price;
         this.weight = weight;
-//        this.supplier = supplier;
+        this.supplier = supplier;
         this.date = new Date();
-//        this.prices = new ArrayList<Price>();
-//        this.prices.add(new Price(price));
+        this.prices = new ArrayList<Price>();
+        this.prices.add(new Price(price));
     }
 
     public Product(String name, Float price, Float weight, Supplier supplier, Date date){
         this.name = name;
         this.price = price;
         this.weight = weight;
-//        this.supplier = supplier;
+        this.supplier = supplier;
         this.date = date;
         this.prices = new ArrayList<Price>();
         this.prices.add(new Price(price, date));
@@ -84,18 +85,21 @@ public class Product implements PersistentObject{
         this.weight = weight;
     }
 
-//    public Supplier getSupplier() {
-//        return supplier;
-//    }
-//
-//    public void setSupplier(Supplier supplier) {
-//        this.supplier = supplier;
-//    }
-//
+    public Supplier getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
+    }
+
     public List<Price> getPrices() {
         return prices;
     }
 
+    public void setPrices(ArrayList<Price> prices) {
+        this.prices = prices;
+    }
     public void addPrice(Price price) {
         this.prices.add(price);
         if (this.prices.size() > 1){

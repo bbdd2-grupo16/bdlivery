@@ -15,7 +15,7 @@ public class Price implements PersistentObject {
     private Date endDate; /* @param fin de precio en vigencia*/
 
 //    @ManyToOne // un precio solo pertenece a un producto y un producto puede tener varios precios
-//    private Product product; /*cliente que realizó el pedido*/
+    private Product product; /*Producto al cual pertenece el precio*/
 
     public Price() {
     }
@@ -66,8 +66,8 @@ public class Price implements PersistentObject {
         this.endDate = endDate;
     }
 
-//    public Product getProduct() {
-//        return product;
-//    }
+    public Product getProduct() {
+        return product;
+    }
 
 }
