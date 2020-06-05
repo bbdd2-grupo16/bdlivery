@@ -30,7 +30,7 @@ public class Order implements PersistentObject {
     private User delivery; /*User que realizó la entrega*/
 
     private List<RecordState> status; /*Listado de estados por los que pasó la orden*/
-    
+
     private List<ProductOrder> products; /*Listado de productos que posee la orden*/
 
     public Order() {

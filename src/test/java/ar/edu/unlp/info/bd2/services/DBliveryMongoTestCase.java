@@ -129,8 +129,6 @@ public class DBliveryMongoTestCase {
         assertEquals(u2,o3.getDeliveryUser());
     }
 
-
-
     @Test
     public void testCancelOrder() throws Exception {
         Calendar cal = Calendar.getInstance();

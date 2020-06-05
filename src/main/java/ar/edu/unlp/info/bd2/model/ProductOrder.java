@@ -10,12 +10,8 @@ public class ProductOrder implements PersistentObject {
     @BsonId
     private ObjectId objectId;
     private Long quantity;
-
-//    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Product.class)
-//    private Product product;
-
-//    @ManyToOne
-//    private Order order;
+    private Product product;
+    private Order order;
 
     public ProductOrder() {
 
@@ -23,8 +19,8 @@ public class ProductOrder implements PersistentObject {
 
     public ProductOrder(Long quantity, Product product, Order order) {
         this.quantity = quantity;
-//        this.product = product;
-//        this.order = order;
+        this.product = product;
+        this.order = order;
     }
 
     @Override
@@ -40,13 +36,13 @@ public class ProductOrder implements PersistentObject {
     public Long getQuantity() { return quantity; }
 
     public void setQuantity(Long quantity) { this.quantity = quantity; }
-//
-//    public Product getProduct() { return product; }
-//
-//    public void setProduct(Product product) { this.product = product; }
-//
-//    public Order getOrder() { return order; }
-//
-//    public void setOrder(Order order) { this.order = order; }
+
+    public Product getProduct() { return product; }
+
+    public void setProduct(Product product) { this.product = product; }
+
+    public Order getOrder() { return order; }
+
+    public void setOrder(Order order) { this.order = order; }
 
 }

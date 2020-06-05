@@ -13,7 +13,6 @@ public class RecordState implements PersistentObject {
     private ObjectId objectId;
     private Date date; /*fecha en que se actualizo el estado*/
     private String status; /*Nombre del estado*/
-//    @ManyToOne
     @BsonIgnore
     private Order order;
 
@@ -48,9 +47,13 @@ public class RecordState implements PersistentObject {
     public void setStatus(String status) {
         this.status = status;
     }
-//
-//    public Order getOrder() {
-//        return order;
-//    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
 
 }
