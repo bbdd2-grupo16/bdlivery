@@ -129,4 +129,14 @@ public class DBliveryMongoRepository {
         }
         return productsList;
     }
+
+    public List<Order> findOrdersMadeByUser(String username){
+        MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
+        FindIterable<Order> orders = collection.find(eq("client.username", Pattern.compile(username)));
+        List<Order> ordersList = new ArrayList<>();
+        for (Order order : orders) {
+            ordersList.add(order);
+        }
+        return ordersList;
+    }
 }
