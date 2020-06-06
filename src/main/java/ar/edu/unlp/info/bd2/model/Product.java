@@ -107,13 +107,13 @@ public class Product implements PersistentObject{
         }
     }
 
-//    public Float getPriceAt(Date day) {
-//        for (Price p : this.getPrices()) {
-//            if ( (p.getStartDate().before(day)) && (p.getEndDate() != null) && (p.getEndDate().after(day)) ){
-//                return p.getPrice();
-//            }
-//        }
-//        return this.getPrices().get(this.getPrices().size() - 1).getPrice();
-//    }
+    public Float getPriceAt(Date day) {
+        for (Price p : this.getPrices()) {
+            if ( (p.getStartDate().before(day)) && (p.getEndDate() != null) && (p.getEndDate().after(day)) ){
+                return p.getPrice();
+            }
+        }
+        return this.getPrices().get(this.getPrices().size() - 1).getPrice();
+    }
 
 }

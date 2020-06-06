@@ -1,6 +1,8 @@
 package ar.edu.unlp.info.bd2.model;
 
 import ar.edu.unlp.info.bd2.mongo.PersistentObject;
+import com.mongodb.client.model.geojson.Point;
+import com.mongodb.client.model.geojson.Position;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.types.ObjectId;
@@ -33,6 +35,8 @@ public class Order implements PersistentObject {
 
     private List<ProductOrder> products; /*Listado de productos que posee la orden*/
 
+    private Point position;
+
     public Order() {
     }
 
@@ -45,6 +49,8 @@ public class Order implements PersistentObject {
         this.products = new ArrayList<ProductOrder>();
         this.status = new ArrayList<RecordState>();
         this.status.add(new RecordState("Pending", date));
+        Position pos = new Position(coordX, coordY);
+        this.position = new Point(pos);
     }
 
     @Override
@@ -138,11 +144,11 @@ public class Order implements PersistentObject {
         return this.getStatus().get(this.getStatus().size() - 1);
     }
 
-//    public Float getAmount() {
-//        Float amount = Float.valueOf("0");
-//        for ( ProductOrder po : this.products ) {
-//            amount = Float.sum(amount, po.getProduct().getPriceAt(this.dateOfOrder) * po.getQuantity());
-//        }
-//        return amount;
-//    }
+    public Float getAmount() {
+        Float amount = Float.valueOf("0");
+        for ( ProductOrder po : this.products ) {
+            amount = Float.sum(amount, po.getProduct().getPriceAt(this.dateOfOrder) * po.getQuantity());
+        }
+        return amount;
+    }
 }

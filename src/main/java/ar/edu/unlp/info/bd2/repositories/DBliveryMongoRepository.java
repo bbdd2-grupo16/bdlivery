@@ -7,16 +7,11 @@ import static com.mongodb.client.model.Filters.regex;
 import ar.edu.unlp.info.bd2.model.*;
 import ar.edu.unlp.info.bd2.mongo.*;
 import com.mongodb.client.*;
-import com.mongodb.client.model.IndexOptions;
-import com.mongodb.client.model.Indexes;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
-import com.mongodb.client.result.UpdateResult;
-import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,6 +31,10 @@ public class DBliveryMongoRepository {
     return this.client.getDatabase("bd2_grupo" + this.getGroupNumber());
     }
 
+    private Integer getGroupNumber() {
+        return 16;
+    }
+
     public <T extends PersistentObject> List<T> getAssociatedObjects(
         PersistentObject source, Class<T> objectClass, String association, String destCollection) {
         AggregateIterable<T> iterable =
@@ -52,8 +51,20 @@ public class DBliveryMongoRepository {
         return stream.collect(Collectors.toList());
     }
 
-    private Integer getGroupNumber() {
-    return 16;
+    public <T extends PersistentObject> List<T> getObjectsAssociatedWith(
+        ObjectId objectId, Class<T> objectClass, String association, String destCollection) {
+        AggregateIterable<T> iterable =
+            this.getDb()
+                .getCollection(association, objectClass)
+                .aggregate(
+                    Arrays.asList(
+                        match(eq("destination", objectId)),
+                        lookup(destCollection, "source", "_id", "_matches"),
+                        unwind("$_matches"),
+                        replaceRoot("$_matches")));
+        Stream<T> stream =
+            StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterable.iterator(), 0), false);
+        return stream.collect(Collectors.toList());
     }
 
     public Object save(Object object, String collection, Class className){
