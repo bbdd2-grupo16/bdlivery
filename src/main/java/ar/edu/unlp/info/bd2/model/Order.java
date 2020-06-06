@@ -105,8 +105,7 @@ public class Order implements PersistentObject {
         this.products = products;
     }
 
-    public Order addProduct(Long quantity, Product product) {
-        ProductOrder new_product = new ProductOrder(quantity, product, this);
+    public Order addProduct(ProductOrder new_product) {
         this.products.add(new_product);
         return this;
     }
