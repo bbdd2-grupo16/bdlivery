@@ -172,4 +172,18 @@ public class DBliveryMongoRepository {
         }
         return productsList;
     }
+
+    public List<Product> findSoldProductsOn(Date day) {
+        return null;
+    }
+
+    public List<Order> findDeliveredOrdersForUser(String username) {
+        MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
+        FindIterable<Order> orders = collection.find(and(eq("status.status", "Delivered"), eq("client.username", username)));
+        List<Order> ordersList = new ArrayList<>();
+        for (Order order : orders) {
+            ordersList.add(order);
+        }
+        return ordersList;
+    }
 }

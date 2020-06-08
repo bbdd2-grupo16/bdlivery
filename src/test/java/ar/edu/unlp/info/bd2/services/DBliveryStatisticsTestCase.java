@@ -65,19 +65,19 @@ public class DBliveryStatisticsTestCase {
     }
   }
 
-  /*@Test
+  @Test
   public void testGetMaxWeigth() {
     Product product = this.service.getMaxWeigth();
     assertEquals("Milanesa con rúcula",product.getName());
-  }*/
+  }
 
 
-  /*@Test
+  @Test
   public void testGetTopNSuppliers() {
     List<Supplier> suppliers = this.service.getTopNSuppliersInSentOrders(4);
     assertEquals(4,suppliers.size());
     this.assertListEquality(suppliers.stream().map(property -> property.getName()).collect(Collectors.toList()),Arrays.asList("La Trattoria", "Olivia Pizzas & Empanadas", "El Ladrillo", "Pizza Nova"));
-  }*/
+  }
 
   @Test
   public void testGetPendingOrders() {
@@ -91,7 +91,7 @@ public class DBliveryStatisticsTestCase {
     assertEquals(65,orders.size());
   }
 
-  /*@Test
+  @Test
   public void testGetDeliveredOrdersInPeriod() throws ParseException {
     List<Order> orders = this.service.getDeliveredOrdersInPeriod(sdf.parse("1/1/2013"),sdf.parse("31/12/2013"));
     assertEquals(18,orders.size());
@@ -107,7 +107,7 @@ public class DBliveryStatisticsTestCase {
   public void testGetBestSellingProduct() {
     Product product = this.service.getBestSellingProduct();
     assertEquals("Pizza napolitana",product.getName());
-  }*/
+  }
 
   @Test
   public void testGetProductsOnePrice() {
@@ -115,7 +115,7 @@ public class DBliveryStatisticsTestCase {
     assertEquals(27, products.size());
   }
 
-  /*@Test
+  @Test
   public void testGetSoldProductsOn() throws ParseException {
     List<Product> products = this.service.getSoldProductsOn(sdf.parse("28/2/2010"));
     assertEquals(4, products.size());
@@ -130,7 +130,6 @@ public class DBliveryStatisticsTestCase {
   }
 
 
-
   private <T> void assertListEquality(List<T> list1, List<T> list2) {
     if (list1.size() != list2.size()) {
       Assert.fail("Lists have different size");
@@ -141,7 +140,7 @@ public class DBliveryStatisticsTestCase {
         Assert.fail(objectInList1 + " is not present in list2");
       }
     }
-  }*/
+  }
 
 
 }

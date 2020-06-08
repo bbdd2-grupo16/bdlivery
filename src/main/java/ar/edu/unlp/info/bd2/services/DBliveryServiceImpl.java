@@ -421,7 +421,7 @@ public class DBliveryServiceImpl implements DBliveryService{
 
     @Override
     public List<Order> getDeliveredOrdersForUser(String username) {
-        return null;
+        return repository.findDeliveredOrdersForUser(username);
     }
 
     @Override
@@ -436,7 +436,7 @@ public class DBliveryServiceImpl implements DBliveryService{
 
     @Override
     public List<Product> getSoldProductsOn(Date day) {
-        return null;
+        return repository.findSoldProductsOn(day);
     }
 
     @Override
