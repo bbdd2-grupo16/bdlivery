@@ -1,8 +1,7 @@
 package ar.edu.unlp.info.bd2.repositories;
 
 import static com.mongodb.client.model.Aggregates.*;
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.regex;
+import static com.mongodb.client.model.Filters.*;
 
 import ar.edu.unlp.info.bd2.model.*;
 import ar.edu.unlp.info.bd2.mongo.*;
@@ -133,6 +132,30 @@ public class DBliveryMongoRepository {
     public List<Order> findOrdersMadeByUser(String username){
         MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
         FindIterable<Order> orders = collection.find(eq("client.username", Pattern.compile(username)));
+        List<Order> ordersList = new ArrayList<>();
+        for (Order order : orders) {
+            ordersList.add(order);
+        }
+        return ordersList;
+    }
+
+    public List<Supplier> findTopNSuppliersInSentOrders(int n){
+        return null;
+    }
+
+    public List<Order> findPendingOrders() {
+        MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
+        FindIterable<Order> orders = collection.find(size("status", 1));
+        List<Order> ordersList = new ArrayList<>();
+        for (Order order : orders) {
+            ordersList.add(order);
+        }
+        return ordersList;
+    }
+
+    public List<Order> findSentOrders() {
+        MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
+        FindIterable<Order> orders = collection.find(and(eq("status.status", "Sent"), ne("status.status", "Delivered")));
         List<Order> ordersList = new ArrayList<>();
         for (Order order : orders) {
             ordersList.add(order);

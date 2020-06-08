@@ -401,17 +401,17 @@ public class DBliveryServiceImpl implements DBliveryService{
 
     @Override
     public List<Supplier> getTopNSuppliersInSentOrders(int n) {
-        return null;
+        return repository.findTopNSuppliersInSentOrders(n);
     }
 
     @Override
     public List<Order> getPendingOrders() {
-        return null;
+        return repository.findPendingOrders();
     }
 
     @Override
     public List<Order> getSentOrders() {
-        return null;
+        return repository.findSentOrders();
     }
 
     @Override
