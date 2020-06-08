@@ -162,4 +162,14 @@ public class DBliveryMongoRepository {
         }
         return ordersList;
     }
+
+    public List<Product> findProductsOnePrice() {
+        MongoCollection<Product> collection = this.getDb().getCollection("products", Product.class);
+        FindIterable<Product> products = collection.find(size("prices", 1));
+        List<Product> productsList = new ArrayList<>();
+        for (Product product : products) {
+            productsList.add(product);
+        }
+        return productsList;
+    }
 }

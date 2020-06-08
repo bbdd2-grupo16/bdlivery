@@ -431,7 +431,7 @@ public class DBliveryServiceImpl implements DBliveryService{
 
     @Override
     public List<Product> getProductsOnePrice() {
-        return null;
+        return repository.findProductsOnePrice();
     }
 
     @Override

@@ -107,15 +107,15 @@ public class DBliveryStatisticsTestCase {
   public void testGetBestSellingProduct() {
     Product product = this.service.getBestSellingProduct();
     assertEquals("Pizza napolitana",product.getName());
-  }
-  //
+  }*/
+
   @Test
   public void testGetProductsOnePrice() {
     List<Product> products = this.service.getProductsOnePrice();
     assertEquals(27, products.size());
   }
 
-  @Test
+  /*@Test
   public void testGetSoldProductsOn() throws ParseException {
     List<Product> products = this.service.getSoldProductsOn(sdf.parse("28/2/2010"));
     assertEquals(4, products.size());
