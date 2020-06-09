@@ -400,6 +400,7 @@ public class DBliveryServiceImpl implements DBliveryService{
     }
 
     @Override
+    // Obtiene los n proovedores que más productos tienen en órdenes que están siendo enviadas
     public List<Supplier> getTopNSuppliersInSentOrders(int n) {
         return repository.findTopNSuppliersInSentOrders(n);
     }
@@ -415,8 +416,9 @@ public class DBliveryServiceImpl implements DBliveryService{
     }
 
     @Override
+    // Obtiene todas las órdenes entregadas entre dos fechas
     public List<Order> getDeliveredOrdersInPeriod(Date startDate, Date endDate) {
-        return null;
+        return repository.findDeliveredOrdersInPeriod(startDate, endDate);
     }
 
     @Override
@@ -425,8 +427,9 @@ public class DBliveryServiceImpl implements DBliveryService{
     }
 
     @Override
+    // Obtiene el producto con más demanda
     public Product getBestSellingProduct() {
-        return null;
+        return repository.findBestSellingProduct();
     }
 
     @Override

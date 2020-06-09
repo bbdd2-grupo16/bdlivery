@@ -139,8 +139,16 @@ public class DBliveryMongoRepository {
         return ordersList;
     }
 
+    // Obtiene los n proovedores que más productos tienen en órdenes que están siendo enviadas
     public List<Supplier> findTopNSuppliersInSentOrders(int n){
-        return null;
+//        MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
+//        FindIterable<Supplier> suppliers = collection.find(eq("status.status", "Sent"), ne("status.status", "Delivered"));
+//        List<Supplier> suppliersList = new ArrayList<>();
+//        for (Supplier supplier : suppliers) {
+//            suppliersList.add(supplier);
+//        }
+//        return suppliersList;
+        return (new ArrayList<Supplier>());
     }
 
     public List<Order> findPendingOrders() {
@@ -185,5 +193,32 @@ public class DBliveryMongoRepository {
             ordersList.add(order);
         }
         return ordersList;
+    }
+
+    // Obtiene todas las órdenes entregadas entre dos fechas
+    public List<Order> findDeliveredOrdersInPeriod(Date startDate, Date endDate) {
+        MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
+        FindIterable<Order> orders = collection.find(and(eq("status.status", "Delivered"), gte("dateOfOrder", startDate), lte("dateOfOrder", endDate)));
+        List<Order> ordersList = new ArrayList<>();
+        for (Order order : orders) {
+            ordersList.add(order);
+        }
+        return ordersList;
+    }
+
+    // Obtiene el producto con más demanda
+    public Product findBestSellingProduct() {
+        MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
+        FindIterable<Order> orders = collection.aggregate(
+                
+        );
+        List<Order> ordersList = new ArrayList<>();
+        for (Order order : orders) {
+            ordersList.add(order);
+            System.out.println(order.getProducts());
+        }
+
+//        List<Product> products = collection.find();
+        return new Product();
     }
 }
