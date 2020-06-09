@@ -209,14 +209,14 @@ public class DBliveryMongoRepository {
     // Obtiene el producto con más demanda
     public Product findBestSellingProduct() {
         MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
-        FindIterable<Order> orders = collection.aggregate(
-                
-        );
+//        FindIterable<Order> orders = collection.aggregate(
+//
+//        );
         List<Order> ordersList = new ArrayList<>();
-        for (Order order : orders) {
-            ordersList.add(order);
-            System.out.println(order.getProducts());
-        }
+//        for (Order order : orders) {
+//            ordersList.add(order);
+//            System.out.println(order.getProducts());
+//        }
 
 //        List<Product> products = collection.find();
         return new Product();
