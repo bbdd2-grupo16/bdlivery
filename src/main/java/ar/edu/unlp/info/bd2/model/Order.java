@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Order implements PersistentObject {
+public class Order extends Product implements PersistentObject {
 
     @BsonId
     private ObjectId objectId;

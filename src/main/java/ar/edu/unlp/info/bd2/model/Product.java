@@ -19,12 +19,9 @@ public class Product implements PersistentObject{
     private Float weight; /*peso actual del producto*/
     private Date date; /*Fecha en la que se actualiza el precio*/
 
-//    @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
-//    @JoinColumn(name="product_id")
     @BsonIgnore
     private List<Price> prices; /*Historial de precios*/
-//
-//    @ManyToOne // Un producto tiene un unico productor
+
     private Supplier supplier; /*el productor del producto*/
 
     public Product() {
