@@ -2,7 +2,8 @@ package ar.edu.unlp.info.bd2.repositories;
 
 import static com.mongodb.client.model.Aggregates.*;
 import static com.mongodb.client.model.Filters.*;
-
+import com.mongodb.client.model.geojson.Point;
+import com.mongodb.client.model.geojson.Position;
 import ar.edu.unlp.info.bd2.model.*;
 import ar.edu.unlp.info.bd2.mongo.*;
 import com.mongodb.client.*;
@@ -297,9 +298,14 @@ public class DBliveryMongoRepository {
     }
 
     public List<Order> getOrderNearPlazaMoreno() {
-        MongoCollection<Order> collection = this.getDb().getCollection("Order", Order.class);
-        FindIterable<Order> orders = collection.find();
         List<Order> ordersList = new ArrayList<>();
+        MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
+        Point refPoint = new Point(new Position(-34.921236,-57.954571));
+        //faltaria agregar position como un campo para poder filtrar
+        for (Order order : collection.find(Filters.near("position", refPoint, 400.0, 0.0)))
+        {
+            ordersList.add(order);
+        }
         return ordersList;
     }
 }
