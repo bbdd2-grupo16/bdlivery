@@ -451,6 +451,6 @@ public class DBliveryServiceImpl implements DBliveryService{
 
     @Override
     public List<Order> getOrderNearPlazaMoreno() {
-        return null;
+        return repository.getOrderNearPlazaMoreno();
     }
 }
