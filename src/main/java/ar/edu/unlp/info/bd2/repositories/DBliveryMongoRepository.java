@@ -238,8 +238,8 @@ public class DBliveryMongoRepository {
     }
 
     public List<Product> findSoldProductsOn(Date day) {
-        Set<Product> products = new HashSet<>();
-        MongoCollection<Order> collection = this.getDb().getCollection("Order", Order.class);
+        List<Product> products = new ArrayList<>();
+        MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
         FindIterable<Order> orders = collection.find(eq("status.date", day));
         System.out.println(orders);
         for (Order order : orders) {
@@ -247,8 +247,7 @@ public class DBliveryMongoRepository {
                 products.add(prodO.getProduct());
             }
         }
-        ArrayList<Product> products_final = new ArrayList<>(products);
-        return products_final;
+        return products;
     }
 
     public List<Order> findDeliveredOrdersForUser(String username) {
@@ -295,5 +294,12 @@ public class DBliveryMongoRepository {
     public Product getMaxWeigth() {
         MongoCollection<Product> collection = this.getDb().getCollection("products", Product.class);
         return collection.find().sort(new Document("weight",-1)).first();
+    }
+
+    public List<Order> getOrderNearPlazaMoreno() {
+        MongoCollection<Order> collection = this.getDb().getCollection("Order", Order.class);
+        FindIterable<Order> orders = collection.find();
+        List<Order> ordersList = new ArrayList<>();
+        return ordersList;
     }
 }
