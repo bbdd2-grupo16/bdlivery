@@ -281,4 +281,9 @@ public class DBliveryMongoRepository {
 
         return new Product();
     }
+
+    public Product getMaxWeigth() {
+        MongoCollection<Product> collection = this.getDb().getCollection("Product", Product.class);
+        return collection.find().sort(new Document("weight",-1)).first();
+    }
 }

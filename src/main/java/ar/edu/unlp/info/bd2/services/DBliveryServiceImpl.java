@@ -443,8 +443,9 @@ public class DBliveryServiceImpl implements DBliveryService{
     }
 
     @Override
+    //Obtiene el producto más pesado
     public Product getMaxWeigth() {
-        return null;
+        return repository.getMaxWeigth();
     }
 
     @Override
