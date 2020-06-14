@@ -40,6 +40,8 @@ public class Order extends Product implements PersistentObject {
     public Order() {
     }
 
+
+
     public Order(Date date, String address, Float coordX, Float coordY, User user) {
         this.dateOfOrder = date;
         this.address = address;
@@ -150,5 +152,12 @@ public class Order extends Product implements PersistentObject {
             amount = Float.sum(amount, po.getProduct().getPriceAt(this.dateOfOrder) * po.getQuantity());
         }
         return amount;
+    }
+    public Point getPosition() {
+        return position;
+    }
+
+    public void setPosition(Point position) {
+        this.position = position;
     }
 }

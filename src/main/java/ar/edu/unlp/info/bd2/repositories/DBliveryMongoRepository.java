@@ -6,7 +6,6 @@ import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Position;
 import ar.edu.unlp.info.bd2.model.*;
 import ar.edu.unlp.info.bd2.mongo.*;
-import com.mongodb.BasicDBObject;
 import com.mongodb.client.*;
 
 import java.util.*;
@@ -345,10 +344,10 @@ public class DBliveryMongoRepository {
     public List<Order> getOrderNearPlazaMoreno() {
         List<Order> ordersList = new ArrayList<>();
         MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
-        //Point refPoint = new Point(new Position(-34.921236,-57.954571));
-        for (Order order : collection.find(Filters.nearSphere("position", -34.921236,-57.954571, 400.0, 0.0)))
-        {
+        FindIterable<Order> orders = collection.find(Filters.nearSphere("position", -34.921236,-57.954571, 400.0, 0.0));
+        for (Order order : orders) {
             ordersList.add(order);
+            System.out.println(order.getPosition());
         }
         return ordersList;
     }
