@@ -344,7 +344,7 @@ public class DBliveryMongoRepository {
     public List<Order> getOrderNearPlazaMoreno() {
         List<Order> ordersList = new ArrayList<>();
         MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
-        FindIterable<Order> orders = collection.find(Filters.nearSphere("position", -34.921236,-57.954571, 400.0, 0.0));
+        FindIterable<Order> orders = collection.find(Filters.nearSphere("position", -34.921236,-57.954571, 0.00006271401156446, 0.0));
         for (Order order : orders) {
             ordersList.add(order);
             System.out.println(order.getPosition());
