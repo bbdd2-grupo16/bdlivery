@@ -345,9 +345,8 @@ public class DBliveryMongoRepository {
     public List<Order> getOrderNearPlazaMoreno() {
         List<Order> ordersList = new ArrayList<>();
         MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
-        Point refPoint = new Point(new Position(-34.921236,-57.954571));
-        //faltaria agregar position como un campo para poder filtrar
-        for (Order order : collection.find(Filters.near("position", refPoint, 400.0, 0.0)))
+        //Point refPoint = new Point(new Position(-34.921236,-57.954571));
+        for (Order order : collection.find(Filters.nearSphere("position", -34.921236,-57.954571, 400.0, 0.0)))
         {
             ordersList.add(order);
         }
