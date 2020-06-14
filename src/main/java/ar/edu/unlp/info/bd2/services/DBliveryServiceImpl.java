@@ -438,6 +438,7 @@ public class DBliveryServiceImpl implements DBliveryService{
     }
 
     @Override
+    //Obtiene los productos vendidos en un day
     public List<Product> getSoldProductsOn(Date day) {
         return repository.findSoldProductsOn(day);
     }

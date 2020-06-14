@@ -238,7 +238,17 @@ public class DBliveryMongoRepository {
     }
 
     public List<Product> findSoldProductsOn(Date day) {
-        return null;
+        Set<Product> products = new HashSet<>();
+        MongoCollection<Order> collection = this.getDb().getCollection("Order", Order.class);
+        FindIterable<Order> orders = collection.find(eq("status.date", day));
+        System.out.println(orders);
+        for (Order order : orders) {
+            for (ProductOrder prodO : order.getProducts()){
+                products.add(prodO.getProduct());
+            }
+        }
+        ArrayList<Product> products_final = new ArrayList<>(products);
+        return products_final;
     }
 
     public List<Order> findDeliveredOrdersForUser(String username) {
@@ -283,7 +293,7 @@ public class DBliveryMongoRepository {
     }
 
     public Product getMaxWeigth() {
-        MongoCollection<Product> collection = this.getDb().getCollection("Product", Product.class);
+        MongoCollection<Product> collection = this.getDb().getCollection("products", Product.class);
         return collection.find().sort(new Document("weight",-1)).first();
     }
 }
