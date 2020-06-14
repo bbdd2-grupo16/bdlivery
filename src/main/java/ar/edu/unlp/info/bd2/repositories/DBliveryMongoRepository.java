@@ -6,6 +6,7 @@ import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Position;
 import ar.edu.unlp.info.bd2.model.*;
 import ar.edu.unlp.info.bd2.mongo.*;
+import com.mongodb.BasicDBObject;
 import com.mongodb.client.*;
 
 import java.util.*;
@@ -125,6 +126,11 @@ public class DBliveryMongoRepository {
         return collection.find(eq("_id", id)).first();
     }
 
+    public Supplier findSupplierById(ObjectId id){
+        MongoCollection<Supplier> collection = this.getDb().getCollection("suppliers", Supplier.class);
+        return collection.find(eq("_id", id)).first();
+    }
+
     public List<Product> findProductsByName(String name){
         MongoCollection<Product> collection = this.getDb().getCollection("products", Product.class);
         FindIterable<Product> products = collection.find(eq("name", Pattern.compile(name)));
@@ -147,29 +153,29 @@ public class DBliveryMongoRepository {
 
     // Obtiene los n proovedores que más productos tienen en órdenes que están siendo enviadas
     public List<Supplier> findTopNSuppliersInSentOrders(int n){
-
+//
 //        Bson productsCollection = project(Projections.fields(Projections.excludeId(),
 //            Projections.include("products")));
-
+//
 //        this.getDb().getCollection("orders", Order.class).aggregate(Arrays.asList(
 //            match(and(eq("status.status", "Sent"), ne("status.status", "Delivered"))),
 //            out("sent_orders"))).toCollection();
-
+//
 //        this.getDb().getCollection("sent_orders", Order.class).aggregate(Arrays.asList(productsCollection,
 //                out("products_in_sent_orders"))).toCollection();
-
+//
 //        MongoCollection<Document> products = this.getDb().getCollection("products_in_sent_orders");
-
+//
 //        Bson productsOrdersCollection = project(Projections.fields(Projections.excludeId(),
 //                Projections.computed("products.product", "products.quantity")));
-
+//
 //        this.getDb().getCollection("products_in_sent_orders", Order.class).aggregate(Arrays.asList(productsCollection,
 //                out("productOrder_in_sent_orders"))).toCollection();
-
+//
 //        Bson suppliersCollection = project(Projections.fields(
 //            Projections.include("product"), Projections.computed("", 1)));
-
-//        products.aggregate(Arrays.asList(suppliersCollection,
+//
+////        products.aggregate(Arrays.asList(suppliersCollection,
 //        products.aggregate(Arrays.asList(productsOrdersCollection,
 //            Aggregates.group("$supplier", Accumulators.sum("quantity", 1)),
 //            out("suppliers_in_sent_orders"))).toCollection();
@@ -177,25 +183,24 @@ public class DBliveryMongoRepository {
 //        String map = "function() { emit( this, this.quantity); }";
 //        String reduce = "function(key, values) { return Array.sum(values); }";
 //        MapReduceIterable mapReduceIterable =  this.getDb().getCollection("productOrder_in_sent_orders").mapReduce(map, reduce);
-//                FindIterable<Document> findIterable = this.getDb().getCollection("suppliers_in_sent_orders").find().limit(n);
-
-        //            Product product = (Product) doc.get("product");
-        //            System.out.println(product);
-        ////            suppliersList.add(product.getSupplier());
+//        FindIterable<Document> findIterable = this.getDb().getCollection("suppliers_in_sent_orders").find().limit(n);
+//
 //        for (Object doc: mapReduceIterable) {
 //            System.out.println(doc);
+////            Product product = (Product) doc.get("product");
+////            System.out.println(product);
+//
 //        }
 
         this.getDb().getCollection("orders", Order.class).aggregate(Arrays.asList(
                 match(and(eq("status.status", "Sent"))),
                 out("sent_orders"))).toCollection();
 
-        Bson productsCollection = project(Projections.fields(Projections.excludeId(),
-                Projections.include("products.product.supplier")));
+        Bson productsProjection = project(Projections.excludeId());
 
         MongoCollection<Order> collection = this.getDb().getCollection("sent_orders", Order.class);
-        collection.aggregate(Arrays.asList(productsCollection, unwind("$products"),
-                group("$products.product.supplier",  Accumulators.sum("quantity", 1)),
+        collection.aggregate(Arrays.asList(productsProjection, unwind("$products"),
+                group("$products.product.supplier._id",  Accumulators.sum("quantity", 1)),
                 sort(Sorts.descending("quantity")),
                 limit(n),
                 out("suppliers_in_sent_orders"))).toCollection();
@@ -203,7 +208,9 @@ public class DBliveryMongoRepository {
         FindIterable<Document> suppliers = this.getDb().getCollection("suppliers_in_sent_orders").find();
         List<Supplier> suppliersList = new ArrayList<>();
         for (Document doc: suppliers) {
-            System.out.println(doc.values());
+            ObjectId supplierId = (ObjectId) doc.get("_id");
+            Supplier supplier = this.findSupplierById(supplierId);
+            suppliersList.add(supplier);
         }
         return suppliersList;
     }
@@ -274,22 +281,60 @@ public class DBliveryMongoRepository {
 
     // Obtiene el producto con más demanda
     public Product findBestSellingProduct() {
-        Bson productsCollection = project(Projections.fields(Projections.excludeId(),
-                Projections.include("products.product")));
-        MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
-        collection.aggregate(Arrays.asList(productsCollection, unwind("$products"),
-                group("$products.product",  Accumulators.sum("quantity", 1)),
-                sort(Sorts.descending("quantity")),
-                limit(1),
-                out("bestSellingProduct"))).toCollection();
-
-//        Order order = this.getDb().getCollection("bestSellingProduct", Order.class).find().first();
-//        Product product = (Product) this.getDb().getCollection("bestSellingProduct").find().first().get("_id");
-        System.out.println(this.getDb().getCollection("bestSellingProduct").find().first().get("_id"));
+//        Bson productsProject = project(Projections.fields(Projections.excludeId(),
+//                Projections.include("products.product")));
+//        MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
+//        collection.aggregate(Arrays.asList(productsProject, unwind("$products"),
+//                group("$products.product",  Accumulators.sum("quantity", 1)),
+//                sort(Sorts.descending("quantity")),
+//                limit(1),
+//                out("bestSellingProduct"))).toCollection();
+//        System.out.println(this.getDb().getCollection("bestSellingProduct").find().first().get("_id"));
 //        return order.getProducts().get(0).getProduct();
 
-
-        return new Product();
+        //        Bson productsCollection = project(
+//                Projections.include("products.product"));
+//        MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
+//        collection.aggregate(Arrays.asList(productsCollection, unwind("$products"),
+//                group("$products.product._id",  Accumulators.sum("quantity", 1)),
+//                sort(Sorts.descending("quantity")),
+//                limit(1),
+//                out("bestSellingProduct_aux")), Product.class).toCollection();
+//
+//        Bson productsCollectionAux = project(Projections.exclude("_id", "quantity"));
+//        this.getDb().getCollection("bestSellingProduct_aux").aggregate(
+//                Arrays.asList(productsCollectionAux,
+////                unwind("$product"),
+//                out("bestSellingProduct"))).toCollection();
+////        this.getDb().getCollection("bestSellingProduct_aux", Product.class).find();
+//        System.out.println(this.getDb().getCollection("bestSellingProduct").find().first());
+////        this.getDb().getCollection("bestSellingProduct", Product.class).find().first()
+//
+//        MongoCollection<Order> orderCollection = this.getDb().getCollection("orders", Order.class);
+//        BasicDBObject filter = new BasicDBObject("$unwind", "$products");
+//        BasicDBObject projections = new BasicDBObject();
+//        projections.append("_id", "$product._id");
+//        projections.append("name", "$product.name");
+//        projections.append("price", "$product.price");
+//        projections.append("prices", "$product.prices");
+//        projections.append("supplier", "$product.supplier");
+//        projections.append("weight", "$product.weight");
+//
+//        BasicDBObject project = new BasicDBObject("$project",
+//                new BasicDBObject( "product", 1)
+////                        .append( "_id", "$product._id" )
+//                        .append( "name", "$product.name" ));
+        Bson productsProject = project(Projections.excludeId());
+        MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
+        collection.aggregate(Arrays.asList(productsProject,
+                unwind("$products"),
+                group("$products.product._id",  Accumulators.sum("quantity", 1)),
+                sort(Sorts.descending("quantity")),
+                limit(1),
+                out("bestSellingProduct")), Product.class).toCollection();
+        ObjectId productId = (ObjectId) this.getDb().getCollection("bestSellingProduct").find().first().get("_id");
+        Product product = this.findProductById(productId);
+        return product;
     }
 
     public Product getMaxWeigth() {
