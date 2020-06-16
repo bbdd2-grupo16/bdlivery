@@ -198,7 +198,6 @@ public class DBliveryServiceImpl implements DBliveryService{
             Order orderConcrete = optional_order.get();
             orderConcrete.addProduct(new ProductOrder(quantity, product, orderConcrete));
             repository.updateOrder(orderConcrete);
-            repository.saveAssociation(orderConcrete, product, "product_order");
             return orderConcrete;
         }
         throw new DBliveryException("La orden no existe");
