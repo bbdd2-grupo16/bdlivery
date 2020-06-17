@@ -2,29 +2,48 @@ package ar.edu.unlp.info.bd2.services;
 
 import ar.edu.unlp.info.bd2.model.*;
 import ar.edu.unlp.info.bd2.repositories.DBliveryRepository;
+import ar.edu.unlp.info.bd2.repositories.ProductsRepository;
+import ar.edu.unlp.info.bd2.repositories.SuppliersRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+@Service
+@Transactional
 public class SpringDataDBliveryService implements DBliveryService{
 
-//    private DBliveryRepository repository;
-//
-//    public SpringDataDBliveryService(DBliveryRepository repository) {this.repository = repository;}
+    @Autowired
+    private ProductsRepository productsRepository;
+    @Autowired
+    private SuppliersRepository  suppliersRepository;
 
     @Override
     public Product createProduct(String name, Float price, Float weight, Supplier supplier) {
-        return null;
+
+        return this.productsRepository.save(new Product(name, price, weight, supplier));
     }
 
     @Override
     public Product createProduct(String name, Float price, Float weight, Supplier supplier, Date date) {
+        try {
+            return this.productsRepository.save(new Product(name, price, weight, supplier, date));
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
         return null;
     }
 
     @Override
     public Supplier createSupplier(String name, String cuil, String address, Float coordX, Float coordY) {
+        try {
+            return this.suppliersRepository.save(new Supplier(name, cuil, address, coordX, coordY));
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
         return null;
     }
 
@@ -115,12 +134,12 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public RecordState getActualStatus(Long order) {
-        return null;
+        return new RecordState();
     }
 
     @Override
     public List<Product> getProductsByName(String name) {
-        return null;
+        return this.productsRepository.findByNameContaining(name);
     }
 
     @Override
