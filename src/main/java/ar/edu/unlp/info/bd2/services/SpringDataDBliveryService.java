@@ -23,14 +23,18 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public Product createProduct(String name, Float price, Float weight, Supplier supplier) {
-
-        return this.productsRepository.save(new Product(name, price, weight, supplier));
+        try {
+            return productsRepository.save(new Product(name, price, weight, supplier));
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
     @Override
     public Product createProduct(String name, Float price, Float weight, Supplier supplier, Date date) {
         try {
-            return this.productsRepository.save(new Product(name, price, weight, supplier, date));
+            return productsRepository.save(new Product(name, price, weight, supplier, date));
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -40,7 +44,7 @@ public class SpringDataDBliveryService implements DBliveryService{
     @Override
     public Supplier createSupplier(String name, String cuil, String address, Float coordX, Float coordY) {
         try {
-            return this.suppliersRepository.save(new Supplier(name, cuil, address, coordX, coordY));
+            return suppliersRepository.save(new Supplier(name, cuil, address, coordX, coordY));
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -54,7 +58,20 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public Product updateProductPrice(Long id, Float price, Date startDate) throws DBliveryException {
-        return null;
+        Optional<Product> optional_product = productsRepository.findById(id);
+        if (!optional_product.isPresent()) {
+            throw new DBliveryException("El producto no existe");
+        } else {
+            Product product = optional_product.get();
+            //  Actualizar precio producto
+            product.setPrice(price);
+            product.addPrice(new Price(price, startDate));
+            try{
+                return productsRepository.save(product);
+            } catch (Exception e) {
+                throw new DBliveryException("El precio no pudo actualizarse");
+            }
+        }
     }
 
     @Override
@@ -139,7 +156,7 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public List<Product> getProductsByName(String name) {
-        return this.productsRepository.findByNameContaining(name);
+        return productsRepository.findByNameContaining(name);
     }
 
     @Override
