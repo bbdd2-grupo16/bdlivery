@@ -11,7 +11,7 @@ public class RecordState {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Date date; /*fecha en que se actualizo el estado*/
-    private String state; /*Nombre del estado*/
+    private String status; /*Nombre del estado*/
     @ManyToOne
     private Order order;
 
@@ -20,7 +20,7 @@ public class RecordState {
 
     public RecordState(String state, Date date) {
         this.date = date;
-        this.state = state;
+        this.status = status;
     }
 
     public Long getId() {
@@ -35,10 +35,10 @@ public class RecordState {
         this.date = date;
     }
 
-    public String getState() { return state; }
+    public String getStatus() { return status; }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setStatus(String state) {
+        this.status = state;
     }
 
     public Order getOrder() {
