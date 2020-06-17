@@ -1,14 +1,14 @@
 package ar.edu.unlp.info.bd2.services;
-
 import ar.edu.unlp.info.bd2.model.*;
-//import ar.edu.unlp.info.bd2.services.DBliveryException;
+import ar.edu.unlp.info.bd2.services.DBliveryException;
+
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 
-public interface DBliveryService extends DBliveryStatisticsService{
+public interface DBliveryService {
 
 	/**
 	 *  Crea y devuelve un nuevo Producto.
@@ -74,12 +74,6 @@ public interface DBliveryService extends DBliveryStatisticsService{
 	 */
 	Optional<User> getUserByUsername(String username);
 
-	/**
-	 * Obtiene el producto por id
-	 * @param id
-	 * @return el producto con el id provisto
-	 */
-	Optional<Product> getProductById(Long id);
 
 	/**
 	 * Obtiene el pedido por id
@@ -166,13 +160,13 @@ public interface DBliveryService extends DBliveryStatisticsService{
 	 * @param order pedido del cual se debe retornar el estado actual
 	 * @return el estado del pedido actual
 	 */
-	String getActualStatus(Long order);
+	RecordState getActualStatus(Long order);
 
 	/**
 	 * Obtiene el listado de productos que su nombre contega el string dado
 	 * @param name string a buscar
 	 * @return Lista de productos
 	 */
-	List<Product> getProductByName(String name);
+	List<Product> getProductsByName(String name);
 
 }
