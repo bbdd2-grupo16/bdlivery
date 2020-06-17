@@ -1,10 +1,7 @@
 package ar.edu.unlp.info.bd2.services;
 
 import ar.edu.unlp.info.bd2.model.*;
-import ar.edu.unlp.info.bd2.repositories.DBliveryRepository;
-import ar.edu.unlp.info.bd2.repositories.ProductsRepository;
-import ar.edu.unlp.info.bd2.repositories.SuppliersRepository;
-import ar.edu.unlp.info.bd2.repositories.UsersRepository;
+import ar.edu.unlp.info.bd2.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +20,8 @@ public class SpringDataDBliveryService implements DBliveryService{
     private SuppliersRepository  suppliersRepository;
     @Autowired
     private UsersRepository usersRepository;
+    @Autowired
+    private OrdersRepository ordersRepository;
 
     @Override
     public Product createProduct(String name, Float price, Float weight, Supplier supplier) {
@@ -99,7 +98,7 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public Optional<Order> getOrderById(Long id) {
-        return Optional.empty();
+        return ordersRepository.findById(id);
     }
 
     @Override
