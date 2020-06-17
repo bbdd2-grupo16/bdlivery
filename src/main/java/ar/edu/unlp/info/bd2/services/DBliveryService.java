@@ -1,14 +1,15 @@
 package ar.edu.unlp.info.bd2.services;
 
 import ar.edu.unlp.info.bd2.model.*;
-import ar.edu.unlp.info.bd2.services.DBliveryException;
+//import ar.edu.unlp.info.bd2.services.DBliveryException;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-public interface DBliveryService {
-    
+
+public interface DBliveryService extends DBliveryStatisticsService{
+
 	/**
 	 *  Crea y devuelve un nuevo Producto.
 	 * @param name nombre del producto a ser creado
@@ -18,6 +19,7 @@ public interface DBliveryService {
 	 * @return el producto creado
 	 */
 	Product createProduct(String name, Float price, Float weight, Supplier supplier);
+	Product createProduct(String name, Float price, Float weight, Supplier supplier, Date date);
 
 	/**
 	 * Crea y retorna un nuevo Productor
@@ -29,7 +31,7 @@ public interface DBliveryService {
 	 * @return el productor creado
 	 */
 	Supplier createSupplier(String name, String cuil, String address, Float coordX, Float coordY);
-	
+
 	/**
 	 * Crea y retorna un Usuario
 	 * @param email email del usuario
@@ -50,42 +52,42 @@ public interface DBliveryService {
 	 * @throws DBliveryException en caso de que no exista el producto para el id dado
 	 */
 	Product updateProductPrice(Long id, Float price, Date startDate) throws DBliveryException;
-	
+
 	/**
 	 * Obtiene el usuario por id
 	 * @param id
 	 * @return el usuario con el id provisto
 	 */
 	Optional<User> getUserById(Long id);
-	
+
 	/**
 	 * Obtiene el usuario por el email
 	 * @param email
 	 * @return el usuario con el email provisto
 	 */
 	Optional<User> getUserByEmail(String email);
-	
+
 	/**
 	 * Obtiene el usuario por el username
 	 * @param username
 	 * @return el usuario con el username provisto
 	 */
 	Optional<User> getUserByUsername(String username);
-	
+
 	/**
 	 * Obtiene el producto por id
-	 * @param id 
+	 * @param id
 	 * @return el producto con el id provisto
 	 */
 	Optional<Product> getProductById(Long id);
-	
+
 	/**
 	 * Obtiene el pedido por id
 	 * @param id
 	 * @return el pedido con el id provisto
 	 */
 	Optional<Order> getOrderById(Long id);
-	
+
 	/**
 	 * Crea y retorna un nuevo pedido
 	 * @param dateOfOrder timestamp de la fecha en que fue realizado el pedido
@@ -96,7 +98,7 @@ public interface DBliveryService {
 	 * @return el nuevo pedido
 	 */
 	Order createOrder(Date dateOfOrder, String address, Float coordX, Float coordY,User client);
-	
+
 	/**
 	 * agrega un producto al pedido
 	 * @param order pedido al cual se le agrega el producto
@@ -115,6 +117,7 @@ public interface DBliveryService {
 	 * @throws DBliveryException en caso de no existir el pedido, que el pedido no se encuentre en estado Pending o sí no contiene productos.
 	 */
 	Order deliverOrder(Long order, User deliveryUser) throws DBliveryException;
+	Order deliverOrder(Long order, User deliveryUser, Date date) throws DBliveryException;
 
 	/**
 	 * Cancela un pedido
@@ -123,6 +126,7 @@ public interface DBliveryService {
 	 * @throws DBliveryException en caso de no existir el pedido o si el pedido no esta en estado pending
 	 */
 	Order cancelOrder(Long order) throws DBliveryException;
+	Order cancelOrder(Long order, Date date) throws DBliveryException;
 
 	/**
 	 * Registra la entrega de un pedido.
@@ -131,7 +135,8 @@ public interface DBliveryService {
 	 * @throws DBliveryException en caso que no exista el pedido o si el mismo no esta en estado Send
 	 */
 	Order finishOrder(Long order) throws DBliveryException;
-	
+	Order finishOrder(Long order, Date date) throws DBliveryException;
+
 	/**
 	 * verifica si un pedido se puede cancelar, para lo cual debe estar en estado pending
 	 * @param order pedido a ser cancelado
@@ -147,7 +152,7 @@ public interface DBliveryService {
 	 * @throws DBliveryException en caso de no existir el pedido
 	 */
 	boolean canFinish(Long id) throws DBliveryException;
-	
+
 	/**
 	 * verifica si un pedido puede ser enviado para lo cual debe tener productos y estar en estado pending
 	 * @param order pedido a ser enviado
@@ -155,18 +160,19 @@ public interface DBliveryService {
 	 * @throws DBliveryException si el pedido no esta en estado pending.
 	 */
 	boolean canDeliver(Long order) throws DBliveryException;
-	
+
 	/**
 	 * Obtiene el estado actual de un pedido.
 	 * @param order pedido del cual se debe retornar el estado actual
 	 * @return el estado del pedido actual
 	 */
 	String getActualStatus(Long order);
-	
+
 	/**
 	 * Obtiene el listado de productos que su nombre contega el string dado
 	 * @param name string a buscar
 	 * @return Lista de productos
 	 */
 	List<Product> getProductByName(String name);
+
 }

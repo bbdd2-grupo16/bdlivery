@@ -16,6 +16,7 @@ public class Product{
     private String name; /*nombre del producto a ser creado*/
     private Float price; /*precio actual del producto*/
     private Float weight; /*peso actual del producto*/
+    private Date date; /*Fecha en la que se actualiza el precio*/
 
     @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
     @JoinColumn(name="product_id")
@@ -33,8 +34,19 @@ public class Product{
         this.price = price;
         this.weight = weight;
         this.supplier = supplier;
+        this.date = new Date();
         this.prices = new ArrayList<Price>();
         this.prices.add(new Price(price));
+    }
+
+    public Product(String name, Float price, Float weight, Supplier supplier, Date date){
+        this.name = name;
+        this.price = price;
+        this.weight = weight;
+        this.supplier = supplier;
+        this.date = date;
+        this.prices = new ArrayList<Price>();
+        this.prices.add(new Price(price, date));
     }
 
     public Long getId() {
@@ -76,8 +88,21 @@ public class Product{
     public List<Price> getPrices() {
         return prices;
     }
+
     public void addPrice(Price price) {
         this.prices.add(price);
+        if (this.prices.size() > 1){
+            this.prices.get(this.prices.size() - 2).setEndDate(price.getStartDate());
+        }
+    }
+
+    public Float getPriceAt(Date day) {
+        for (Price p : this.getPrices()) {
+            if ( (p.getStartDate().before(day)) && (p.getEndDate() != null) && (p.getEndDate().after(day)) ){
+                return p.getPrice();
+            }
+        }
+        return this.getPrices().get(this.getPrices().size() - 1).getPrice();
     }
 
 }
