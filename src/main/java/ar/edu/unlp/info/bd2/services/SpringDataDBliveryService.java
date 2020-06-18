@@ -160,8 +160,8 @@ public class SpringDataDBliveryService implements DBliveryService{
     }
 
     @Override
-    public Product getMaxWeigth() {
-        return null;
+    public Product getMaxWeight() {
+        return productsRepository.getMaxWeight();
     }
 
     @Override
@@ -191,11 +191,12 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public List<Product> getProductsOnePrice() {
-        return null;
+        return productsRepository.getProductsOnePrice();
     }
 
     @Override
     public List<Product> getSoldProductsOn(Date day) {
         return null;
+//        return productsRepository.getSoldProductsOn(day);
     }
 }
