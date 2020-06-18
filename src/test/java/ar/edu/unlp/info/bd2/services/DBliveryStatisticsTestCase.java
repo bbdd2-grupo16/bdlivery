@@ -50,7 +50,7 @@ public class DBliveryStatisticsTestCase {
   }
 
   @Test
-  public void testGetMaxWeigth() {
+  public void testGetMaxWeight() {
     Product product = this.service.getMaxWeight();
     assertEquals("Milanesa con rúcula",product.getName());
   }
