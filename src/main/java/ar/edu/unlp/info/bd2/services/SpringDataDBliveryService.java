@@ -1,9 +1,7 @@
 package ar.edu.unlp.info.bd2.services;
 
 import ar.edu.unlp.info.bd2.model.*;
-import ar.edu.unlp.info.bd2.repositories.DBliveryRepository;
-import ar.edu.unlp.info.bd2.repositories.ProductsRepository;
-import ar.edu.unlp.info.bd2.repositories.SuppliersRepository;
+import ar.edu.unlp.info.bd2.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +18,10 @@ public class SpringDataDBliveryService implements DBliveryService{
     private ProductsRepository productsRepository;
     @Autowired
     private SuppliersRepository  suppliersRepository;
+    @Autowired
+    private UsersRepository usersRepository;
+    @Autowired
+    private OrdersRepository ordersRepository;
 
     @Override
     public Product createProduct(String name, Float price, Float weight, Supplier supplier) {
@@ -53,6 +55,11 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public User createUser(String email, String password, String username, String name, Date dateOfBirth) {
+        try {
+            return usersRepository.save(new User(email, password, username, name, dateOfBirth));
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
         return null;
     }
 
@@ -76,22 +83,22 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public Optional<User> getUserById(Long id) {
-        return Optional.empty();
+        return usersRepository.findById(id);
     }
 
     @Override
     public Optional<User> getUserByEmail(String email) {
-        return Optional.empty();
+        return Optional.ofNullable(usersRepository.findByEmail(email));
     }
 
     @Override
     public Optional<User> getUserByUsername(String username) {
-        return Optional.empty();
+        return Optional.ofNullable(usersRepository.findByUsername(username));
     }
 
     @Override
     public Optional<Order> getOrderById(Long id) {
-        return Optional.empty();
+        return ordersRepository.findById(id);
     }
 
     @Override
