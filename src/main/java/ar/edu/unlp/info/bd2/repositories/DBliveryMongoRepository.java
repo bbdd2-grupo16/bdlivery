@@ -222,10 +222,10 @@ public class DBliveryMongoRepository {
         AggregateIterable<Order> result  = (AggregateIterable<Order>) this.getDb()
             .getCollection("orders", Order.class)
             .aggregate(Arrays.asList(
-                match(Filters.and(eq("status.status", "Delivered"),
-                        gte("status.status.date", startDate),
-                        lte("status.status.date", endDate)))
-                ));
+                match(Filters.eq("status.status", "Delivered")),
+                match(Filters.gte("status.date", startDate)),
+                match(Filters.lte("status.date", endDate))
+            ));
 
         Stream<Order> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(result.iterator(), 0), false);
         return stream.collect(Collectors.toList());
