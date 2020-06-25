@@ -129,7 +129,7 @@ public class DBliveryMongoRepository {
 
     public List<Product> findProductsByName(String name){
         MongoCollection<Product> collection = this.getDb().getCollection("products", Product.class);
-        AggregateIterable<Product> result = (AggregateIterable<Product>) collection.find(eq("name", Pattern.compile(name)));
+        FindIterable<Product> result = (FindIterable<Product>) collection.find(eq("name", Pattern.compile(name)));
         Stream<Product> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(result.iterator(), 0), false);
         return stream.collect(Collectors.toList());
     }
