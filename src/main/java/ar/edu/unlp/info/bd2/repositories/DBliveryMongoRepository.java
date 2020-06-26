@@ -129,19 +129,18 @@ public class DBliveryMongoRepository {
 
     public List<Product> findProductsByName(String name){
         MongoCollection<Product> collection = this.getDb().getCollection("products", Product.class);
-        FindIterable<Product> result = (FindIterable<Product>) collection.find(eq("name", Pattern.compile(name)));
+        FindIterable<Product> result = collection.find(eq("name", Pattern.compile(name)));
         Stream<Product> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(result.iterator(), 0), false);
         return stream.collect(Collectors.toList());
     }
 
     public List<Order> findOrdersMadeByUser(String username){
         MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
-        FindIterable<Order> orders = collection.find(eq("client.username", Pattern.compile(username)));
-        List<Order> ordersList = new ArrayList<>();
-        for (Order order : orders) {
-            ordersList.add(order);
-        }
-        return ordersList;
+        FindIterable<Order> result = collection.find(eq("client.username", Pattern.compile(username)));
+        Stream<Order> stream = StreamSupport.stream(
+            Spliterators.spliteratorUnknownSize( result.iterator(), 0), false
+        );
+        return stream.collect(Collectors.toList());
     }
 
     // Obtiene los n proovedores que más productos tienen en órdenes que están siendo enviadas
@@ -166,32 +165,29 @@ public class DBliveryMongoRepository {
 
     public List<Order> findPendingOrders() {
         MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
-        FindIterable<Order> orders = collection.find(size("status", 1));
-        List<Order> ordersList = new ArrayList<>();
-        for (Order order : orders) {
-            ordersList.add(order);
-        }
-        return ordersList;
+        FindIterable<Order> result = collection.find(size("status", 1));
+        Stream<Order> stream = StreamSupport.stream(
+          Spliterators.spliteratorUnknownSize(result.iterator(), 0), false
+        );
+        return stream.collect(Collectors.toList());
     }
 
     public List<Order> findSentOrders() {
         MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
-        FindIterable<Order> orders = collection.find(and(eq("status.status", "Sent"), ne("status.status", "Delivered")));
-        List<Order> ordersList = new ArrayList<>();
-        for (Order order : orders) {
-            ordersList.add(order);
-        }
-        return ordersList;
+        FindIterable<Order> result = collection.find(and(eq("status.status", "Sent"), ne("status.status", "Delivered")));
+        Stream<Order> stream = StreamSupport.stream(
+            Spliterators.spliteratorUnknownSize(result.iterator(), 0),false
+        );
+        return stream.collect(Collectors.toList());
     }
 
     public List<Product> findProductsOnePrice() {
         MongoCollection<Product> collection = this.getDb().getCollection("products", Product.class);
-        FindIterable<Product> products = collection.find(size("prices", 1));
-        List<Product> productsList = new ArrayList<>();
-        for (Product product : products) {
-            productsList.add(product);
-        }
-        return productsList;
+        FindIterable<Product> result = collection.find(size("prices", 1));
+        Stream<Product> stream = StreamSupport.stream(
+            Spliterators.spliteratorUnknownSize(result.iterator(),0), false
+        );
+        return stream.collect(Collectors.toList());
     }
 
     public List<Product> findSoldProductsOn(Date day) {
@@ -209,12 +205,11 @@ public class DBliveryMongoRepository {
 
     public List<Order> findDeliveredOrdersForUser(String username) {
         MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
-        FindIterable<Order> orders = collection.find(and(eq("status.status", "Delivered"), eq("client.username", username)));
-        List<Order> ordersList = new ArrayList<>();
-        for (Order order : orders) {
-            ordersList.add(order);
-        }
-        return ordersList;
+        FindIterable<Order> result = collection.find(and(eq("status.status", "Delivered"), eq("client.username", username)));
+        Stream<Order> stream = StreamSupport.stream(
+          Spliterators.spliteratorUnknownSize(result.iterator(), 0), false
+        );
+        return stream.collect(Collectors.toList());
     }
 
     // Obtiene todas las órdenes entregadas entre dos fechas
