@@ -194,7 +194,8 @@ public class DBliveryMongoRepository {
         List<Product> products = new ArrayList<>();
         MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
         FindIterable<Order> orders = collection.find(eq("status.date", day));
-        System.out.println(orders);
+
+        //System.out.println(orders);
         for (Order order : orders) {
             for (ProductOrder prodO : order.getProducts()){
                 products.add(prodO.getProduct());
@@ -251,10 +252,10 @@ public class DBliveryMongoRepository {
         List<Order> ordersList = new ArrayList<>();
         MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
         FindIterable<Order> orders = collection.find(Filters.nearSphere("position", -34.921236,-57.954571, 0.00006271401156446, 0.0));
-        for (Order order : orders) {
-            ordersList.add(order);
-            System.out.println(order.getPosition());
-        }
-        return ordersList;
+
+        Stream<Order> stream = StreamSupport.stream(
+                Spliterators.spliteratorUnknownSize(orders.iterator(), 0), false
+        );
+        return stream.collect(Collectors.toList());
     }
 }
