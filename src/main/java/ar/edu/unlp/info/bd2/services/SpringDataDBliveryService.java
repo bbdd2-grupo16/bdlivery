@@ -103,6 +103,11 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public Order createOrder(Date dateOfOrder, String address, Float coordX, Float coordY, User client) {
+        try {
+            return ordersRepository.save(new Order(dateOfOrder, address, coordX, coordY, client));
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
         return null;
     }
 
@@ -118,7 +123,17 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public Order deliverOrder(Long order, User deliveryUser, Date date) throws DBliveryException {
-        return null;
+        Optional<Order> optional_order = this.getOrderById(order);
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
+            if (this.canDeliver(orderConcrete.getId())) {
+                orderConcrete.setDeliveryUser(deliveryUser);
+                orderConcrete.addState("Sent");
+                ordersRepository.save(orderConcrete);
+                return orderConcrete;
+            }else { new DBliveryException("La orden no puede ser"); }
+        }
+        throw new DBliveryException("La orden no existe");
     }
 
     @Override
