@@ -208,7 +208,7 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public List<Order> getDeliveredOrdersForUser(String username) {
-        return null;
+        return ordersRepository.findByUsername(username);
     }
 
     @Override
