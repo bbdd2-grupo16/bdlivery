@@ -113,7 +113,14 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public Order addProduct(Long order, Long quantity, Product product) throws DBliveryException {
-        return null;
+        Optional<Order> optional_order = this.getOrderById(order);
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
+            orderConcrete.addProduct(quantity, product);
+            ordersRepository.save(orderConcrete);
+            return orderConcrete;
+        }
+        throw new DBliveryException("La orden no existe");
     }
 
     @Override
