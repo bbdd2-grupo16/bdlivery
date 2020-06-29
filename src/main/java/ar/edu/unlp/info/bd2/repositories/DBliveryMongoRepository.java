@@ -24,27 +24,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class DBliveryMongoRepository {
 
-    @Autowired private MongoClient client;
+  @Autowired private MongoClient client;
 
 
-    public void saveAssociation(PersistentObject source, PersistentObject destination, String associationName) {
-        Association association = new Association(source.getObjectId(), destination.getObjectId());
-        this.getDb()
-            .getCollection(associationName, Association.class)
-            .insertOne(association);
-    }
+  public void saveAssociation(PersistentObject source, PersistentObject destination, String associationName) {
+    Association association = new Association(source.getObjectId(), destination.getObjectId());
+    this.getDb()
+        .getCollection(associationName, Association.class)
+        .insertOne(association);
+  }
 
-    public MongoDatabase getDb() {
+  public MongoDatabase getDb() {
     return this.client.getDatabase("bd2_grupo" + this.getGroupNumber());
-    }
+  }
 
-    private Integer getGroupNumber() {
-        return 16;
-    }
+  private Integer getGroupNumber() {
+    return 16;
+  }
 
-    public <T extends PersistentObject> List<T> getAssociatedObjects(
-        PersistentObject source, Class<T> objectClass, String association, String destCollection) {
-        AggregateIterable<T> iterable =
+  public <T extends PersistentObject> List<T> getAssociatedObjects(
+      PersistentObject source, Class<T> objectClass, String association, String destCollection) {
+    AggregateIterable<T> iterable =
         this.getDb()
             .getCollection(association, objectClass)
             .aggregate(
@@ -53,209 +53,213 @@ public class DBliveryMongoRepository {
                     lookup(destCollection, "destination", "_id", "_matches"),
                     unwind("$_matches"),
                     replaceRoot("$_matches")));
-        Stream<T> stream =
-            StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterable.iterator(), 0), false);
-        return stream.collect(Collectors.toList());
-    }
+    Stream<T> stream =
+        StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterable.iterator(), 0), false);
+    return stream.collect(Collectors.toList());
+  }
 
-    public <T extends PersistentObject> List<T> getObjectsAssociatedWith(
-        ObjectId objectId, Class<T> objectClass, String association, String destCollection) {
-        AggregateIterable<T> iterable =
-            this.getDb()
-                .getCollection(association, objectClass)
-                .aggregate(
-                    Arrays.asList(
-                        match(eq("destination", objectId)),
-                        lookup(destCollection, "source", "_id", "_matches"),
-                        unwind("$_matches"),
-                        replaceRoot("$_matches")));
-        Stream<T> stream =
-            StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterable.iterator(), 0), false);
-        return stream.collect(Collectors.toList());
-    }
+  public <T extends PersistentObject> List<T> getObjectsAssociatedWith(
+      ObjectId objectId, Class<T> objectClass, String association, String destCollection) {
+    AggregateIterable<T> iterable =
+        this.getDb()
+            .getCollection(association, objectClass)
+            .aggregate(
+                Arrays.asList(
+                    match(eq("destination", objectId)),
+                    lookup(destCollection, "source", "_id", "_matches"),
+                    unwind("$_matches"),
+                    replaceRoot("$_matches")));
+    Stream<T> stream =
+        StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterable.iterator(), 0), false);
+    return stream.collect(Collectors.toList());
+  }
 
-    public Object save(Object object, String collection, Class className){
-        MongoCollection<Object> objectMongoCollection = this.getDb().getCollection(collection, className);
-        objectMongoCollection.insertOne(object);
-        return object;
-    }
+  public Object save(Object object, String collection, Class className){
+    MongoCollection<Object> objectMongoCollection = this.getDb().getCollection(collection, className);
+    objectMongoCollection.insertOne(object);
+    return object;
+  }
 
-    public Product updateProduct(Product product){
-        MongoCollection<Product> productMongoCollection = this.getDb().getCollection("products", Product.class);
-        try {
-            productMongoCollection.replaceOne(eq("_id", product.getObjectId()), product);
-        }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-        return product;
+  public Product updateProduct(Product product){
+    MongoCollection<Product> productMongoCollection = this.getDb().getCollection("products", Product.class);
+    try {
+      productMongoCollection.replaceOne(eq("_id", product.getObjectId()), product);
     }
-
-    public Order updateOrder(Order order){
-        MongoCollection<Order> orderMongoCollection = this.getDb().getCollection("orders", Order.class);
-        try {
-            orderMongoCollection.replaceOne(eq("_id", order.getObjectId()), order);
-        }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-        return order;
+    catch (Exception e){
+      System.out.println(e.getMessage());
     }
+    return product;
+  }
 
-    public User findUserById(ObjectId id){
-        MongoCollection<User> collection = this.getDb().getCollection("users",User.class);
-        return collection.find(eq("_id", id)).first();
+  public Order updateOrder(Order order){
+    MongoCollection<Order> orderMongoCollection = this.getDb().getCollection("orders", Order.class);
+    try {
+      orderMongoCollection.replaceOne(eq("_id", order.getObjectId()), order);
     }
-
-    public User findUserByUsername(String username){
-        MongoCollection<User> collection = this.getDb().getCollection("users", User.class);
-        return collection.find(eq("username", username)).first();
+    catch (Exception e){
+      System.out.println(e.getMessage());
     }
+    return order;
+  }
 
-    public User findUserByEmail(String email){
-        MongoCollection<User> collection = this.getDb().getCollection("users", User.class);
-        return collection.find(eq("email", email)).first();
-    }
+  public User findUserById(ObjectId id){
+    MongoCollection<User> collection = this.getDb().getCollection("users",User.class);
+    return collection.find(eq("_id", id)).first();
+  }
 
-    public Order findOrderById(ObjectId id){
-        MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
-        return collection.find(eq("_id", id)).first();
-    }
+  public User findUserByUsername(String username){
+    MongoCollection<User> collection = this.getDb().getCollection("users", User.class);
+    return collection.find(eq("username", username)).first();
+  }
 
-    public Product findProductById(ObjectId id){
-        MongoCollection<Product> collection = this.getDb().getCollection("products", Product.class);
-        return collection.find(eq("_id", id)).first();
-    }
+  public User findUserByEmail(String email){
+    MongoCollection<User> collection = this.getDb().getCollection("users", User.class);
+    return collection.find(eq("email", email)).first();
+  }
 
-    public List<Product> findProductsByName(String name){
-        MongoCollection<Product> collection = this.getDb().getCollection("products", Product.class);
-        FindIterable<Product> result = collection.find(eq("name", Pattern.compile(name)));
-        Stream<Product> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(result.iterator(), 0), false);
-        return stream.collect(Collectors.toList());
-    }
+  public Order findOrderById(ObjectId id){
+    MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
+    return collection.find(eq("_id", id)).first();
+  }
 
-    public List<Order> findOrdersMadeByUser(String username){
-        MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
-        FindIterable<Order> result = collection.find(eq("client.username", Pattern.compile(username)));
-        Stream<Order> stream = StreamSupport.stream(
-            Spliterators.spliteratorUnknownSize( result.iterator(), 0), false
-        );
-        return stream.collect(Collectors.toList());
-    }
+  public Product findProductById(ObjectId id){
+    MongoCollection<Product> collection = this.getDb().getCollection("products", Product.class);
+    return collection.find(eq("_id", id)).first();
+  }
 
-    // Obtiene los n proovedores que más productos tienen en órdenes que están siendo enviadas
-    public List<Supplier> findTopNSuppliersInSentOrders(int n){
-        AggregateIterable<Supplier>  result = (AggregateIterable<Supplier>) this.getDb()
-            .getCollection("orders", Supplier.class).aggregate(Arrays.asList(
-                match(Filters.eq("status.status", "Sent")),
-                match(Filters.ne("status.status", "Delivered")),
+  public List<Product> findProductsByName(String name){
+    MongoCollection<Product> collection = this.getDb().getCollection("products", Product.class);
+    FindIterable<Product> result = collection.find(eq("name", Pattern.compile(name)));
+    Stream<Product> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(result.iterator(), 0), false);
+    return stream.collect(Collectors.toList());
+  }
+
+  public List<Order> findOrdersMadeByUser(String username){
+    MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
+    FindIterable<Order> result = collection.find(eq("client.username", Pattern.compile(username)));
+    Stream<Order> stream = StreamSupport.stream(
+        Spliterators.spliteratorUnknownSize( result.iterator(), 0), false
+    );
+    return stream.collect(Collectors.toList());
+  }
+
+  // Obtiene los n proovedores que más productos tienen en órdenes que están siendo enviadas
+  public List<Supplier> findTopNSuppliersInSentOrders(int n){
+    AggregateIterable<Supplier>  result = (AggregateIterable<Supplier>) this.getDb()
+        .getCollection("orders", Supplier.class).aggregate(Arrays.asList(
+            match(Filters.eq("status.status", "Sent")),
+            match(Filters.ne("status.status", "Delivered")),
+            unwind("$products"),
+            new Document("$group",
+                new Document("_id", "$products.product.supplier")
+                    .append("quantity", new Document("$sum", "$products.quantity"))),
+            sort(new Document("quantity", -1)),
+            replaceRoot("$_id"),
+            limit(n)
+        ));
+
+    Stream<Supplier> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(result.iterator(), 0), false);
+
+    return stream.collect(Collectors.toList());
+  }
+
+  public List<Order> findPendingOrders() {
+    MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
+    FindIterable<Order> result = collection.find(size("status", 1));
+    Stream<Order> stream = StreamSupport.stream(
+        Spliterators.spliteratorUnknownSize(result.iterator(), 0), false
+    );
+    return stream.collect(Collectors.toList());
+  }
+
+  public List<Order> findSentOrders() {
+    MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
+    FindIterable<Order> result = collection.find(and(eq("status.status", "Sent"), ne("status.status", "Delivered")));
+    Stream<Order> stream = StreamSupport.stream(
+        Spliterators.spliteratorUnknownSize(result.iterator(), 0),false
+    );
+    return stream.collect(Collectors.toList());
+  }
+
+  public List<Product> findProductsOnePrice() {
+    MongoCollection<Product> collection = this.getDb().getCollection("products", Product.class);
+    FindIterable<Product> result = collection.find(size("prices", 1));
+    Stream<Product> stream = StreamSupport.stream(
+        Spliterators.spliteratorUnknownSize(result.iterator(),0), false
+    );
+    return stream.collect(Collectors.toList());
+  }
+
+  public List<Product> findSoldProductsOn(Date day) {
+    AggregateIterable<Product> result = this.getDb().getCollection("orders", Product.class)
+        .aggregate(
+            Arrays.asList(
+                match(Filters.eq("dateOfOrder", day)),
                 unwind("$products"),
-                new Document("$group",
-                    new Document("_id", "$products.product.supplier")
-                        .append("quantity", new Document("$sum", "$products.quantity"))),
-                        sort(new Document("quantity", -1)),
-                        replaceRoot("$_id"),
-                        limit(n)
-                    ));
-
-        Stream<Supplier> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(result.iterator(), 0), false);
-
-        return stream.collect(Collectors.toList());
-    }
-
-    public List<Order> findPendingOrders() {
-        MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
-        FindIterable<Order> result = collection.find(size("status", 1));
-        Stream<Order> stream = StreamSupport.stream(
-          Spliterators.spliteratorUnknownSize(result.iterator(), 0), false
+                new Document("$project",
+                    new Document("_id", "$products.product"))
+                ,replaceRoot("$_id")
+            )
         );
-        return stream.collect(Collectors.toList());
-    }
+    Stream<Product> stream = StreamSupport.stream(
+        Spliterators.spliteratorUnknownSize(result.iterator(), 0), false
+    );
 
-    public List<Order> findSentOrders() {
-        MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
-        FindIterable<Order> result = collection.find(and(eq("status.status", "Sent"), ne("status.status", "Delivered")));
-        Stream<Order> stream = StreamSupport.stream(
-            Spliterators.spliteratorUnknownSize(result.iterator(), 0),false
-        );
-        return stream.collect(Collectors.toList());
-    }
+    return stream.collect(Collectors.toList());
+  }
 
-    public List<Product> findProductsOnePrice() {
-        MongoCollection<Product> collection = this.getDb().getCollection("products", Product.class);
-        FindIterable<Product> result = collection.find(size("prices", 1));
-        Stream<Product> stream = StreamSupport.stream(
-            Spliterators.spliteratorUnknownSize(result.iterator(),0), false
-        );
-        return stream.collect(Collectors.toList());
-    }
+  public List<Order> findDeliveredOrdersForUser(String username) {
+    MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
+    FindIterable<Order> result = collection.find(and(eq("status.status", "Delivered"), eq("client.username", username)));
+    Stream<Order> stream = StreamSupport.stream(
+        Spliterators.spliteratorUnknownSize(result.iterator(), 0), false
+    );
+    return stream.collect(Collectors.toList());
+  }
 
-    public List<Product> findSoldProductsOn(Date day) {
-        List<Product> products = new ArrayList<>();
-        MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
-        FindIterable<Order> orders = collection.find(eq("status.date", day));
+  // Obtiene todas las órdenes entregadas entre dos fechas
+  public List<Order> findDeliveredOrdersInPeriod(Date startDate, Date endDate) {
+    AggregateIterable<Order> result  = (AggregateIterable<Order>) this.getDb()
+        .getCollection("orders", Order.class)
+        .aggregate(Arrays.asList(
+            match(Filters.eq("status.status", "Delivered")),
+            match(Filters.gte("status.date", startDate)),
+            match(Filters.lte("status.date", endDate))
+        ));
 
-        //System.out.println(orders);
-        for (Order order : orders) {
-            for (ProductOrder prodO : order.getProducts()){
-                products.add(prodO.getProduct());
-            }
-        }
-        return products;
-    }
+    Stream<Order> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(result.iterator(), 0), false);
+    return stream.collect(Collectors.toList());
+  }
 
-    public List<Order> findDeliveredOrdersForUser(String username) {
-        MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
-        FindIterable<Order> result = collection.find(and(eq("status.status", "Delivered"), eq("client.username", username)));
-        Stream<Order> stream = StreamSupport.stream(
-          Spliterators.spliteratorUnknownSize(result.iterator(), 0), false
-        );
-        return stream.collect(Collectors.toList());
-    }
+  // Obtiene el producto con más demanda
+  public Product findBestSellingProduct() {
+    AggregateIterable<Product>  result = (AggregateIterable<Product>) this.getDb()
+        .getCollection("orders", Product.class)
+        .aggregate(Arrays.asList(
+            unwind("$products"),
+            new Document("$group",
+                new Document("_id", "$products.product")
+                    .append("quantity", new Document("$sum", "$products.quantity") ) ),
+            sort(new Document("quantity",-1)),
+            replaceRoot("$_id"),
+            limit(1)));
+    Stream<Product> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(result.iterator(), 0), false);
+    return stream.collect(Collectors.toList()).get(0);
+  }
 
-    // Obtiene todas las órdenes entregadas entre dos fechas
-    public List<Order> findDeliveredOrdersInPeriod(Date startDate, Date endDate) {
-        AggregateIterable<Order> result  = (AggregateIterable<Order>) this.getDb()
-            .getCollection("orders", Order.class)
-            .aggregate(Arrays.asList(
-                match(Filters.eq("status.status", "Delivered")),
-                match(Filters.gte("status.date", startDate)),
-                match(Filters.lte("status.date", endDate))
-            ));
+  public Product getMaxWeigth() {
+    MongoCollection<Product> collection = this.getDb().getCollection("products", Product.class);
+    return collection.find().sort(new Document("weight",-1)).first();
+  }
 
-        Stream<Order> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(result.iterator(), 0), false);
-        return stream.collect(Collectors.toList());
-    }
+  public List<Order> getOrderNearPlazaMoreno() {
+    List<Order> ordersList = new ArrayList<>();
+    MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
+    FindIterable<Order> orders = collection.find(Filters.nearSphere("position", -34.921236,-57.954571, 0.00006271401156446, 0.0));
 
-    // Obtiene el producto con más demanda
-    public Product findBestSellingProduct() {
-        AggregateIterable<Product>  result = (AggregateIterable<Product>) this.getDb()
-            .getCollection("orders", Product.class)
-            .aggregate(Arrays.asList(
-                unwind("$products"),
-                new Document("$group",
-                    new Document("_id", "$products.product")
-                        .append("quantity", new Document("$sum", "$products.quantity") ) ),
-                        sort(new Document("quantity",-1)),
-                        replaceRoot("$_id"),
-                        limit(1)));
-        Stream<Product> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(result.iterator(), 0), false);
-        return stream.collect(Collectors.toList()).get(0);
-    }
-
-    public Product getMaxWeigth() {
-        MongoCollection<Product> collection = this.getDb().getCollection("products", Product.class);
-        return collection.find().sort(new Document("weight",-1)).first();
-    }
-
-    public List<Order> getOrderNearPlazaMoreno() {
-        List<Order> ordersList = new ArrayList<>();
-        MongoCollection<Order> collection = this.getDb().getCollection("orders", Order.class);
-        FindIterable<Order> orders = collection.find(Filters.nearSphere("position", -34.921236,-57.954571, 0.00006271401156446, 0.0));
-
-        Stream<Order> stream = StreamSupport.stream(
-                Spliterators.spliteratorUnknownSize(orders.iterator(), 0), false
-        );
-        return stream.collect(Collectors.toList());
-    }
+    Stream<Order> stream = StreamSupport.stream(
+        Spliterators.spliteratorUnknownSize(orders.iterator(), 0), false
+    );
+    return stream.collect(Collectors.toList());
+  }
 }
