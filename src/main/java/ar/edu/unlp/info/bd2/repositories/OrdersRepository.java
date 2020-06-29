@@ -10,7 +10,10 @@ import java.util.List;
 @Repository
 public interface OrdersRepository extends CrudRepository<Order, Long> {
 
-  @Query("select o from Order o where o.status.status = 'delivered' and o.client.username = ?1")
-  List<Order> findByUsername(String username);
+  @Query("select o from Order o inner join RecordState s where o.client.username = ?1 and s.status = delivered")
+  List<Order> findDeliveredOrdersForUser(String username);
+
+  @Query("select o from Order o where o.client.username = ?1")
+  List<Order> findAllOrdersMadeByUser(String username);
 
 }
