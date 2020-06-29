@@ -127,12 +127,7 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public Order deliverOrder(Long order, User deliveryUser) throws DBliveryException {
-        return null;
-    }
-
-    @Override
-    public Order deliverOrder(Long order, User deliveryUser, Date date) throws DBliveryException {
-        /*Optional<Order> optional_order = this.getOrderById(order);
+        Optional<Order> optional_order = this.getOrderById(order);
         if (optional_order.isPresent()){
             Order orderConcrete = optional_order.get();
             if (this.canDeliver(orderConcrete.getId())) {
@@ -142,28 +137,78 @@ public class SpringDataDBliveryService implements DBliveryService{
                 return orderConcrete;
             }else { new DBliveryException("La orden no puede ser"); }
         }
-        throw new DBliveryException("La orden no existe");*/
-        return null;
+        throw new DBliveryException("La orden no existe");
+    }
+
+    @Override
+    public Order deliverOrder(Long order, User deliveryUser, Date date) throws DBliveryException {
+        Optional<Order> optional_order = this.getOrderById(order);
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
+            if (this.canDeliver(orderConcrete.getId())) {
+                orderConcrete.setDeliveryUser(deliveryUser);
+                orderConcrete.addState("Sent");
+                ordersRepository.save(orderConcrete);
+                return orderConcrete;
+            }else { new DBliveryException("La orden no puede ser"); }
+        }
+        throw new DBliveryException("La orden no existe");
     }
 
     @Override
     public Order cancelOrder(Long order) throws DBliveryException {
-        return null;
+        Optional<Order> optional_order = this.getOrderById(order);
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
+            if (this.canCancel(orderConcrete.getId())) {
+                orderConcrete.addState("Cancelled");
+                ordersRepository.save(orderConcrete);
+                return orderConcrete;
+            }else { new DBliveryException("La orden no puede ser cancelada"); }
+        }
+        throw new DBliveryException("La orden no existe");
     }
 
     @Override
     public Order cancelOrder(Long order, Date date) throws DBliveryException {
-        return null;
+        Optional<Order> optional_order = this.getOrderById(order);
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
+            if (this.canCancel(orderConcrete.getId())) {
+                orderConcrete.addState("Cancelled", date);
+                ordersRepository.save(orderConcrete);
+                return orderConcrete;
+            }else { new DBliveryException("La orden no puede ser cancelada"); }
+        }
+        throw new DBliveryException("La orden no existe");
     }
 
     @Override
     public Order finishOrder(Long order) throws DBliveryException {
-        return null;
+        Optional<Order> optional_order = this.getOrderById(order);
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
+            if (this.canFinish(orderConcrete.getId())) {
+                orderConcrete.addState("Delivered");
+                ordersRepository.save(orderConcrete);
+                return orderConcrete;
+            }else { throw new DBliveryException("La orden no puede ser aprobada"); }
+        }
+        throw new DBliveryException("La orden no existe");
     }
 
     @Override
     public Order finishOrder(Long order, Date date) throws DBliveryException {
-        return null;
+        Optional<Order> optional_order = this.getOrderById(order);
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
+            if (this.canFinish(orderConcrete.getId())) {
+                orderConcrete.addState("Delivered", date);
+                ordersRepository.save(orderConcrete);
+                return orderConcrete;
+            }else { throw new DBliveryException("La orden no puede ser finalizada"); }
+        }
+        throw new DBliveryException("La orden no existe");
     }
 
     @Override
