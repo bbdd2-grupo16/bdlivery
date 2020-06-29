@@ -130,7 +130,7 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public Order deliverOrder(Long order, User deliveryUser, Date date) throws DBliveryException {
-        Optional<Order> optional_order = this.getOrderById(order);
+        /*Optional<Order> optional_order = this.getOrderById(order);
         if (optional_order.isPresent()){
             Order orderConcrete = optional_order.get();
             if (this.canDeliver(orderConcrete.getId())) {
@@ -140,7 +140,8 @@ public class SpringDataDBliveryService implements DBliveryService{
                 return orderConcrete;
             }else { new DBliveryException("La orden no puede ser"); }
         }
-        throw new DBliveryException("La orden no existe");
+        throw new DBliveryException("La orden no existe");*/
+        return null;
     }
 
     @Override
@@ -195,7 +196,7 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public List<Order> getAllOrdersMadeByUser(String username) {
-        return null;
+        return ordersRepository.findAllOrdersMadeByUser(username);
     }
 
     @Override
@@ -215,7 +216,7 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public List<Order> getDeliveredOrdersForUser(String username) {
-        return null;
+        return ordersRepository.findDeliveredOrdersForUser(username);
     }
 
     @Override
