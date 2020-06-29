@@ -22,6 +22,8 @@ public class SpringDataDBliveryService implements DBliveryService{
     private UsersRepository usersRepository;
     @Autowired
     private OrdersRepository ordersRepository;
+    @Autowired
+    private ProductOrderRepository productOrderRepository;
 
     @Override
     public Product createProduct(String name, Float price, Float weight, Supplier supplier) {
@@ -191,7 +193,7 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public Product getMaxWeight() {
-        return productsRepository.getMaxWeight();
+        return productsRepository.findFirstByOrderByWeightDesc();
     }
 
     @Override
@@ -226,7 +228,6 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public List<Product> getSoldProductsOn(Date day) {
-        return null;
-//        return productsRepository.getSoldProductsOn(day);
+        return productOrderRepository.getSoldProductsOn(day);
     }
 }

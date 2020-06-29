@@ -4,8 +4,10 @@ import ar.edu.unlp.info.bd2.model.Product;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -13,10 +15,10 @@ public interface ProductsRepository extends CrudRepository<Product, Long> {
 
     List<Product> findByNameContaining(@Param("name") String name);
 
-    @Query("SELECT coalesce(max(p.weight), 0) FROM Product p")
-//    @Query("SELECT p FROM Product p GROUP BY p HAVING max(p.weight)")
-    Product getMaxWeight();
+    @Nullable
+    Product findFirstByOrderByWeightDesc();
 
-    @Query("SELECT p FROM Product p GROUP BY p HAVING count (p.prices) = 1")
+    @Nullable
+    @Query("SELECT p FROM Product p GROUP BY p HAVING size(p.prices) = 1")
     List<Product> getProductsOnePrice();
 }
