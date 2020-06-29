@@ -198,7 +198,7 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public List<Order> getAllOrdersMadeByUser(String username) {
-        return ordersRepository.getAllOrdersMadeByUser(username);
+        return ordersRepository.findByClientUsername(username);
     }
 
     @Override
@@ -213,12 +213,12 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public List<Order> getDeliveredOrdersInPeriod(Date startDate, Date endDate) {
-        return null;
+        return ordersRepository.findByStatusStatusEqualsAndDateOfOrderBetween("Delivered", startDate, endDate);
     }
 
     @Override
     public List<Order> getDeliveredOrdersForUser(String username) {
-        return ordersRepository.getDeliveredOrdersForUser(username);
+        return ordersRepository.findByClientUsernameAndStatusStatusEquals(username, "Delivered");
     }
 
     @Override
