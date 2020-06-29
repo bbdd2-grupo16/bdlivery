@@ -160,7 +160,7 @@ public interface DBliveryService extends DBliveryStatisticsService{
 	 * @param order pedido del cual se debe retornar el estado actual
 	 * @return el estado del pedido actual
 	 */
-	RecordState getActualStatus(Long order);
+	String getActualStatus(Long order);
 
 	/**
 	 * Obtiene el listado de productos que su nombre contega el string dado

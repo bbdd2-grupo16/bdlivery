@@ -178,7 +178,7 @@ public class DBliveryServiceTestCase {
 		assertThrows(DBliveryException.class, () -> this.service.cancelOrder(o3.getId()),"The order can't be cancelled");
 		Order o4 = this.service.createOrder(orderDate,"Av. Corrientes 1405 2° B", Float.valueOf(-54.45F), Float.valueOf(-62.22F),u1);
 		Order o5 = this.service.cancelOrder(o4.getId());
-		assertEquals(this.service.getActualStatus(o5.getId()).getStatus(),"Cancelled");
+		assertEquals(this.service.getActualStatus(o5.getId()),"Cancelled");
 		assertEquals(2,o5.getStatus().size());
 	}
 
@@ -207,7 +207,7 @@ public class DBliveryServiceTestCase {
 		Order o4 = this.service.finishOrder(o3.getId());
 		assertNotNull(o4.getId());
 		assertEquals(3,o3.getStatus().size());
-		assertEquals(this.service.getActualStatus(o4.getId()).getStatus(),"Delivered");
+		assertEquals(this.service.getActualStatus(o4.getId()),"Delivered");
 	}
 
 	@Test

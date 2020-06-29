@@ -213,22 +213,52 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public boolean canCancel(Long order) throws DBliveryException {
-        return false;
+        Optional<Order> optional_order = this.getOrderById(order);
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
+            if(this.getActualStatus(orderConcrete.getId()).equals("Pending")){
+                return true;
+            }else {return false;}
+        }else{
+            throw new DBliveryException("La orden no existe");
+        }
     }
 
     @Override
     public boolean canFinish(Long id) throws DBliveryException {
-        return false;
+        Optional<Order> optional_order = this.getOrderById(id);
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
+            if(this.getActualStatus(orderConcrete.getId()).equals("Sent")){
+                return true;
+            }else {return false;}
+        }else{ throw new DBliveryException("La orden no existe"); }
     }
 
     @Override
     public boolean canDeliver(Long order) throws DBliveryException {
+        Optional<Order> optional_order = this.getOrderById(order);
+        if (optional_order.isPresent()){
+            Order orderConcrete = optional_order.get();
+            if (this.getActualStatus(orderConcrete.getId()).equals("Pending")){
+                if (orderConcrete.getProducts().size() > 0) {
+                    return true;
+                }
+            }
+        }else{
+            throw new DBliveryException("La orden no existe");
+        }
         return false;
     }
 
     @Override
-    public RecordState getActualStatus(Long order) {
-        return new RecordState();
+    public String getActualStatus(Long order) {
+        Optional<Order> optionalOrder = this.getOrderById(order);
+        if (optionalOrder.isPresent()) {
+            Order orderConcrete = optionalOrder.get();
+            return orderConcrete.getLastStatus().getStatus();
+        }
+        return null;
     }
 
     @Override
