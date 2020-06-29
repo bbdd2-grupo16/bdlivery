@@ -20,7 +20,7 @@ public class RecordState {
 
     public RecordState(String state, Date date) {
         this.date = date;
-        this.status = status;
+        this.status = state;
     }
 
     public Long getId() {
