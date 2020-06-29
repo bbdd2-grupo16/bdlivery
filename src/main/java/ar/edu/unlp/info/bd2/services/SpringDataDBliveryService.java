@@ -201,12 +201,12 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public List<Order> getPendingOrders() {
-        return null;
+        return ordersRepository.findPendingOrders();
     }
 
     @Override
     public List<Order> getSentOrders() {
-        return null;
+        return ordersRepository.findSentOrders();
     }
 
     @Override
