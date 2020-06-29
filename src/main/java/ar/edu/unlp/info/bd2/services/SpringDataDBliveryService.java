@@ -196,17 +196,17 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public List<Order> getAllOrdersMadeByUser(String username) {
-        return ordersRepository.findAllOrdersMadeByUser(username);
+        return ordersRepository.getAllOrdersMadeByUser(username);
     }
 
     @Override
     public List<Order> getPendingOrders() {
-        return ordersRepository.findPendingOrders();
+        return ordersRepository.getPendingOrders();
     }
 
     @Override
     public List<Order> getSentOrders() {
-        return ordersRepository.findSentOrders();
+        return ordersRepository.getSentOrders();
     }
 
     @Override
@@ -216,7 +216,7 @@ public class SpringDataDBliveryService implements DBliveryService{
 
     @Override
     public List<Order> getDeliveredOrdersForUser(String username) {
-        return ordersRepository.findDeliveredOrdersForUser(username);
+        return ordersRepository.getDeliveredOrdersForUser(username);
     }
 
     @Override
